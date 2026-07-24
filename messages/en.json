@@ -1,0 +1,12 @@
+{
+  "Home": {
+    "eyebrow": "Mobile & Frontend Developer",
+    "title": "Building fast, polished apps for every device",
+    "subtitle": "React Native mobile apps and modern web experiences, crafted with an obsession for performance and motion.",
+    "cta": "This is a placeholder — content coming soon"
+  },
+  "Common": {
+    "toggleTheme": "Toggle theme",
+    "language": "Language"
+  }
+}
