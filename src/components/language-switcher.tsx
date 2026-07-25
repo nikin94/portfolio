@@ -1,39 +1,38 @@
-"use client";
+import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { useLocale, useTranslations } from "next-intl";
-import { useTransition } from "react";
-
-import { routing } from "@/i18n/routing";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { locales } from "@/i18n/locales";
 import { cn } from "@/lib/utils";
 
 /**
- * Minimal locale switcher. Swaps the locale while preserving the current
- * pathname via the locale-aware router.
+ * Minimal locale switcher. Swaps the leading `/:locale` segment of the
+ * current pathname while preserving the rest of the route.
  */
 export function LanguageSwitcher() {
-  const activeLocale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
-  const [isPending, startTransition] = useTransition();
-  const t = useTranslations("Common");
+  const { locale: activeLocale } = useParams();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  function switchTo(locale: string) {
+    if (locale === activeLocale) return;
+    // pathname is `/en` or `/en/rest` -> replace segment [1].
+    const segments = pathname.split("/");
+    segments[1] = locale;
+    navigate(segments.join("/") || `/${locale}`, { replace: true });
+  }
 
   return (
     <div
-      aria-label={t("language")}
+      aria-label={t("Common.language")}
       className="border-border flex items-center gap-1 rounded-full border p-1"
     >
-      {routing.locales.map((locale) => (
+      {locales.map((locale) => (
         <button
           key={locale}
           type="button"
-          disabled={isPending}
           aria-current={locale === activeLocale}
-          onClick={() =>
-            startTransition(() => {
-              router.replace(pathname, { locale });
-            })
-          }
+          onClick={() => switchTo(locale)}
           className={cn(
             "rounded-full px-2.5 py-1 text-xs font-medium uppercase transition-colors",
             locale === activeLocale

@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "motion/react";
 
 import { fadeInUp, staggerContainer } from "@/lib/motion";
