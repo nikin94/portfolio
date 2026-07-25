@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "motion/react";
 
 import { fadeInUp, staggerContainer } from "@/lib/motion";
@@ -9,22 +7,20 @@ import { fadeInUp, staggerContainer } from "@/lib/motion";
  * into view. Direct children animate individually when wrapped in
  * `motion` elements; here we keep it simple and animate the container.
  */
-export function Reveal({
+export const Reveal = ({
   children,
   className,
 }: {
   children: React.ReactNode;
   className?: string;
-}) {
-  return (
-    <motion.div
-      className={className}
-      variants={staggerContainer}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-10%" }}
-    >
-      <motion.div variants={fadeInUp}>{children}</motion.div>
-    </motion.div>
-  );
-}
+}) => (
+  <motion.div
+    className={className}
+    variants={staggerContainer}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true, margin: "-10%" }}
+  >
+    <motion.div variants={fadeInUp}>{children}</motion.div>
+  </motion.div>
+);

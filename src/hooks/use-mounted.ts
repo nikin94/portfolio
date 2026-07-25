@@ -1,5 +1,3 @@
-"use client";
-
 import { useSyncExternalStore } from "react";
 
 const emptySubscribe = () => () => {};
@@ -12,10 +10,9 @@ const emptySubscribe = () => () => {};
  * Implemented with `useSyncExternalStore` so the server snapshot is `false`
  * and the client snapshot is `true` — no `setState`-in-effect required.
  */
-export function useMounted() {
-  return useSyncExternalStore(
+export const useMounted = () =>
+  useSyncExternalStore(
     emptySubscribe,
     () => true,
     () => false,
   );
-}
