@@ -3,8 +3,9 @@
 Personal portfolio of a **Mobile & Frontend developer** (React Native focus).
 Built as a fast, animation-rich, statically-rendered site.
 
-> Status: **skeleton**. Infrastructure is in place (i18n, theming, motion,
-> tests); real pages/sections are added incrementally.
+> Status: **app-shell**. Infrastructure (i18n, theming, motion, tests) plus a
+> native-style bottom tab bar and the About / Work / Contact sections are in
+> place; real content is added incrementally.
 
 ## Stack
 
@@ -57,13 +58,18 @@ src/
 ├── index.css               # Tailwind entry + theme tokens + Lenis styles
 ├── pages/
 │   ├── root-layout.tsx     # App-wide providers (persist across navigations)
-│   ├── locale-layout.tsx   # Pins i18n locale + document metadata (Head)
+│   ├── locale-layout.tsx   # Pins i18n locale + metadata (Head) + tab bar
 │   ├── root-redirect.tsx   # `/` → default locale
-│   └── home.tsx            # Placeholder landing (verifies the stack)
+│   ├── about.tsx           # Locale index / landing tab
+│   ├── work.tsx            # Mobile + web projects tab
+│   └── contact.tsx         # Contact tab
 ├── components/
+│   ├── tab-bar.tsx         # Liquid-glass bottom tab bar (primary nav)
+│   ├── animated-outlet.tsx # App-like per-tab enter transition
 │   ├── language-switcher.tsx
 │   └── ui/                 # Reusable primitives (Reveal, ThemeToggle, …)
 ├── config/
+│   ├── nav.ts              # Tab definitions (single source of truth)
 │   └── site.ts             # Site-wide metadata (name, url, locales)
 ├── hooks/                  # Reusable hooks (useMounted, …)
 ├── i18n/
@@ -104,3 +110,8 @@ messages/
   block the first paint.
 - Fonts use a system stack (zero network cost, no layout shift); swap for a
   self-hosted webfont once the visual design lands.
+- The tab bar's liquid glass is a robust CSS base (`backdrop-filter` blur +
+  saturate on a small fixed pill) with an SVG `feDisplacementMap` refraction as
+  a **separate, progressive-enhancement overlay** — if a browser can't resolve
+  the filter, the base blur is unaffected. Displacement is dropped under
+  `prefers-reduced-motion`.

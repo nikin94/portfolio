@@ -3,28 +3,28 @@ import { useTranslation } from "react-i18next";
 import { Reveal } from "@/components/ui/reveal";
 
 /**
- * Placeholder landing section. Real content (project case studies) lands in a
- * follow-up once the page structure is defined.
+ * Work — mobile (React Native) and web projects together. Case-study cards
+ * with screenshots slot in here in a follow-up.
  */
-const Home = () => {
+const Work = () => {
   const { t } = useTranslation();
 
   return (
     <section className="flex flex-1 flex-col justify-center py-20">
       <Reveal>
         <p className="text-accent text-sm font-medium tracking-widest uppercase">
-          {t("Home.eyebrow")}
+          {t("Work.eyebrow")}
         </p>
         <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-          {t("Home.title")}
+          {t("Work.title")}
         </h1>
         <p className="text-muted mt-6 max-w-xl text-lg text-pretty">
-          {t("Home.subtitle")}
+          {t("Work.subtitle")}
         </p>
-        <p className="text-muted mt-10 text-xs">{t("Home.cta")}</p>
+        <p className="text-muted mt-10 text-xs">{t("Work.empty")}</p>
       </Reveal>
     </section>
   );
 };
 
-export default Home;
+export default Work;

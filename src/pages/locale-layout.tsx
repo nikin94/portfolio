@@ -1,8 +1,10 @@
 import { I18nextProvider } from "react-i18next";
-import { Navigate, Outlet, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 
+import { AnimatedOutlet } from "@/components/animated-outlet";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { TabBar } from "@/components/tab-bar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { siteConfig } from "@/config/site";
 import { getLocaleI18n } from "@/i18n/config";
@@ -48,10 +50,11 @@ const LocaleLayout = () => {
             <ThemeToggle />
           </nav>
         </header>
-        <main className="flex flex-1 flex-col">
-          <Outlet />
+        <main className="flex flex-1 flex-col pb-28">
+          <AnimatedOutlet />
         </main>
       </div>
+      <TabBar />
     </I18nextProvider>
   );
 };

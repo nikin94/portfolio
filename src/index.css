@@ -67,6 +67,46 @@ html.lenis body {
   pointer-events: none;
 }
 
+/* Liquid-glass surface.
+   Base layer (robust, ships everywhere): a translucent fill + blurred,
+   saturated backdrop + a soft inner highlight that reads as a glass rim.
+   Kept intentionally cheap — it sits on a small fixed bar, so `backdrop-filter`
+   never runs over a large scrolling area. */
+.glass-surface {
+  background: color-mix(in oklab, var(--background) 62%, transparent);
+  border: 1px solid color-mix(in oklab, var(--foreground) 14%, transparent);
+  backdrop-filter: blur(16px) saturate(1.7);
+  -webkit-backdrop-filter: blur(16px) saturate(1.7);
+  box-shadow:
+    0 8px 30px -12px color-mix(in oklab, var(--foreground) 45%, transparent),
+    inset 0 1px 0 0 color-mix(in oklab, #fff 55%, transparent);
+}
+
+.dark .glass-surface {
+  box-shadow:
+    0 10px 34px -12px rgb(0 0 0 / 0.6),
+    inset 0 1px 0 0 color-mix(in oklab, #fff 12%, transparent);
+}
+
+/* Progressive-enhancement refraction layer. A separate overlay so that, if a
+   browser can't resolve the SVG filter in `backdrop-filter`, it degrades to a
+   fully transparent element — the base blur on `.glass-surface` stays intact. */
+.glass-refraction {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  backdrop-filter: url(#tabbar-liquid);
+  -webkit-backdrop-filter: url(#tabbar-liquid);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Displacement can read as motion/instability — drop it for these users. */
+  .glass-refraction {
+    display: none;
+  }
+}
+
 /* Respect users who ask for less motion. */
 @media (prefers-reduced-motion: reduce) {
   *,

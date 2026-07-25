@@ -1,9 +1,27 @@
 {
-  "Home": {
+  "Nav": {
+    "about": "About",
+    "work": "Work",
+    "contact": "Contact",
+    "label": "Primary"
+  },
+  "About": {
     "eyebrow": "Mobile & Frontend Developer",
     "title": "Building fast, polished apps for every device",
     "subtitle": "React Native mobile apps and modern web experiences, crafted with an obsession for performance and motion.",
-    "cta": "This is a placeholder — content coming soon"
+    "body": "Placeholder — a proper intro, background and the story behind the work land here soon."
+  },
+  "Work": {
+    "eyebrow": "Selected work",
+    "title": "Mobile & web projects",
+    "subtitle": "A mix of React Native apps and web builds, side by side. Full case studies with screenshots are on the way.",
+    "empty": "Projects are being written up — check back shortly."
+  },
+  "Contact": {
+    "eyebrow": "Get in touch",
+    "title": "Let's build something",
+    "subtitle": "Open to mobile and frontend roles and collaborations.",
+    "cta": "Contact links land here soon."
   },
   "Common": {
     "toggleTheme": "Toggle theme",
