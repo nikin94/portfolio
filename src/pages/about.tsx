@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 
+import { CubeHero } from "@/components/cube/cube-hero";
 import { Reveal } from "@/components/ui/reveal";
 
 /**
@@ -10,8 +11,8 @@ const About = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="flex flex-1 flex-col justify-center py-20">
-      <Reveal>
+    <section className="flex flex-1 flex-col justify-center gap-12 py-20 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
+      <Reveal className="lg:max-w-xl">
         <p className="text-accent text-sm font-medium tracking-widest uppercase">
           {t("About.eyebrow")}
         </p>
@@ -25,6 +26,9 @@ const About = () => {
           {t("About.body")}
         </p>
       </Reveal>
+      <div className="flex shrink-0 justify-center lg:justify-end">
+        <CubeHero />
+      </div>
     </section>
   );
 };
