@@ -6,10 +6,10 @@ import { AppProviders } from "@/providers";
  * Outermost layout. Hosts the app-wide provider stack (theme, motion,
  * smooth scroll) so it persists across locale switches and navigations.
  */
-export default function RootLayout() {
-  return (
-    <AppProviders>
-      <Outlet />
-    </AppProviders>
-  );
-}
+const RootLayout = () => (
+  <AppProviders>
+    <Outlet />
+  </AppProviders>
+);
+
+export default RootLayout;

@@ -13,7 +13,7 @@ import { defaultLocale, isLocale } from "@/i18n/locales";
  * instance, so SSG renders and hydration stay deterministic), sets localized
  * document metadata, and renders the shared chrome.
  */
-export default function LocaleLayout() {
+const LocaleLayout = () => {
   const { locale } = useParams();
 
   // Unknown locale in the URL -> fall back to the default.
@@ -54,4 +54,6 @@ export default function LocaleLayout() {
       </div>
     </I18nextProvider>
   );
-}
+};
+
+export default LocaleLayout;

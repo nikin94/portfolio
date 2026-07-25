@@ -6,7 +6,7 @@ import { Reveal } from "@/components/ui/reveal";
  * Placeholder landing section. Real content (project case studies) lands in a
  * follow-up once the page structure is defined.
  */
-export default function Home() {
+const Home = () => {
   const { t } = useTranslation();
 
   return (
@@ -25,4 +25,6 @@ export default function Home() {
       </Reveal>
     </section>
   );
-}
+};
+
+export default Home;

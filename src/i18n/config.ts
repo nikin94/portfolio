@@ -34,13 +34,13 @@ const instances = new Map<string, typeof i18n>();
  * Returns an i18next instance pinned to `locale`, sharing the base store.
  * Cached per locale so repeated renders reuse the same instance.
  */
-export function getLocaleI18n(locale: string) {
+export const getLocaleI18n = (locale: string) => {
   let instance = instances.get(locale);
   if (!instance) {
     instance = i18n.cloneInstance({ lng: locale });
     instances.set(locale, instance);
   }
   return instance;
-}
+};
 
 export default i18n;

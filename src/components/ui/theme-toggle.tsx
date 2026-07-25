@@ -7,7 +7,7 @@ import { useMounted } from "@/hooks/use-mounted";
  * Light/dark toggle. Renders a stable placeholder until mounted to avoid a
  * hydration mismatch (the resolved theme is only known on the client).
  */
-export function ThemeToggle() {
+export const ThemeToggle = () => {
   const mounted = useMounted();
   const { resolvedTheme, setTheme } = useTheme();
   const { t } = useTranslation();
@@ -24,4 +24,4 @@ export function ThemeToggle() {
       {mounted ? (isDark ? "☀️" : "🌙") : null}
     </button>
   );
-}
+};

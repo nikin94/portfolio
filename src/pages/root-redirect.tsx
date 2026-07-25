@@ -11,7 +11,7 @@ import { defaultLocale } from "@/i18n/locales";
  * A locale detector (Accept-Language / stored preference) can replace the fixed
  * default later without touching the routing shape.
  */
-export default function RootRedirect() {
+const RootRedirect = () => {
   const target = `/${defaultLocale}`;
   return (
     <>
@@ -22,4 +22,6 @@ export default function RootRedirect() {
       <Navigate to={target} replace />
     </>
   );
-}
+};
+
+export default RootRedirect;

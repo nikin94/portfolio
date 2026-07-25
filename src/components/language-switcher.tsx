@@ -8,19 +8,19 @@ import { cn } from "@/lib/utils";
  * Minimal locale switcher. Swaps the leading `/:locale` segment of the
  * current pathname while preserving the rest of the route.
  */
-export function LanguageSwitcher() {
+export const LanguageSwitcher = () => {
   const { locale: activeLocale } = useParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  function switchTo(locale: string) {
+  const switchTo = (locale: string) => {
     if (locale === activeLocale) return;
     // pathname is `/en` or `/en/rest` -> replace segment [1].
     const segments = pathname.split("/");
     segments[1] = locale;
     navigate(segments.join("/") || `/${locale}`, { replace: true });
-  }
+  };
 
   return (
     <div
@@ -45,4 +45,4 @@ export function LanguageSwitcher() {
       ))}
     </div>
   );
-}
+};

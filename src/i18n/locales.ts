@@ -9,6 +9,5 @@ export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "en";
 
 /** Type guard for values coming out of the URL (`useParams`). */
-export function isLocale(value: string | undefined): value is Locale {
-  return value != null && (locales as readonly string[]).includes(value);
-}
+export const isLocale = (value: string | undefined): value is Locale =>
+  value != null && (locales as readonly string[]).includes(value);
