@@ -93,11 +93,47 @@ html.lenis body {
    fully transparent element — the base blur on `.glass-surface` stays intact. */
 .glass-refraction {
   position: absolute;
-  inset: 0;
+  /* Sit inside the 1px border so the displacement never warps the outline. */
+  inset: 1px;
   border-radius: inherit;
   pointer-events: none;
   backdrop-filter: url(#tabbar-liquid);
   -webkit-backdrop-filter: url(#tabbar-liquid);
+  /* Confine the refraction to the interior: the displaced backdrop fades to
+     nothing before the edge, so the crisp pill outline drawn by
+     `.glass-surface` stays clean (no wavy contour). */
+  -webkit-mask:
+    linear-gradient(
+      to right,
+      transparent,
+      #000 14px,
+      #000 calc(100% - 14px),
+      transparent
+    ),
+    linear-gradient(
+      to bottom,
+      transparent,
+      #000 9px,
+      #000 calc(100% - 9px),
+      transparent
+    );
+  -webkit-mask-composite: source-in;
+  mask:
+    linear-gradient(
+      to right,
+      transparent,
+      #000 14px,
+      #000 calc(100% - 14px),
+      transparent
+    ),
+    linear-gradient(
+      to bottom,
+      transparent,
+      #000 9px,
+      #000 calc(100% - 9px),
+      transparent
+    );
+  mask-composite: intersect;
 }
 
 @media (prefers-reduced-motion: reduce) {

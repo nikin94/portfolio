@@ -32,11 +32,11 @@ const GlassFilterDefs = () => (
         seed={7}
         result="noise"
       />
-      <feGaussianBlur in="noise" stdDeviation={1.4} result="soft" />
+      <feGaussianBlur in="noise" stdDeviation={1.6} result="soft" />
       <feDisplacementMap
         in="SourceGraphic"
         in2="soft"
-        scale={14}
+        scale={8}
         xChannelSelector="R"
         yChannelSelector="G"
       />
