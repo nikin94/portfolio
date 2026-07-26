@@ -25,7 +25,7 @@ export const ProjectCard = ({ project }: { project: Project }) => {
             src={image}
             alt=""
             loading="lazy"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
           />
         ) : (
           <div className="text-muted/50 grid h-full w-full place-items-center">

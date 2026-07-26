@@ -87,12 +87,12 @@ const CaseStudy = () => {
       <ul className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-4">
         {study.gallery.map((shot) => (
           <li key={shot.src} className="flex flex-col items-center gap-3">
-            <DeviceFrame platform="mobile" className="h-64">
+            <DeviceFrame platform="mobile" className="h-72">
               <img
                 src={shot.src}
                 alt={t(shot.captionKey)}
                 loading="lazy"
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
               />
             </DeviceFrame>
             <p className="text-muted text-center text-xs text-pretty">

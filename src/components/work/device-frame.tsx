@@ -20,7 +20,7 @@ export const DeviceFrame = ({
     <div
       aria-hidden
       className={cn(
-        "border-border bg-background relative aspect-[9/16] h-full rounded-[1.5rem] border-[3px] p-1 shadow-sm",
+        "border-border bg-background relative aspect-[9/19.5] h-full rounded-[1.5rem] border-[3px] p-1 shadow-sm",
         className,
       )}
     >
