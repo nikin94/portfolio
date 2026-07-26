@@ -7,7 +7,12 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 const SCAN_MS = 1500;
 const UNLOCK_HOLD_MS = 2300;
-const CONFIRM_MS = 3550;
+/** Matches the 3D flip duration below. */
+const FLIP_MS = 600;
+/** The confirm bar only starts once the flip to the card has finished. */
+const CONFIRM_START_MS = UNLOCK_HOLD_MS + FLIP_MS;
+const CONFIRM_BAR_MS = 1100;
+const PAID_MS = CONFIRM_START_MS + CONFIRM_BAR_MS;
 
 /** The rounded Face ID reticle brackets (four corners). */
 const CORNERS = [
@@ -17,7 +22,7 @@ const CORNERS = [
   "M64 46v12a6 6 0 0 1-6 6H46", // bottom-right
 ];
 
-type Phase = "scan" | "unlocked" | "paying" | "paid";
+type Phase = "scan" | "unlocked" | "flip" | "paying" | "paid";
 
 /** The Face ID reticle that frames a face and sweeps a scan line over it. */
 const FaceIdReticle = ({ scanned }: { scanned: boolean }) => (
@@ -83,20 +88,20 @@ const FaceIdReticle = ({ scanned }: { scanned: boolean }) => (
  * animates.
  */
 const PaymentCard = ({
+  revealed,
   paying,
   paid,
   reduced,
 }: {
+  revealed: boolean;
   paying: boolean;
   paid: boolean;
   reduced: boolean;
 }) => {
-  const revealed = paid || paying;
-
   return (
-    <div className="flex h-full flex-col justify-center gap-3">
+    <div className="flex h-full flex-col justify-center gap-2.5">
       {/* The card. */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-600 to-fuchsia-600 p-3.5 shadow-lg">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-600 to-fuchsia-600 p-3 shadow-lg">
         {/* Sheen. */}
         <span className="pointer-events-none absolute -top-8 -right-6 size-24 rounded-full bg-white/15 blur-2xl" />
 
@@ -105,12 +110,12 @@ const PaymentCard = ({
           <Wifi className="size-4 rotate-90 text-white/70" />
         </div>
 
-        <div className="mt-4">
+        <div className="mt-2.5">
           <p className="text-[9px] tracking-widest text-white/50 uppercase">
             Balance
           </p>
           <motion.p
-            className="text-lg font-semibold text-white tabular-nums"
+            className="text-lg leading-tight font-semibold text-white tabular-nums"
             initial={reduced ? false : { filter: "blur(7px)", opacity: 0.5 }}
             animate={{
               filter: revealed ? "blur(0px)" : "blur(7px)",
@@ -122,7 +127,7 @@ const PaymentCard = ({
           </motion.p>
         </div>
 
-        <div className="mt-3 flex items-end justify-between">
+        <div className="mt-2.5 flex items-end justify-between">
           <p className="font-mono text-xs tracking-widest text-white/80">
             •••• 4242
           </p>
@@ -176,21 +181,23 @@ const PaymentSequence = ({
     if (reduced || !active) return;
     const timers = [
       window.setTimeout(() => setPhase("unlocked"), SCAN_MS),
-      window.setTimeout(() => setPhase("paying"), UNLOCK_HOLD_MS),
-      window.setTimeout(() => setPhase("paid"), CONFIRM_MS),
+      // Flip to the card first; the confirm bar only starts once it lands.
+      window.setTimeout(() => setPhase("flip"), UNLOCK_HOLD_MS),
+      window.setTimeout(() => setPhase("paying"), CONFIRM_START_MS),
+      window.setTimeout(() => setPhase("paid"), PAID_MS),
     ];
     return () => timers.forEach((id) => window.clearTimeout(id));
   }, [active, reduced]);
 
   const scanned = phase !== "scan";
-  const showCard = phase === "paying" || phase === "paid";
+  const showCard = phase === "flip" || phase === "paying" || phase === "paid";
   const paid = phase === "paid";
 
   const status = paid
     ? t("Home.showcase.faceid.paid")
     : phase === "paying"
       ? t("Home.showcase.faceid.confirming")
-      : phase === "unlocked"
+      : phase === "unlocked" || phase === "flip"
         ? t("Home.showcase.faceid.unlocked")
         : t("Home.showcase.faceid.scanning");
 
@@ -200,7 +207,7 @@ const PaymentSequence = ({
       className="flex h-full flex-col items-center justify-center gap-6"
     >
       {/* 3D flip: Face ID on the front, the payment card on the back. */}
-      <div className="relative h-44 w-full" style={{ perspective: 900 }}>
+      <div className="relative h-52 w-full" style={{ perspective: 900 }}>
         <motion.div
           className="relative size-full"
           style={{ transformStyle: "preserve-3d" }}
@@ -239,6 +246,7 @@ const PaymentSequence = ({
             }}
           >
             <PaymentCard
+              revealed={showCard}
               paying={phase === "paying"}
               paid={paid}
               reduced={reduced}

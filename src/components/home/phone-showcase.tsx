@@ -46,7 +46,7 @@ const SLIDES: Slide[] = [
 
 const COUNT = SLIDES.length;
 /** Delay before the push notification drops onto the cube slide (ms). */
-const PUSH_DELAY_MS = 2000;
+const PUSH_DELAY_MS = 1500;
 
 /**
  * True on touch-primary devices. Swiping is enabled only here; on desktop the
@@ -80,17 +80,27 @@ export const PhoneShowcase = () => {
     watchDrag: canSwipe,
     duration: reduced ? 0 : 26,
   });
+  // `selected` tracks the target snap immediately (for the tab-bar highlight and
+  // the push), while `settled` only updates once the scroll comes to rest. Slide
+  // content is gated on `settled`, so the outgoing slide keeps its finished state
+  // while it animates off-screen — it never snaps back to its default mid-exit —
+  // and the incoming slide only begins its animation once it's fully centred.
   const [selected, setSelected] = useState(0);
+  const [settled, setSettled] = useState(0);
   const [pushReady, setPushReady] = useState(false);
   const [pushDismissed, setPushDismissed] = useState(false);
 
   useEffect(() => {
     if (!emblaApi) return;
     const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
+    const onSettle = () => setSettled(emblaApi.selectedScrollSnap());
     emblaApi.on("select", onSelect).on("reInit", onSelect);
+    emblaApi.on("settle", onSettle).on("reInit", onSettle);
     onSelect();
+    onSettle();
     return () => {
       emblaApi.off("select", onSelect).off("reInit", onSelect);
+      emblaApi.off("settle", onSettle).off("reInit", onSettle);
     };
   }, [emblaApi]);
 
@@ -131,12 +141,12 @@ export const PhoneShowcase = () => {
               className={cn(
                 "relative h-full min-w-0 shrink-0 basis-full",
                 slide.className,
-                // Non-centred slides ignore pointers so a neighbour's canvas
-                // can't grab a drag; the centred slide stays interactive.
-                i === selected ? "" : "pointer-events-none",
+                // Only the settled (fully-centred) slide is interactive, so a
+                // neighbour's canvas can't grab a drag while it slides past.
+                i === settled ? "" : "pointer-events-none",
               )}
             >
-              {slide.render(i === selected)}
+              {slide.render(i === settled)}
             </div>
           ))}
         </div>
