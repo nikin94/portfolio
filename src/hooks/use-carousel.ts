@@ -10,11 +10,12 @@ interface Options {
 }
 
 /**
- * Minimal auto-advancing carousel state. The index loops while auto-playing;
- * `goTo` (manual navigation — tabs, swipe) clamps within range instead.
- * Auto-play stops when disabled, paused, or there's a single slide. The timer
- * callback is an external tick (not a synchronous effect body), so `setState`
- * there is fine.
+ * Minimal auto-advancing carousel state. The index loops in both directions —
+ * auto-play and manual navigation (`goTo` from tabs / swipe) both wrap around
+ * the ends, so the last slide leads back to the first without rewinding through
+ * everything in between. Auto-play stops when disabled, paused, or there's a
+ * single slide. The timer callback is an external tick (not a synchronous
+ * effect body), so `setState` there is fine.
  */
 export const useCarousel = ({
   count,
@@ -25,7 +26,7 @@ export const useCarousel = ({
   const [paused, setPaused] = useState(false);
 
   const goTo = useCallback(
-    (i: number) => setIndex(Math.max(0, Math.min(count - 1, i))),
+    (i: number) => setIndex(((i % count) + count) % count),
     [count],
   );
 
