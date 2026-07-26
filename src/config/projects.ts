@@ -200,8 +200,8 @@ export const caseStudies: Record<string, CaseStudy> = {
     year: "2024",
     metrics: [
       { value: "~3 mo", labelKey: "Work.iovaro.metrics.speed" },
-      { value: "iOS + Android", labelKey: "Work.iovaro.metrics.platforms" },
-      { value: "Solo", labelKey: "Work.iovaro.metrics.ownership" },
+      { value: "20+", labelKey: "Work.iovaro.metrics.features" },
+      { value: "2", labelKey: "Work.iovaro.metrics.payments" },
     ],
     stack: [
       {

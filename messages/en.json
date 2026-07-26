@@ -101,8 +101,8 @@
       "summary": "A cross-platform invoicing app for freelancers and small businesses — create and send professional invoices, get paid through Stripe, and manage subscriptions. I built it from the ground up as the sole mobile engineer at Applica.",
       "metrics": {
         "speed": "From concept to App Store & Play Store release",
-        "platforms": "Cross-platform from a single React Native codebase",
-        "ownership": "Sole mobile engineer — owned the architecture, mentored a junior"
+        "features": "Production features shipped across the two Applica products",
+        "payments": "Payment systems integrated — Stripe Connect payouts + RevenueCat subscriptions"
       },
       "body": {
         "intro": "iOvaro is a cross-platform invoicing app for freelancers and small businesses: build professional invoices and estimates from a multi-step editor, export them as branded PDFs, and get paid online. I built it from the ground up as a contractor at Applica, owning the mobile architecture end to end.",
