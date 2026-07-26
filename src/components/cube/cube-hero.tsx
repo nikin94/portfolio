@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useInViewport } from "@/hooks/use-in-viewport";
@@ -70,6 +70,7 @@ export const CubeHero = () => {
   const mounted = useMounted();
   const reducedMotion = usePrefersReducedMotion();
   const [ref, inView] = useInViewport<HTMLDivElement>("200px");
+  const canvasWrap = useRef<HTMLDivElement>(null);
 
   const staticOnly =
     !mounted || prefersStaticCube({ reducedMotion, ...deviceHints() });
@@ -79,6 +80,24 @@ export const CubeHero = () => {
   useEffect(() => {
     if (!staticOnly) preloadCubeCanvas();
   }, [staticOnly]);
+
+  // Hide the canvas the instant the page starts unloading. As the browser tears
+  // the page down the WebGL context is lost and the `<canvas>` briefly paints
+  // its opaque white backdrop — visible while the old page is still on screen
+  // during a reload. Hiding it synchronously (direct DOM write, not React state,
+  // so it lands before the unload frame paints) lets the transparent page
+  // background show through instead of a white square.
+  useEffect(() => {
+    const hide = () => {
+      if (canvasWrap.current) canvasWrap.current.style.visibility = "hidden";
+    };
+    window.addEventListener("pagehide", hide);
+    window.addEventListener("beforeunload", hide);
+    return () => {
+      window.removeEventListener("pagehide", hide);
+      window.removeEventListener("beforeunload", hide);
+    };
+  }, []);
 
   return (
     <div
@@ -90,9 +109,11 @@ export const CubeHero = () => {
       {staticOnly ? (
         <CubeFallback />
       ) : (
-        <Suspense fallback={null}>
-          <CubeCanvas active={inView} />
-        </Suspense>
+        <div ref={canvasWrap} className="absolute inset-0">
+          <Suspense fallback={null}>
+            <CubeCanvas active={inView} />
+          </Suspense>
+        </div>
       )}
     </div>
   );
