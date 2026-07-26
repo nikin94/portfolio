@@ -46,19 +46,28 @@ export const PhoneFrame = ({
 
       {/* 2. Black surround: the phone's screen border between metal and glass. */}
       <div className="rounded-[2.3rem] bg-black p-1.5">
-        {/* 3. Screen: tinted dark surface with a bright inset edge + top sheen. */}
-        <div className="relative aspect-[9/19.5] overflow-hidden rounded-[1.95rem] bg-gradient-to-b from-neutral-800 to-neutral-950 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)]">
-          {/* Glass reflection down the top of the display. */}
+        {/* 3. Screen: a dim tinted surface (kept dark so content reads as lit
+            from within, not sitting on a bright panel) with a faint inset edge. */}
+        <div className="relative aspect-[9/19.5] overflow-hidden rounded-[1.95rem] bg-gradient-to-b from-neutral-900 to-neutral-950 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)]">
+          {children}
+
+          {/* Glass overlay ABOVE the content: a subtle edge vignette plus a
+              faint diagonal sheen, so the content reads as sitting *under* the
+              display glass rather than floating on top of it. Kept low-opacity
+              and pointer-events-none so the cube stays visible and draggable. */}
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 z-10 h-1/4 bg-gradient-to-b from-white/10 to-transparent"
+            className="pointer-events-none absolute inset-0 z-10 rounded-[1.95rem] shadow-[inset_0_0_36px_10px_rgba(0,0,0,0.55)]"
           />
-          {/* Dynamic Island — reads against the lighter screen top. */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-br from-white/8 via-transparent to-transparent"
+          />
+          {/* Dynamic Island — sits above the glass overlay. */}
           <span
             aria-hidden
             className="absolute top-2.5 left-1/2 z-20 h-6 w-20 -translate-x-1/2 rounded-full bg-black ring-1 ring-white/10"
           />
-          {children}
         </div>
       </div>
     </div>
