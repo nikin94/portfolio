@@ -7,8 +7,8 @@ import { launchShuttleRally, onShuttleRally } from "@/lib/easter-egg-events";
 import { Shuttle } from "./shuttle";
 import { printConsoleSignature } from "./console-signature";
 
-/** Seconds for one shuttle flight across the screen — slow, arcing lob. */
-const FLIGHT_SECONDS = 3;
+/** Seconds for one shuttle flight across the screen — an arcing lob. */
+const FLIGHT_SECONDS = 2;
 
 /**
  * Site-wide easter eggs, mounted once in the root layout:

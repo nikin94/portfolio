@@ -1,7 +1,5 @@
 import { RoundedBox } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
-import type { Group } from "three";
+import { useMemo } from "react";
 
 /** Classic Rubik's colour scheme, one per outward-facing side. */
 const COLORS = {
@@ -100,14 +98,11 @@ const Cubie = ({
 );
 
 /**
- * The 3×3×3 cube. Plays a short scale-up entrance, then leaves rotation to
- * `OrbitControls` (auto-rotate + drag). Purely visual — no layer-turn logic
- * yet; that can layer on later without touching the wrapper.
+ * The 3×3×3 cube. Rendered at full size immediately (no scale-up entrance);
+ * rotation is left to `OrbitControls` (auto-rotate + drag). Purely visual — no
+ * layer-turn logic yet; that can layer on later without touching the wrapper.
  */
 export const CubeModel = () => {
-  const group = useRef<Group>(null);
-  const startedAt = useRef<number | null>(null);
-
   const cubies = useMemo(() => {
     const list: {
       key: string;
@@ -125,20 +120,8 @@ export const CubeModel = () => {
     return list;
   }, []);
 
-  useFrame((state) => {
-    const g = group.current;
-    if (!g) return;
-    const now = state.clock.elapsedTime;
-    if (startedAt.current === null) startedAt.current = now;
-
-    // Ease the whole cube up from 60% over the first ~1.1s.
-    const progress = Math.min((now - startedAt.current) / 1.1, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    g.scale.setScalar(0.6 + 0.4 * eased);
-  });
-
   return (
-    <group ref={group} rotation={[-0.35, 0.6, 0]}>
+    <group rotation={[-0.35, 0.6, 0]}>
       {cubies.map(({ key, position, stickers }) => (
         <Cubie key={key} position={position} stickers={stickers} />
       ))}
