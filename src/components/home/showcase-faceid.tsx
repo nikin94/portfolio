@@ -25,7 +25,15 @@ const CORNERS = [
 type Phase = "scan" | "unlocked" | "flip" | "paying" | "paid";
 
 /** The Face ID reticle that frames a face and sweeps a scan line over it. */
-const FaceIdReticle = ({ scanned }: { scanned: boolean }) => (
+const FaceIdReticle = ({
+  scanned,
+  scanning,
+}: {
+  scanned: boolean;
+  /** Sweep the scan line only while actively scanning (not before the sequence
+   *  has started, so it stays in sync with the unlock timer). */
+  scanning: boolean;
+}) => (
   <svg viewBox="0 0 72 72" className="size-full overflow-visible">
     <defs>
       <clipPath id="faceid-reticle">
@@ -60,7 +68,7 @@ const FaceIdReticle = ({ scanned }: { scanned: boolean }) => (
     </g>
 
     {/* Scan line sweeping the face while scanning. */}
-    {!scanned && (
+    {scanning && (
       <g clipPath="url(#faceid-reticle)">
         <motion.line
           x1="8"
@@ -221,7 +229,7 @@ const PaymentSequence = ({
             style={{ backfaceVisibility: "hidden" }}
           >
             <div className="relative size-36">
-              <FaceIdReticle scanned={scanned} />
+              <FaceIdReticle scanned={scanned} scanning={active && !scanned} />
               <AnimatePresence>
                 {scanned && (
                   <motion.div
@@ -285,11 +293,5 @@ const PaymentSequence = ({
  */
 export const ShowcaseFaceId = ({ active }: { active: boolean }) => {
   const reduced = usePrefersReducedMotion();
-  return (
-    <PaymentSequence
-      key={active ? "on" : "off"}
-      active={active}
-      reduced={reduced}
-    />
-  );
+  return <PaymentSequence active={active} reduced={reduced} />;
 };

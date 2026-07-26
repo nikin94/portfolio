@@ -225,7 +225,5 @@ const ChartSlide = ({
  */
 export const ShowcaseChart = ({ active }: { active: boolean }) => {
   const reduced = usePrefersReducedMotion();
-  return (
-    <ChartSlide key={active ? "on" : "off"} active={active} reduced={reduced} />
-  );
+  return <ChartSlide active={active} reduced={reduced} />;
 };

@@ -17,30 +17,46 @@ interface Slide {
   key: string;
   /** Padding/layout for the slide's content area. */
   className: string;
-  render: (active: boolean) => ReactNode;
+  /**
+   * Small delay (ms) before this slide's animation begins once it's selected,
+   * so it starts as the slide arrives rather than during the slide-in — without
+   * waiting for the scroll to fully settle. The cube uses 0 (it renders straight
+   * away during the slide-in, so it's already there on arrival).
+   */
+  startDelayMs: number;
+  /** `active` plays the slide; `playKey` remounts it fresh on each entry. */
+  render: (active: boolean, playKey: number) => ReactNode;
 }
 
-/** The carousel slides, in order. Each renders with `active` when centred. */
+/** The carousel slides, in order. */
 const SLIDES: Slide[] = [
   {
     key: "cube",
     className: "flex items-center justify-center px-4 pt-10 pb-20",
+    startDelayMs: 0,
     render: (active) => <CubeHero className="w-full" active={active} />,
   },
   {
     key: "chart",
     className: "px-3 pt-12 pb-20",
-    render: (active) => <ShowcaseChart active={active} />,
+    startDelayMs: 350,
+    render: (active, playKey) => (
+      <ShowcaseChart key={playKey} active={active} />
+    ),
   },
   {
     key: "faceid",
     className: "px-4 pt-10 pb-20",
-    render: (active) => <ShowcaseFaceId active={active} />,
+    startDelayMs: 300,
+    render: (active, playKey) => (
+      <ShowcaseFaceId key={playKey} active={active} />
+    ),
   },
   {
     key: "list",
     className: "px-3 pt-12 pb-20",
-    render: (active) => <ShowcaseList active={active} />,
+    startDelayMs: 300,
+    render: (active, playKey) => <ShowcaseList key={playKey} active={active} />,
   },
 ];
 
@@ -64,11 +80,17 @@ const isTouchDevice = () =>
  * Embla drives the carousel: it loops seamlessly (last → first slides the first
  * in from the right, no other slides flashing past) and keeps every slide
  * mounted, so the cube's WebGL context never tears down. There's no auto-play —
- * navigation is the glass tab bar, plus swiping on touch devices only. Only the
- * centred slide runs its expensive work (the cube's render loop is gated on it).
+ * navigation is the glass tab bar, plus swiping on touch devices only.
  *
- * A push notification drops onto the cube slide a couple of seconds after mount;
- * tapping it jumps to the chart slide (and dismisses the toast).
+ * Enter/exit are driven by three separate signals so slide content is mounted
+ * before it arrives and frozen while it leaves:
+ *   - `gen[i]` bumps only when slide `i` is *entered*, so it's the React key: the
+ *     incoming slide remounts fresh (replays), while the outgoing slide keeps its
+ *     key — it's never reset, so it holds its last frame as it slides off-screen.
+ *   - `active = i === selected && started`: the outgoing slide loses `active`
+ *     immediately (its timers stop → it freezes), and the incoming slide gains it
+ *     only after its own `startDelayMs` — the animation begins as it arrives, not
+ *     mid-slide-in, without waiting for the full settle.
  */
 export const PhoneShowcase = () => {
   const reduced = usePrefersReducedMotion();
@@ -80,32 +102,46 @@ export const PhoneShowcase = () => {
     watchDrag: canSwipe,
     duration: reduced ? 0 : 26,
   });
-  // `selected` tracks the target snap immediately (for the tab-bar highlight and
-  // the push), while `settled` only updates once the scroll comes to rest. Slide
-  // content is gated on `settled`, so the outgoing slide keeps its finished state
-  // while it animates off-screen — it never snaps back to its default mid-exit —
-  // and the incoming slide only begins its animation once it's fully centred.
   const [selected, setSelected] = useState(0);
-  const [settled, setSettled] = useState(0);
+  // Whether the selected slide has passed its start delay and may animate.
+  const [started, setStarted] = useState(false);
+  // Per-slide entry counter — the React key, bumped only on entry.
+  const [gen, setGen] = useState<number[]>(() => SLIDES.map(() => 0));
   const [pushReady, setPushReady] = useState(false);
   const [pushDismissed, setPushDismissed] = useState(false);
 
   useEffect(() => {
     if (!emblaApi) return;
-    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
-    const onSettle = () => setSettled(emblaApi.selectedScrollSnap());
+    const onSelect = () => {
+      const idx = emblaApi.selectedScrollSnap();
+      setSelected(idx);
+      // Hold off animating the newcomer until its start delay elapses.
+      setStarted(false);
+      // Remount only the entering slide, so it replays from scratch; the others
+      // (including the one leaving) keep their key and their last frame.
+      setGen((g) => {
+        const next = [...g];
+        next[idx] += 1;
+        return next;
+      });
+    };
     emblaApi.on("select", onSelect).on("reInit", onSelect);
-    emblaApi.on("settle", onSettle).on("reInit", onSettle);
     onSelect();
-    onSettle();
     return () => {
       emblaApi.off("select", onSelect).off("reInit", onSelect);
-      emblaApi.off("settle", onSettle).off("reInit", onSettle);
     };
   }, [emblaApi]);
 
+  // Begin the selected slide's animation after its own small delay (0 under
+  // reduced motion / for the cube). The async timer avoids a set-state-in-effect.
+  useEffect(() => {
+    const delay = reduced ? 0 : SLIDES[selected].startDelayMs;
+    const id = window.setTimeout(() => setStarted(true), delay);
+    return () => window.clearTimeout(id);
+  }, [selected, reduced]);
+
   // Arm the push every time the cube slide (index 0) is entered: it drops in
-  // 2s later, and re-arms on every return — not just the first render. Leaving
+  // 1.5s later, and re-arms on every return — not just the first render. Leaving
   // the slide (cleanup) resets both flags so the next entry replays cleanly.
   // Under reduced motion there's no timer — `showPush` shows it immediately.
   useEffect(() => {
@@ -135,20 +171,23 @@ export const PhoneShowcase = () => {
     <PhoneFrame className="w-56 max-w-full sm:w-64">
       <div ref={emblaRef} className="h-full w-full overflow-hidden">
         <div className="flex h-full">
-          {SLIDES.map((slide, i) => (
-            <div
-              key={slide.key}
-              className={cn(
-                "relative h-full min-w-0 shrink-0 basis-full",
-                slide.className,
-                // Only the settled (fully-centred) slide is interactive, so a
-                // neighbour's canvas can't grab a drag while it slides past.
-                i === settled ? "" : "pointer-events-none",
-              )}
-            >
-              {slide.render(i === settled)}
-            </div>
-          ))}
+          {SLIDES.map((slide, i) => {
+            const isSelected = i === selected;
+            return (
+              <div
+                key={slide.key}
+                className={cn(
+                  "relative h-full min-w-0 shrink-0 basis-full",
+                  slide.className,
+                  // Only the selected slide is interactive, so a neighbour's
+                  // canvas can't grab a drag while it slides past.
+                  isSelected ? "" : "pointer-events-none",
+                )}
+              >
+                {slide.render(isSelected && started, gen[i])}
+              </div>
+            );
+          })}
         </div>
       </div>
 
