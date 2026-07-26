@@ -1,16 +1,22 @@
 {
   "Nav": {
-    "about": "About",
+    "home": "Home",
     "work": "Work",
+    "about": "About",
     "contact": "Contact",
     "label": "Primary"
   },
-  "About": {
+  "Home": {
     "eyebrow": "Mobile & Frontend Developer",
     "title": "Building fast, polished apps for every device",
     "subtitle": "React Native mobile apps and modern web experiences, crafted with an obsession for performance and motion.",
-    "body": "Placeholder — a proper intro, background and the story behind the work land here soon.",
-    "cubeLabel": "Interactive Rubik's cube — drag to rotate"
+    "cubeLabel": "Interactive Rubik's cube — drag to rotate",
+    "links": {
+      "label": "Find me",
+      "cv": "Download CV",
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    }
   },
   "Work": {
     "eyebrow": "Selected work",
@@ -28,6 +34,20 @@
       "mobile-3": "Placeholder — a React Native app case study lands here soon.",
       "web-1": "Placeholder — a web project case study lands here soon.",
       "web-2": "Placeholder — a web project case study lands here soon."
+    },
+    "note": "These are a few recent highlights. There's plenty more behind them — earlier work, and projects under NDA I can't show publicly. Happy to walk through the rest on request."
+  },
+  "About": {
+    "eyebrow": "About me",
+    "title": "A bit about me",
+    "bio": "Placeholder — a short biography goes here: who I am, how I got into mobile and frontend development, and what I care about building.",
+    "educationLabel": "Education",
+    "education": "Placeholder — degree, university and years land here soon.",
+    "interests": {
+      "label": "Off the clock",
+      "chess": "Chess",
+      "cube": "Speedcubing",
+      "badminton": "Badminton"
     }
   },
   "Contact": {

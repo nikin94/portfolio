@@ -100,13 +100,33 @@ const Cubie = ({
 );
 
 /**
- * The 3×3×3 cube. Plays a short scale-up entrance, then leaves rotation to
- * `OrbitControls` (auto-rotate + drag). Purely visual — no layer-turn logic
- * yet; that can layer on later without touching the wrapper.
+ * The 3×3×3 cube. Plays a short scale-up entrance (grows from 60% to full size
+ * over ~0.9s) as it first paints, then keeps a gentle auto-spin. Both live on
+ * the model itself (its own group) rather than the camera controls, so
+ * `TrackballControls` can orbit the cube freely in every direction — including a
+ * full vertical flip — without a competing camera auto-orbit. Purely visual —
+ * no layer-turn logic yet.
  */
 export const CubeModel = () => {
   const group = useRef<Group>(null);
   const startedAt = useRef<number | null>(null);
+
+  useFrame((state, delta) => {
+    const g = group.current;
+    if (!g) return;
+
+    // Scale-up entrance, timed from the first rendered frame (so it plays when
+    // the cube actually appears, not while the loop is paused off-screen).
+    const now = state.clock.elapsedTime;
+    if (startedAt.current === null) startedAt.current = now;
+    const progress = Math.min((now - startedAt.current) / 0.9, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    g.scale.setScalar(0.6 + 0.4 * eased);
+
+    // Continuous slow spin. Delta is clamped so resuming the render loop after
+    // the hero scrolls back into view can't jump the cube by a large step.
+    g.rotation.y += Math.min(delta, 0.1) * 0.3;
+  });
 
   const cubies = useMemo(() => {
     const list: {
@@ -124,18 +144,6 @@ export const CubeModel = () => {
           });
     return list;
   }, []);
-
-  useFrame((state) => {
-    const g = group.current;
-    if (!g) return;
-    const now = state.clock.elapsedTime;
-    if (startedAt.current === null) startedAt.current = now;
-
-    // Ease the whole cube up from 60% over the first ~1.1s.
-    const progress = Math.min((now - startedAt.current) / 1.1, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    g.scale.setScalar(0.6 + 0.4 * eased);
-  });
 
   return (
     <group ref={group} rotation={[-0.35, 0.6, 0]}>

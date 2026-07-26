@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 
+import { EasterEggs } from "@/components/easter-eggs/easter-eggs";
 import { AppProviders } from "@/providers";
 
 /**
@@ -9,6 +10,7 @@ import { AppProviders } from "@/providers";
 const RootLayout = () => (
   <AppProviders>
     <Outlet />
+    <EasterEggs />
   </AppProviders>
 );
 

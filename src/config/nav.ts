@@ -1,4 +1,4 @@
-import { Mail, Rocket, UserRound, type LucideIcon } from "lucide-react";
+import { House, Mail, Rocket, UserRound, type LucideIcon } from "lucide-react";
 
 /**
  * Single source of truth for the primary tabs. `path` is relative to the
@@ -6,7 +6,7 @@ import { Mail, Rocket, UserRound, type LucideIcon } from "lucide-react";
  * and can be wired into the route tree.
  */
 export interface NavItem {
-  /** Sub-path under `/:locale`; empty string is the locale index (About). */
+  /** Sub-path under `/:locale`; empty string is the locale index (Home). */
   path: string;
   /** i18n key for the visible label. */
   labelKey: string;
@@ -14,7 +14,8 @@ export interface NavItem {
 }
 
 export const navItems: NavItem[] = [
-  { path: "", labelKey: "Nav.about", Icon: UserRound },
+  { path: "", labelKey: "Nav.home", Icon: House },
   { path: "work", labelKey: "Nav.work", Icon: Rocket },
+  { path: "about", labelKey: "Nav.about", Icon: UserRound },
   { path: "contact", labelKey: "Nav.contact", Icon: Mail },
 ];

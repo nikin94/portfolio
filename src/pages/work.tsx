@@ -28,6 +28,10 @@ const Work = () => {
       <div className="mt-12">
         <ProjectGrid />
       </div>
+
+      <p className="text-muted mt-10 max-w-2xl text-sm text-pretty">
+        {t("Work.note")}
+      </p>
     </section>
   );
 };
