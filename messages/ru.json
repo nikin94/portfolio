@@ -20,7 +20,10 @@
         "list": "Демо списка товаров"
       },
       "list": {
-        "title": "Магазин"
+        "title": "Магазин",
+        "tagline": "В наличии",
+        "addToCart": "В корзину",
+        "added": "В корзине"
       },
       "faceid": {
         "title": "Face ID",
