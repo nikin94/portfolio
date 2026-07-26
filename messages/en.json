@@ -16,7 +16,19 @@
     "eyebrow": "Selected work",
     "title": "Mobile & web projects",
     "subtitle": "A mix of React Native apps and web builds, side by side. Full case studies with screenshots are on the way.",
-    "empty": "Projects are being written up — check back shortly."
+    "filterLabel": "Filter projects by platform",
+    "filters": {
+      "all": "All",
+      "mobile": "Mobile",
+      "web": "Web"
+    },
+    "projects": {
+      "mobile-1": "Placeholder — a React Native app case study lands here soon.",
+      "mobile-2": "Placeholder — a React Native app case study lands here soon.",
+      "mobile-3": "Placeholder — a React Native app case study lands here soon.",
+      "web-1": "Placeholder — a web project case study lands here soon.",
+      "web-2": "Placeholder — a web project case study lands here soon."
+    }
   },
   "Contact": {
     "eyebrow": "Get in touch",
