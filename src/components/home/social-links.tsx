@@ -1,6 +1,6 @@
 import { FileText } from "lucide-react";
 import type { ComponentType } from "react";
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { siteConfig } from "@/config/site";
 
@@ -39,8 +39,6 @@ const LINKS: SocialLink[] = [
  * surface, so it leads with what a recruiter reaches for.
  */
 export const SocialLinks = () => {
-  const { t } = useTranslation();
-
   return (
     <nav
       aria-label={t("Home.links.label")}

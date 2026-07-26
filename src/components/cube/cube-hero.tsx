@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { useInViewport } from "@/hooks/use-in-viewport";
 import { useMounted } from "@/hooks/use-mounted";
@@ -74,7 +74,6 @@ export const CubeHero = ({
   /** When false (e.g. an off-screen carousel slide), the render loop pauses. */
   active?: boolean;
 }) => {
-  const { t } = useTranslation();
   const mounted = useMounted();
   const reducedMotion = usePrefersReducedMotion();
   const [ref, inView] = useInViewport<HTMLDivElement>("200px");

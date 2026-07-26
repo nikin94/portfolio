@@ -1,5 +1,3 @@
-import { defaultLocale, locales } from "@/i18n/locales";
-
 /**
  * Single source of truth for site-wide metadata. Update the URL once a
  * production domain is wired up.
@@ -9,8 +7,6 @@ export const siteConfig = {
   description:
     "Portfolio of a mobile and frontend developer specialising in React Native apps and high-performance web experiences.",
   url: "https://example.com",
-  locales,
-  defaultLocale,
   /**
    * External profile links surfaced on the Home tab. GitHub is live; the CV
    * file and LinkedIn URL are placeholders — drop a real `cv.pdf` into

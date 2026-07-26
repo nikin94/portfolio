@@ -1,7 +1,7 @@
 import { Check, Plus, ShoppingBag, Star } from "lucide-react";
 import { AnimatePresence, animate, motion, useMotionValue } from "motion/react";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { cn } from "@/lib/utils";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
@@ -180,8 +180,6 @@ const ProductSheet = ({
   added: boolean;
   reduced: boolean;
 }) => {
-  const { t } = useTranslation();
-
   return (
     <>
       {/* Scrim dimming the list behind the sheet. */}
@@ -287,7 +285,6 @@ const ListSequence = ({
   active: boolean;
   reduced: boolean;
 }) => {
-  const { t } = useTranslation();
   const [phase, setPhase] = useState<Phase>(reduced ? "added" : "loading");
   const [cart, setCart] = useState(reduced ? 1 : 0);
   const y = useMotionValue(reduced ? SCROLL_Y : 0);

@@ -1,14 +1,14 @@
 import { House, Mail, Rocket, UserRound, type LucideIcon } from "lucide-react";
 
 /**
- * Single source of truth for the primary tabs. `path` is relative to the
- * locale segment (`/:locale`). Add a tab here and it shows up in the tab bar
- * and can be wired into the route tree.
+ * Single source of truth for the primary tabs. `path` is relative to the site
+ * root. Add a tab here and it shows up in the tab bar and can be wired into the
+ * route tree.
  */
 export interface NavItem {
-  /** Sub-path under `/:locale`; empty string is the locale index (Home). */
+  /** Sub-path under `/`; empty string is the index (Home). */
   path: string;
-  /** i18n key for the visible label. */
+  /** Message-base key for the visible label. */
   labelKey: string;
   Icon: LucideIcon;
 }

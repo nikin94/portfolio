@@ -1,18 +1,11 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { I18nextProvider } from "react-i18next";
 import { describe, expect, it } from "vitest";
 
 import { filterProjects } from "@/config/projects";
-import { getLocaleI18n } from "@/i18n/config";
 
 import { ProjectGrid } from "./project-grid";
 
-const renderGrid = () =>
-  render(
-    <I18nextProvider i18n={getLocaleI18n("en")}>
-      <ProjectGrid />
-    </I18nextProvider>,
-  );
+const renderGrid = () => render(<ProjectGrid />);
 
 // One card == one level-3 heading, so heading count is the visible-card count.
 const cardCount = () => screen.getAllByRole("heading", { level: 3 }).length;

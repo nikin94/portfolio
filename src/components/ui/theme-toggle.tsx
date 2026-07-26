@@ -1,5 +1,5 @@
 import { useTheme } from "next-themes";
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { useMounted } from "@/hooks/use-mounted";
 
@@ -10,7 +10,6 @@ import { useMounted } from "@/hooks/use-mounted";
 export const ThemeToggle = () => {
   const mounted = useMounted();
   const { resolvedTheme, setTheme } = useTheme();
-  const { t } = useTranslation();
 
   const isDark = resolvedTheme === "dark";
 

@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { PhoneShowcase } from "@/components/home/phone-showcase";
 import { SocialLinks } from "@/components/home/social-links";
@@ -10,8 +10,6 @@ import { Reveal } from "@/components/ui/reveal";
  * (CV, LinkedIn, GitHub). The Rubik's cube stays here as the signature visual.
  */
 const Home = () => {
-  const { t } = useTranslation();
-
   return (
     <section className="flex flex-1 flex-col justify-center gap-12 py-20 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
       <Reveal className="min-w-0 lg:max-w-xl">

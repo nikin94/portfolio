@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { projectFilters, type ProjectFilter } from "@/config/projects";
 import { cn } from "@/lib/utils";
@@ -16,8 +16,6 @@ export const ProjectFilterControl = ({
   value: ProjectFilter;
   onChange: (filter: ProjectFilter) => void;
 }) => {
-  const { t } = useTranslation();
-
   return (
     <div
       role="tablist"

@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { Interests } from "@/components/about/interests";
 import { Reveal } from "@/components/ui/reveal";
@@ -8,8 +8,6 @@ import { Reveal } from "@/components/ui/reveal";
  * placeholder for now; the interests row carries the playful hobby animations.
  */
 const About = () => {
-  const { t } = useTranslation();
-
   return (
     <section className="flex flex-1 flex-col py-20">
       <Reveal className="max-w-2xl">

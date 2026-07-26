@@ -1,18 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { I18nextProvider } from "react-i18next";
 import { describe, expect, it, vi } from "vitest";
 
-import { getLocaleI18n } from "@/i18n/config";
 import { onShuttleRally } from "@/lib/easter-egg-events";
 
 import { Interests } from "./interests";
 
-const renderInterests = () =>
-  render(
-    <I18nextProvider i18n={getLocaleI18n("en")}>
-      <Interests />
-    </I18nextProvider>,
-  );
+const renderInterests = () => render(<Interests />);
 
 describe("Interests", () => {
   it("renders a chip per hobby", () => {
