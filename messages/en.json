@@ -16,7 +16,7 @@
       "tabs": {
         "cube": "3D cube demo",
         "chart": "Analytics chart demo",
-        "faceid": "Face ID demo",
+        "faceid": "Face ID payment demo",
         "list": "Product list demo"
       },
       "list": {
@@ -25,7 +25,9 @@
       "faceid": {
         "title": "Face ID",
         "scanning": "Scanning…",
-        "unlocked": "Unlocked"
+        "unlocked": "Unlocked",
+        "confirming": "Confirming payment…",
+        "paid": "Paid"
       },
       "push": {
         "title": "YourApp",

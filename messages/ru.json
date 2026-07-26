@@ -16,7 +16,7 @@
       "tabs": {
         "cube": "Демо 3D-кубика",
         "chart": "Демо графика аналитики",
-        "faceid": "Демо Face ID",
+        "faceid": "Демо оплаты по Face ID",
         "list": "Демо списка товаров"
       },
       "list": {
@@ -25,7 +25,9 @@
       "faceid": {
         "title": "Face ID",
         "scanning": "Сканирование…",
-        "unlocked": "Разблокировано"
+        "unlocked": "Разблокировано",
+        "confirming": "Подтверждение оплаты…",
+        "paid": "Оплачено"
       },
       "push": {
         "title": "YourApp",
