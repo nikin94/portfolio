@@ -7,9 +7,9 @@
     "label": "Primary"
   },
   "Home": {
-    "eyebrow": "Mobile & Frontend Developer",
-    "title": "Building fast, polished apps for every device",
-    "subtitle": "React Native mobile apps and modern web experiences, crafted with an obsession for performance and motion.",
+    "eyebrow": "React Native Developer",
+    "title": "Building fast, polished cross-platform mobile apps",
+    "subtitle": "iOS and Android apps built with React Native — crafted with an obsession for performance, native feel and motion. Plus modern web experiences on the side.",
     "cubeLabel": "Interactive Rubik's cube — drag to rotate",
     "showcase": {
       "label": "App feature demos",
@@ -47,8 +47,8 @@
   },
   "Work": {
     "eyebrow": "Selected work",
-    "title": "Mobile & web projects",
-    "subtitle": "A mix of React Native apps and web builds, side by side. Full case studies with screenshots are on the way.",
+    "title": "React Native apps & web projects",
+    "subtitle": "React Native apps front and centre, with a few web builds alongside. Full case studies with screenshots are on the way.",
     "filterLabel": "Filter projects by platform",
     "filters": {
       "all": "All",
@@ -67,7 +67,7 @@
   "About": {
     "eyebrow": "About me",
     "title": "A bit about me",
-    "bio": "Placeholder — a short biography goes here: who I am, how I got into mobile and frontend development, and what I care about building.",
+    "bio": "Placeholder — a short biography goes here: who I am, how I got into React Native and mobile development, and what I care about building.",
     "educationLabel": "Education",
     "education": "Placeholder — degree, university and years land here soon.",
     "interests": {
@@ -80,7 +80,7 @@
   "Contact": {
     "eyebrow": "Get in touch",
     "title": "Let's build something",
-    "subtitle": "Open to mobile and frontend roles and collaborations.",
+    "subtitle": "Open to React Native and frontend roles and collaborations.",
     "cta": "Contact links land here soon."
   },
   "Common": {

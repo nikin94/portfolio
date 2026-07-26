@@ -3,20 +3,19 @@
  * production domain is wired up.
  */
 export const siteConfig = {
-  name: "Serhiy — Mobile & Frontend Developer",
+  name: "Serhiy — React Native Developer",
   /** Full name shown as the header wordmark. */
   author: "Serhiy Nikiforov",
   description:
-    "Portfolio of a mobile and frontend developer specialising in React Native apps and high-performance web experiences.",
+    "Portfolio of a React Native developer building fast, polished cross-platform mobile apps — with modern web experiences on the side.",
   url: "https://example.com",
   /**
-   * External profile links surfaced on the Home tab. GitHub is live; the CV
-   * file and LinkedIn URL are placeholders — drop a real `cv.pdf` into
-   * `/public` and set the LinkedIn handle when ready.
+   * External profile links surfaced on the Home tab. Served from `/public`
+   * (the CV) or an external profile.
    */
   links: {
-    cv: "/cv.pdf",
-    linkedin: "https://www.linkedin.com/",
+    cv: "/Serhiy-Nikiforov-CV.pdf",
+    linkedin: "https://www.linkedin.com/in/nikin94/",
     github: "https://github.com/nikin94",
   },
 } as const;
