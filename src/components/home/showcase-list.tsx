@@ -248,11 +248,5 @@ const ListSequence = ({
  */
 export const ShowcaseList = ({ active }: { active: boolean }) => {
   const reduced = usePrefersReducedMotion();
-  return (
-    <ListSequence
-      key={active ? "on" : "off"}
-      active={active}
-      reduced={reduced}
-    />
-  );
+  return <ListSequence active={active} reduced={reduced} />;
 };

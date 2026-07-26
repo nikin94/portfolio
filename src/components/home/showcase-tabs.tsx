@@ -1,8 +1,8 @@
 import {
   Box,
+  CreditCard,
   LayoutList,
   LineChart,
-  ScanFace,
   type LucideIcon,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 export const showcaseTabs: { key: string; Icon: LucideIcon }[] = [
   { key: "cube", Icon: Box },
   { key: "chart", Icon: LineChart },
-  { key: "faceid", Icon: ScanFace },
+  { key: "faceid", Icon: CreditCard },
   { key: "list", Icon: LayoutList },
 ];
 

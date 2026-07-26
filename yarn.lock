@@ -661,6 +661,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@number-flow/react@npm:^0.6.2":
+  version: 0.6.2
+  resolution: "@number-flow/react@npm:0.6.2"
+  dependencies:
+    esm-env: "npm:^1.1.4"
+    number-flow: "npm:0.6.2"
+  peerDependencies:
+    react: ^18 || ^19
+    react-dom: ^18 || ^19
+  checksum: 10c0/adef080579505663cfc918edfd443f010f9ee9b645987f15285b82c5fef9039b93ced060bf02dcd3392c86822dddf469d50f169f9e49623f24686e8f8475bc4d
+  languageName: node
+  linkType: hard
+
 "@oxc-project/types@npm:=0.139.0":
   version: 0.139.0
   resolution: "@oxc-project/types@npm:0.139.0"
@@ -2180,6 +2193,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"esm-env@npm:^1.1.4":
+  version: 1.2.2
+  resolution: "esm-env@npm:1.2.2"
+  checksum: 10c0/3d25c973f2fd69c25ffff29c964399cea573fe10795ecc1d26f6f957ce0483d3254e1cceddb34bf3296a0d7b0f1d53a28992f064ba509dfe6366751e752c4166
+  languageName: node
+  linkType: hard
+
 "espree@npm:^10.0.1, espree@npm:^10.4.0":
   version: 10.4.0
   resolution: "espree@npm:10.4.0"
@@ -3479,6 +3499,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"number-flow@npm:0.6.2":
+  version: 0.6.2
+  resolution: "number-flow@npm:0.6.2"
+  dependencies:
+    esm-env: "npm:^1.1.4"
+  checksum: 10c0/5d741e853ddbbc8432e649033adf12d86442ca9a423ced2913fbf58aa33c2ba0d46087369df4c8a14d9d4e251e5615af25e2e90d2ab6820c736f4015e5769f36
+  languageName: node
+  linkType: hard
+
 "nwsapi@npm:^2.2.12":
   version: 2.2.24
   resolution: "nwsapi@npm:2.2.24"
@@ -3616,6 +3645,7 @@ __metadata:
   resolution: "portfolio@workspace:."
   dependencies:
     "@eslint/js": "npm:^10.0.1"
+    "@number-flow/react": "npm:^0.6.2"
     "@react-three/drei": "npm:^10.7.7"
     "@react-three/fiber": "npm:^9.6.1"
     "@tailwindcss/vite": "npm:^4.3.3"
