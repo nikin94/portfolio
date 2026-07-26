@@ -15,16 +15,16 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
  * Kept slightly wiggly so the uptrend reads as real data, not a straight ramp.
  */
 const POINTS: [number, number][] = [
-  [10, 140],
-  [50, 116],
-  [90, 124],
-  [130, 90],
-  [170, 96],
-  [210, 58],
-  [250, 50],
+  [10, 196],
+  [50, 158],
+  [90, 170],
+  [130, 118],
+  [170, 128],
+  [210, 74],
+  [250, 62],
   [290, 16],
 ];
-const BOTTOM = 150;
+const BOTTOM = 210;
 const FIRST_X = POINTS[0][0];
 const LAST_X = POINTS[POINTS.length - 1][0];
 const SPAN = LAST_X - FIRST_X;
@@ -49,7 +49,7 @@ const smoothPath = (pts: [number, number][]) => {
 
 const LINE_D = smoothPath(POINTS);
 const AREA_D = `${LINE_D} L ${LAST_X},${BOTTOM} L ${FIRST_X},${BOTTOM} Z`;
-const GRID_Y = [30, 70, 110, 150];
+const GRID_Y = [30, 75, 120, 165, 210];
 const DRAW_SECONDS = 1.7;
 
 const xNorm = (x: number) => (x - FIRST_X) / SPAN;
@@ -149,7 +149,7 @@ export const ShowcaseChart = ({ active }: { active: boolean }) => {
         </p>
       </div>
 
-      <svg viewBox="0 0 300 160" className="w-full overflow-visible">
+      <svg viewBox="0 0 300 220" className="w-full overflow-visible">
         <defs>
           <linearGradient id="chart-area" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#34d399" stopOpacity={0.4} />
@@ -159,7 +159,7 @@ export const ShowcaseChart = ({ active }: { active: boolean }) => {
             <motion.rect
               x={0}
               y={0}
-              height={160}
+              height={220}
               style={{ width: clipWidth }}
             />
           </clipPath>
@@ -181,6 +181,7 @@ export const ShowcaseChart = ({ active }: { active: boolean }) => {
             x2={300}
             y2={y}
             stroke="rgba(255,255,255,0.06)"
+            vectorEffect="non-scaling-stroke"
             strokeWidth={1}
           />
         ))}
