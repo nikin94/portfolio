@@ -72,7 +72,7 @@
       "metrics": {
         "volume": "Transaction volume processed on the platform",
         "growth": "Volume growth over 10 months",
-        "rebuild": "React Native app rebuilt from scratch"
+        "rebuild": "Production screens shipped, from onboarding and KYC to cards and payments"
       },
       "body": {
         "intro": "Pyra is a Solana-based fintech platform that pairs a traditional banking experience — cards, virtual accounts, payments — with on-chain yield and collateralised credit. Brought on as the team's first outside hire, I took ownership of rebuilding the mobile app from the ground up.",

@@ -112,7 +112,7 @@ export const caseStudies: Record<string, CaseStudy> = {
     metrics: [
       { value: "$4.8M+", labelKey: "Work.pyra.metrics.volume" },
       { value: "96×", labelKey: "Work.pyra.metrics.growth" },
-      { value: "0 → 1", labelKey: "Work.pyra.metrics.rebuild" },
+      { value: "40+", labelKey: "Work.pyra.metrics.rebuild" },
     ],
     stack: [
       {
