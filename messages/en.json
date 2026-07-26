@@ -62,7 +62,7 @@
     "projects": {
       "pyra": "Solana-based fintech app — a full React Native rebuild I owned as the first external engineer, from onboarding and KYC to cards, payments and virtual accounts.",
       "iovaro": "Cross-platform invoicing app — built from the ground up as sole mobile engineer, with Stripe payments, RevenueCat subscriptions, PDF documents and Firebase.",
-      "mobile-3": "Placeholder — a React Native app case study lands here soon.",
+      "pocket-caddie": "AI-powered golf analytics app — I built the mobile experience around swing capture, video uploads, AI analysis and progress tracking.",
       "web-1": "Placeholder — a web project case study lands here soon.",
       "web-2": "Placeholder — a web project case study lands here soon."
     },
@@ -116,6 +116,28 @@
         "documents": "Documents",
         "auth": "Auth & security",
         "ops": "Delivery"
+      }
+    },
+    "pocket-caddie": {
+      "eyebrow": "React Native · AI golf analytics",
+      "summary": "An AI-powered golf analytics app: players record their swings, upload the videos for analysis by backend AI models, and track their progress over time. I built the mobile experience end to end as a contractor at Applica.",
+      "metrics": {
+        "session": "Increase in average session length from analytics & progress features",
+        "ai": "Every uploaded swing analysed by backend AI models",
+        "screens": "Production screens — capture, trim, analysis, drills, coaching and more"
+      },
+      "body": {
+        "intro": "Pocket Caddie is an AI-powered golf analytics app. Players record their golf swings on their phone, upload the clips for analysis by backend AI models, and get performance feedback they can track over time. I built the mobile experience from the ground up as a contractor at Applica.",
+        "built": "I built the full video pipeline around Vision Camera — swing capture, frame-accurate trimming with a custom range slider, thumbnail generation and resumable uploads to Firebase Storage — feeding the clips to Cloud Functions and the AI analysis backend. On top of it I shipped the analytics dashboards, swing comparison, progress tracking and performance visualisation with animated charts and circular score gauges.",
+        "delivery": "Beyond feature work I owned architecture decisions, release management and both the App Store and Play Store submissions, and mentored a junior developer through code reviews and pair programming. The analytics and progress features I built lifted average session length by roughly 40%."
+      },
+      "stack": {
+        "core": "Core",
+        "media": "Video & capture",
+        "ai": "AI & processing",
+        "firebase": "Backend & data",
+        "ux": "Charts & motion",
+        "ops": "Auth & delivery"
       }
     },
     "note": "These are a few recent highlights. There's plenty more behind them — earlier work, and projects I can't show publicly. Happy to walk through the rest on request."
