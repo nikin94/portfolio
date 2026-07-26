@@ -81,9 +81,7 @@ export const PhoneShowcase = () => {
     duration: reduced ? 0 : 26,
   });
   const [selected, setSelected] = useState(0);
-  // Ready immediately under reduced motion (avoids a set-state-in-effect); a
-  // timer arms it otherwise.
-  const [pushReady, setPushReady] = useState(reduced);
+  const [pushReady, setPushReady] = useState(false);
   const [pushDismissed, setPushDismissed] = useState(false);
 
   useEffect(() => {
@@ -96,11 +94,21 @@ export const PhoneShowcase = () => {
     };
   }, [emblaApi]);
 
+  // Arm the push every time the cube slide (index 0) is entered: it drops in
+  // 2s later, and re-arms on every return — not just the first render. Leaving
+  // the slide (cleanup) resets both flags so the next entry replays cleanly.
+  // Under reduced motion there's no timer — `showPush` shows it immediately.
   useEffect(() => {
-    if (reduced) return;
-    const id = window.setTimeout(() => setPushReady(true), PUSH_DELAY_MS);
-    return () => window.clearTimeout(id);
-  }, [reduced]);
+    if (selected !== 0) return;
+    const id = reduced
+      ? undefined
+      : window.setTimeout(() => setPushReady(true), PUSH_DELAY_MS);
+    return () => {
+      if (id) window.clearTimeout(id);
+      setPushReady(false);
+      setPushDismissed(false);
+    };
+  }, [reduced, selected]);
 
   const goTo = useCallback((i: number) => emblaApi?.scrollTo(i), [emblaApi]);
 
@@ -109,8 +117,9 @@ export const PhoneShowcase = () => {
     goTo(1);
   }, [goTo]);
 
-  // The toast lives on the cube slide only, until it's tapped.
-  const showPush = pushReady && !pushDismissed && selected === 0;
+  // The toast lives on the cube slide only, until it's tapped. Under reduced
+  // motion it's shown as soon as the slide is entered (no arming timer).
+  const showPush = selected === 0 && !pushDismissed && (reduced || pushReady);
 
   return (
     <PhoneFrame className="w-56 max-w-full sm:w-64">
