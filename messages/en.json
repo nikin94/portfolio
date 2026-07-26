@@ -88,6 +88,8 @@
         "ops": "Growth & delivery"
       },
       "shots": {
+        "onboarding": "Onboarding — get set up in minutes",
+        "kyc": "KYC — identity verification",
         "home": "Home — net worth at a glance",
         "portfolio": "Portfolio — on-chain yield",
         "credit": "Credit — borrow against assets",

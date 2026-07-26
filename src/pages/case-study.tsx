@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 
-import { DeviceFrame } from "@/components/work/device-frame";
+import { ScreenGallery } from "@/components/work/screen-gallery";
 import { Reveal } from "@/components/ui/reveal";
 import { getCaseStudy } from "@/config/projects";
 import { siteConfig } from "@/config/site";
@@ -80,27 +80,11 @@ const CaseStudy = () => {
         ))}
       </div>
 
-      {/* Screenshot gallery. */}
+      {/* Screenshot gallery — click a screen to open the full-screen viewer. */}
       <h2 className="mt-16 text-lg font-semibold tracking-tight">
         {t("Work.gallery")}
       </h2>
-      <ul className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-4">
-        {study.gallery.map((shot) => (
-          <li key={shot.src} className="flex flex-col items-center gap-3">
-            <DeviceFrame platform="mobile" className="h-72">
-              <img
-                src={shot.src}
-                alt={t(shot.captionKey)}
-                loading="lazy"
-                className="h-full w-full object-contain"
-              />
-            </DeviceFrame>
-            <p className="text-muted text-center text-xs text-pretty">
-              {t(shot.captionKey)}
-            </p>
-          </li>
-        ))}
-      </ul>
+      <ScreenGallery shots={study.gallery} />
 
       {/* Grouped tech stack. */}
       <h2 className="mt-16 text-lg font-semibold tracking-tight">
