@@ -75,7 +75,7 @@
         "rebuild": "React Native app rebuilt from scratch"
       },
       "body": {
-        "intro": "Pyra is a Solana-based fintech platform that pairs a traditional banking experience — cards, virtual accounts, payments — with on-chain yield and collateralised credit. I joined as the first external engineer and took ownership of rebuilding the mobile app from the ground up.",
+        "intro": "Pyra is a Solana-based fintech platform that pairs a traditional banking experience — cards, virtual accounts, payments — with on-chain yield and collateralised credit. Brought on as the team's first outside hire, I took ownership of rebuilding the mobile app from the ground up.",
         "built": "I built and owned the core surfaces end to end: onboarding and KYC, biometric and passkey authentication, card management, virtual accounts, payments, and the portfolio and credit flows — wiring the React Native app to Solana through the Pyra Labs SDK and an embedded Privy wallet.",
         "scale": "Alongside feature work I owned performance optimisation and release management — EAS builds, OTA updates and store submissions. Over ten months the platform scaled from roughly $50K to more than $4.8M in volume."
       },
