@@ -50,17 +50,49 @@
     "title": "React Native apps & web projects",
     "subtitle": "React Native apps front and centre, with a few web builds alongside. Full case studies with screenshots are on the way.",
     "filterLabel": "Filter projects by platform",
+    "back": "Back to work",
+    "viewCaseStudy": "View case study",
+    "gallery": "Screens",
+    "stack": "Tech stack",
     "filters": {
       "all": "All",
       "mobile": "Mobile",
       "web": "Web"
     },
     "projects": {
-      "mobile-1": "Placeholder — a React Native app case study lands here soon.",
+      "pyra": "Solana-based fintech app — a full React Native rebuild I owned as the first external engineer, from onboarding and KYC to cards, payments and virtual accounts.",
       "mobile-2": "Placeholder — a React Native app case study lands here soon.",
       "mobile-3": "Placeholder — a React Native app case study lands here soon.",
       "web-1": "Placeholder — a web project case study lands here soon.",
       "web-2": "Placeholder — a web project case study lands here soon."
+    },
+    "pyra": {
+      "eyebrow": "React Native · Solana fintech",
+      "summary": "A Solana-based fintech app blending traditional financial services with digital assets. I joined as the first external engineer and rebuilt the React Native app from the ground up.",
+      "metrics": {
+        "volume": "Transaction volume processed on the platform",
+        "growth": "Volume growth over 10 months",
+        "rebuild": "React Native app rebuilt from scratch"
+      },
+      "body": {
+        "intro": "Pyra is a Solana-based fintech platform that pairs a traditional banking experience — cards, virtual accounts, payments — with on-chain yield and collateralised credit. I joined as the first external engineer and took ownership of rebuilding the mobile app from the ground up.",
+        "built": "I built and owned the core surfaces end to end: onboarding and KYC, biometric and passkey authentication, card management, virtual accounts, payments, and the portfolio and credit flows — wiring the React Native app to Solana through the Pyra Labs SDK and an embedded Privy wallet.",
+        "scale": "Alongside feature work I owned performance optimisation and release management — EAS builds, OTA updates and store submissions. Over ten months the platform scaled from roughly $50K to more than $4.8M in volume."
+      },
+      "stack": {
+        "core": "Core",
+        "solana": "Solana & DeFi",
+        "auth": "Auth & security",
+        "data": "Data & state",
+        "ux": "Motion & UX",
+        "ops": "Growth & delivery"
+      },
+      "shots": {
+        "home": "Home — net worth at a glance",
+        "portfolio": "Portfolio — on-chain yield",
+        "credit": "Credit — borrow against assets",
+        "card": "Card — virtual payment card"
+      }
     },
     "note": "These are a few recent highlights. There's plenty more behind them — earlier work, and projects I can't show publicly. Happy to walk through the rest on request."
   },

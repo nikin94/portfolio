@@ -1,4 +1,5 @@
-import { Globe, Smartphone } from "lucide-react";
+import { ArrowUpRight, Globe, Smartphone } from "lucide-react";
+import { Link } from "react-router-dom";
 import { t } from "@/i18n/strings";
 
 import type { Project } from "@/config/projects";
@@ -7,11 +8,13 @@ import { DeviceFrame } from "./device-frame";
 
 /**
  * A single project tile: a framed screenshot (or a placeholder until one
- * lands), the name, a platform badge, the translated summary and tech chips.
- * Renders as a link when the project has an `href`, otherwise a plain article.
+ * lands), the name, a platform badge, the summary and tech chips.
+ *
+ * A project with a `slug` links to its in-site case study (`/work/<slug>`); one
+ * with only an `href` links out; otherwise it's a plain, non-interactive card.
  */
 export const ProjectCard = ({ project }: { project: Project }) => {
-  const { name, platform, tech, href, image, id } = project;
+  const { name, platform, tech, href, slug, image, id } = project;
   const PlatformIcon = platform === "mobile" ? Smartphone : Globe;
 
   const media = (
@@ -55,11 +58,26 @@ export const ProjectCard = ({ project }: { project: Project }) => {
           </li>
         ))}
       </ul>
+      {slug && (
+        <span className="text-accent mt-4 inline-flex items-center gap-1 text-sm font-medium">
+          {t("Work.viewCaseStudy")}
+          <ArrowUpRight className="size-4" aria-hidden />
+        </span>
+      )}
     </div>
   );
 
   const className =
     "border-border bg-background/40 hover:border-foreground/20 flex h-full flex-col overflow-hidden rounded-2xl border transition-colors";
+
+  if (slug) {
+    return (
+      <Link to={`/work/${slug}`} className={className} aria-label={name}>
+        {media}
+        {body}
+      </Link>
+    );
+  }
 
   return href ? (
     <a
