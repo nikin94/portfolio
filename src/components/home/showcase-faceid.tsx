@@ -155,7 +155,7 @@ const PaymentCard = ({
             •••• 4242
           </p>
           <p className="text-[9px] tracking-wide text-white/60 uppercase">
-            S. Nikin
+            S. Nikiforov
           </p>
         </div>
       </div>
@@ -163,7 +163,7 @@ const PaymentCard = ({
       {/* Confirmation row. */}
       <div className="rounded-xl bg-white/5 p-2.5">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-white/60">Coffee · YourApp</span>
+          <span className="text-xs text-white/60">Coffee · DemoApp</span>
           <span className="text-sm font-semibold text-white tabular-nums">
             $4.20
           </span>
