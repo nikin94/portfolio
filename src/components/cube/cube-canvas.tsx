@@ -1,25 +1,8 @@
 import { PerformanceMonitor, TrackballControls } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useRef, useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { useState } from "react";
 
 import { CubeModel } from "./cube-scene";
-
-/**
- * Fires `onFirstFrame` exactly once, on the first *rendered* frame. This is the
- * only reliable "the cube is actually on screen now" signal: `onCreated` fires
- * when the renderer exists but before anything is drawn, so revealing the
- * canvas on it exposes a blank, still-clearing buffer (the white flash) a beat
- * before the cube paints.
- */
-const FirstFrameSignal = ({ onFirstFrame }: { onFirstFrame: () => void }) => {
-  const fired = useRef(false);
-  useFrame(() => {
-    if (fired.current) return;
-    fired.current = true;
-    onFirstFrame();
-  });
-  return null;
-};
 
 /**
  * WebGL layer for the Rubik's cube. Lazy-loaded (this is where three.js lands
@@ -32,18 +15,10 @@ const FirstFrameSignal = ({ onFirstFrame }: { onFirstFrame: () => void }) => {
  * - `TrackballControls` (not `OrbitControls`) so the cube rotates freely in
  *   every axis. OrbitControls clamps the vertical/polar angle to 180° and pins
  *   the world "up"; trackball has no such limit. The auto-spin is on the model.
- * - `onFirstFrame` reports the first *painted* frame so the host cross-fades the
- *   fallback out only once the cube is truly visible.
  * - The clear colour is forced fully transparent so the canvas can never flash
- *   white/black behind the (alpha) scene.
+ *   white/black behind the (alpha) scene while the cube fades/scales in.
  */
-const CubeCanvas = ({
-  active,
-  onFirstFrame,
-}: {
-  active: boolean;
-  onFirstFrame?: () => void;
-}) => {
+const CubeCanvas = ({ active }: { active: boolean }) => {
   const [dpr, setDpr] = useState(1.5);
 
   return (
@@ -55,7 +30,6 @@ const CubeCanvas = ({
       style={{ background: "transparent" }}
       onCreated={({ gl }) => gl.setClearColor(0x000000, 0)}
     >
-      {onFirstFrame && <FirstFrameSignal onFirstFrame={onFirstFrame} />}
       <PerformanceMonitor
         onDecline={() => setDpr(1)}
         onIncline={() => setDpr(2)}
