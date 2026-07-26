@@ -140,17 +140,6 @@ const ProductCard = ({
       <p className="truncate text-xs font-medium text-white">{product.name}</p>
       <p className="truncate text-[10px] text-white/45">{product.meta}</p>
     </div>
-    {selected && <Check className="size-4 shrink-0 text-emerald-400" />}
-
-    {/* Scripted tap ripple over the thumbnail. */}
-    {selected && (
-      <motion.span
-        className="pointer-events-none absolute top-1/2 left-4 size-9 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/40"
-        initial={{ scale: 0, opacity: 0.55 }}
-        animate={{ scale: 2.6, opacity: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      />
-    )}
   </motion.div>
 );
 
@@ -215,26 +204,33 @@ const ProductSheet = ({
         <div className="flex items-center gap-3">
           <span
             className={cn(
-              "flex size-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br text-2xl",
+              "flex size-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br text-xl",
               product.color,
             )}
           >
             {product.glyph}
           </span>
           <div className="min-w-0 flex-1">
+            {/* Name alone on its row. */}
             <p className="truncate text-sm font-semibold text-white">
               {product.name}
             </p>
-            <p className="mt-0.5 flex items-center gap-1 text-[10px] text-white/50">
-              <Star className="size-3 fill-amber-400 text-amber-400" />
-              <span className="tabular-nums">{product.rating}</span>
-              <span className="text-white/30">·</span>
-              {t("Home.showcase.list.tagline")}
-            </p>
+            {/* In-stock over rating, in a column; price shares the row, right. */}
+            <div className="mt-1.5 flex items-end justify-between gap-2">
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[10px] font-medium text-emerald-400">
+                  {t("Home.showcase.list.tagline")}
+                </span>
+                <span className="flex items-center gap-1 text-[10px] text-white/50">
+                  <Star className="size-3 fill-amber-400 text-amber-400" />
+                  <span className="tabular-nums">{product.rating}</span>
+                </span>
+              </div>
+              <span className="shrink-0 text-base font-semibold text-white tabular-nums">
+                {product.price}
+              </span>
+            </div>
           </div>
-          <span className="shrink-0 text-base font-semibold text-white tabular-nums">
-            {product.price}
-          </span>
         </div>
 
         {/* Add-to-cart button — tapped by the script, flips to "Added". */}
@@ -273,8 +269,7 @@ const ProductSheet = ({
   );
 };
 
-type Phase =
-  "loading" | "loaded" | "scrolling" | "selected" | "sheet" | "added";
+type Phase = "loading" | "loaded" | "scrolling" | "sheet" | "added";
 
 /**
  * The scripted product-list demo. Kept as an inner component so the parent can
@@ -309,15 +304,14 @@ const ListSequence = ({
           duration: 1.4,
           ease: [0.16, 1, 0.3, 1],
           onComplete: () => {
-            // Tap the card → open the sheet → tap add-to-cart, each beat spaced
-            // so the flow reads. Chained here so they follow the actual settle.
-            setPhase("selected");
-            timers.push(window.setTimeout(() => setPhase("sheet"), 650));
+            // Tap the card → the sheet slides up immediately (same beat) → after
+            // a pause, add-to-cart is tapped. Chained off the actual settle.
+            setPhase("sheet");
             timers.push(
               window.setTimeout(() => {
                 setPhase("added");
                 setCart(1);
-              }, 1800),
+              }, 2400),
             );
           },
         });
