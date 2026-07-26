@@ -7,6 +7,9 @@ import { launchShuttleRally, onShuttleRally } from "@/lib/easter-egg-events";
 import { Shuttle } from "./shuttle";
 import { printConsoleSignature } from "./console-signature";
 
+/** Seconds for one shuttle flight across the screen — slow, arcing lob. */
+const FLIGHT_SECONDS = 3;
+
 /**
  * Site-wide easter eggs, mounted once in the root layout:
  * - a styled console greeting for curious devs (fires once),
@@ -59,11 +62,22 @@ export const EasterEggs = () => {
             }}
             exit={{ opacity: 0 }}
             transition={{
-              duration: 2.8,
-              x: { ease: "linear" },
-              y: { ease: ["easeOut", "easeIn"], times: [0, 0.5, 1] },
-              rotate: { ease: "linear", times: [0, 0.5, 1] },
-              opacity: { times: [0, 0.12, 1] },
+              // Each value carries its OWN duration: a top-level `duration`
+              // does not propagate into per-value transition overrides, so
+              // without this the values fell back to Motion's ~0.3s default
+              // (which is why the flight never actually slowed down).
+              x: { duration: FLIGHT_SECONDS, ease: "linear" },
+              y: {
+                duration: FLIGHT_SECONDS,
+                ease: ["easeOut", "easeIn"],
+                times: [0, 0.5, 1],
+              },
+              rotate: {
+                duration: FLIGHT_SECONDS,
+                ease: "linear",
+                times: [0, 0.5, 1],
+              },
+              opacity: { duration: FLIGHT_SECONDS, times: [0, 0.12, 1] },
             }}
             onAnimationComplete={() => setFlights(0)}
           >

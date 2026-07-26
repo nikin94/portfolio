@@ -1,5 +1,4 @@
-import { motion } from "motion/react";
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useInViewport } from "@/hooks/use-in-viewport";
@@ -22,64 +21,38 @@ const deviceHints = () => {
 };
 
 /**
- * The Rubik's cube hero. Signature interactive visual for the About tab.
+ * The Rubik's cube hero — the signature visual on the Home tab.
  *
- * Renders the static fallback on the server and first client paint (no layout
- * shift, no WebGL server-side), and permanently for reduced-motion / low-power
- * devices — which therefore never download three.js. Capable clients lazy-load
- * the interactive cube; it pauses when scrolled out of view. Lives on the Home
- * tab as the signature visual.
+ * The wrapper has a *definite* size (`w-72 … sm:w-96` + `aspect-square`) so it
+ * never collapses when its only child is an absolutely-filled canvas.
+ *
+ * On the server and the very first client paint we render the static fallback
+ * (no WebGL server-side, and it's the no-JS view). Once mounted, capable
+ * devices swap straight to the interactive cube — no fallback overlay, no
+ * cross-fade. Reduced-motion / low-power devices keep the static cube and never
+ * download three.js.
  */
 export const CubeHero = () => {
   const { t } = useTranslation();
   const mounted = useMounted();
   const reducedMotion = usePrefersReducedMotion();
   const [ref, inView] = useInViewport<HTMLDivElement>("200px");
-  const [painted, setPainted] = useState(false);
 
   const staticOnly =
     !mounted || prefersStaticCube({ reducedMotion, ...deviceHints() });
-
-  // Safety net: retire the fallback shortly after the cube mounts even if the
-  // WebGL `onReady` callback is missed — so we can never get stuck showing the
-  // static placeholder while the interactive cube is actually live underneath.
-  useEffect(() => {
-    if (staticOnly) return;
-    const id = setTimeout(() => setPainted(true), 1200);
-    return () => clearTimeout(id);
-  }, [staticOnly]);
 
   return (
     <div
       ref={ref}
       role="img"
       aria-label={t("Home.cubeLabel")}
-      className="relative aspect-square w-full max-w-[18rem] sm:max-w-sm"
+      className="relative aspect-square w-72 max-w-full sm:w-96"
     >
-      {/* Base layer: static fallback, faded out once the cube has painted so
-          there's no abrupt swap. Stays put permanently for static-only devices
-          (the canvas never mounts, `painted` stays false). */}
-      <motion.div
-        className="absolute inset-0"
-        animate={{ opacity: painted ? 0 : 1 }}
-        transition={{ duration: 0.5 }}
-      >
+      {staticOnly ? (
         <CubeFallback />
-      </motion.div>
-
-      {!staticOnly && (
+      ) : (
         <Suspense fallback={null}>
-          {/* The canvas always fades in on mount and paints over the fallback.
-              Its visibility is NOT gated on `onReady`, so the interactive cube
-              always appears; `onReady` only smooths the fallback fade-out. */}
-          <motion.div
-            className="absolute inset-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <CubeCanvas active={inView} onReady={() => setPainted(true)} />
-          </motion.div>
+          <CubeCanvas active={inView} />
         </Suspense>
       )}
     </div>

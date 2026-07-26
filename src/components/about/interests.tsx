@@ -53,7 +53,7 @@ const InterestChip = ({ Icon, labelKey, effect }: Interest) => {
     <button
       type="button"
       onClick={play}
-      className="border-border hover:bg-foreground/5 flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors"
+      className="border-border hover:bg-foreground/5 flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors"
     >
       <span ref={scope} aria-hidden className="text-foreground inline-flex">
         <Icon className="size-5" />

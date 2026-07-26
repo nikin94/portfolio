@@ -12,16 +12,8 @@ import { CubeModel } from "./cube-scene";
  *   stops spending GPU/battery when scrolled away.
  * - `PerformanceMonitor` lowers the pixel ratio if the framerate dips, keeping
  *   it smooth on weaker GPUs and high-DPR screens.
- * - `onReady` fires once the renderer exists (first frame is imminent) so the
- *   host can cross-fade the static fallback out — no abrupt placeholder→cube pop.
  */
-const CubeCanvas = ({
-  active,
-  onReady,
-}: {
-  active: boolean;
-  onReady?: () => void;
-}) => {
+const CubeCanvas = ({ active }: { active: boolean }) => {
   const [dpr, setDpr] = useState(1.5);
 
   return (
@@ -31,7 +23,6 @@ const CubeCanvas = ({
       camera={{ position: [4, 4, 5.5], fov: 40 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ background: "transparent" }}
-      onCreated={() => onReady?.()}
     >
       <PerformanceMonitor
         onDecline={() => setDpr(1)}
