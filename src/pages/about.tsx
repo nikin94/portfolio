@@ -1,36 +1,33 @@
 import { useTranslation } from "react-i18next";
 
 import { Interests } from "@/components/about/interests";
-import { CubeHero } from "@/components/cube/cube-hero";
 import { Reveal } from "@/components/ui/reveal";
 
 /**
- * About — the locale index / landing tab. Intro and background copy replace
- * this placeholder once the real content is written.
+ * About — the personal tab: biography, education and hobbies. Copy is
+ * placeholder for now; the interests row carries the playful hobby animations.
  */
 const About = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="flex flex-1 flex-col justify-center gap-12 py-20 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
-      <Reveal className="lg:max-w-xl">
+    <section className="flex flex-1 flex-col py-20">
+      <Reveal className="max-w-2xl">
         <p className="text-accent text-sm font-medium tracking-widest uppercase">
           {t("About.eyebrow")}
         </p>
-        <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+        <h1 className="mt-4 text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
           {t("About.title")}
         </h1>
-        <p className="text-muted mt-6 max-w-xl text-lg text-pretty">
-          {t("About.subtitle")}
-        </p>
-        <p className="text-muted mt-10 max-w-xl text-sm text-pretty">
-          {t("About.body")}
-        </p>
+        <p className="text-muted mt-6 text-lg text-pretty">{t("About.bio")}</p>
+
+        <h2 className="text-muted mt-12 text-xs font-medium tracking-widest uppercase">
+          {t("About.educationLabel")}
+        </h2>
+        <p className="mt-3 text-pretty">{t("About.education")}</p>
+
         <Interests />
       </Reveal>
-      <div className="flex shrink-0 justify-center lg:justify-end">
-        <CubeHero />
-      </div>
     </section>
   );
 };

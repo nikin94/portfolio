@@ -1,29 +1,32 @@
 import { useAnimate } from "motion/react";
+import type { ComponentType } from "react";
 import { useTranslation } from "react-i18next";
 
+import { Shuttle } from "@/components/easter-eggs/shuttle";
 import { launchShuttleRally } from "@/lib/easter-egg-events";
+
+import { CubeIcon, KnightIcon } from "./interest-icons";
 
 type Effect = "hop" | "spin" | "rally";
 
 interface Interest {
-  emoji: string;
+  Icon: ComponentType<{ className?: string }>;
   labelKey: string;
   effect: Effect;
 }
 
 /**
- * The owner's hobbies, surfaced on every visit to the landing tab — the
- * "frequent" easter-egg layer rather than a rare 404. Each chip plays a themed
- * one-shot animation on tap: the knight hops an L, the cube spins, and the
- * shuttle launches a rally across the whole page.
+ * The owner's hobbies, shown on the About tab alongside bio and education. Each
+ * chip plays a themed one-shot animation on tap: the knight hops an L, the cube
+ * spins, and the shuttle launches a rally across the whole page.
  */
 const INTERESTS: Interest[] = [
-  { emoji: "♞", labelKey: "About.interests.chess", effect: "hop" },
-  { emoji: "🧩", labelKey: "About.interests.cube", effect: "spin" },
-  { emoji: "🏸", labelKey: "About.interests.badminton", effect: "rally" },
+  { Icon: KnightIcon, labelKey: "About.interests.chess", effect: "hop" },
+  { Icon: CubeIcon, labelKey: "About.interests.cube", effect: "spin" },
+  { Icon: Shuttle, labelKey: "About.interests.badminton", effect: "rally" },
 ];
 
-const InterestChip = ({ emoji, labelKey, effect }: Interest) => {
+const InterestChip = ({ Icon, labelKey, effect }: Interest) => {
   const { t } = useTranslation();
   const [scope, animate] = useAnimate();
 
@@ -52,8 +55,8 @@ const InterestChip = ({ emoji, labelKey, effect }: Interest) => {
       onClick={play}
       className="border-border hover:bg-foreground/5 flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors"
     >
-      <span ref={scope} aria-hidden className="inline-block text-base">
-        {emoji}
+      <span ref={scope} aria-hidden className="text-foreground inline-flex">
+        <Icon className="size-5" />
       </span>
       <span className="text-muted">{t(labelKey)}</span>
     </button>

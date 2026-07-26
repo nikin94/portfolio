@@ -23,8 +23,9 @@ const renderAt = (path: string) =>
 describe("TabBar", () => {
   it("renders a link per tab with localized labels", () => {
     renderAt("/en");
-    expect(screen.getByRole("link", { name: "About" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Work" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "About" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Contact" })).toBeInTheDocument();
   });
 
@@ -34,20 +35,24 @@ describe("TabBar", () => {
       "aria-current",
       "page",
     );
-    expect(screen.getByRole("link", { name: "About" })).not.toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Home" })).not.toHaveAttribute(
       "aria-current",
     );
   });
 
   it("keeps the active locale in every tab href", () => {
     renderAt("/ru");
-    expect(screen.getByRole("link", { name: "About" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute(
       "href",
       "/ru",
     );
     expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute(
       "href",
       "/ru/work",
+    );
+    expect(screen.getByRole("link", { name: "About" })).toHaveAttribute(
+      "href",
+      "/ru/about",
     );
     expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute(
       "href",

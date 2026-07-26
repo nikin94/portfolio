@@ -11,6 +11,16 @@ export const siteConfig = {
   url: "https://example.com",
   locales,
   defaultLocale,
+  /**
+   * External profile links surfaced on the Home tab. GitHub is live; the CV
+   * file and LinkedIn URL are placeholders — drop a real `cv.pdf` into
+   * `/public` and set the LinkedIn handle when ready.
+   */
+  links: {
+    cv: "/cv.pdf",
+    linkedin: "https://www.linkedin.com/",
+    github: "https://github.com/nikin94",
+  },
 } as const;
 
 export type SiteConfig = typeof siteConfig;

@@ -60,18 +60,23 @@ src/
 │   ├── root-layout.tsx     # App-wide providers (persist across navigations)
 │   ├── locale-layout.tsx   # Pins i18n locale + metadata (Head) + tab bar
 │   ├── root-redirect.tsx   # `/` → default locale
-│   ├── about.tsx           # Locale index / landing tab
+│   ├── home.tsx            # Locale index: pitch + CV/LinkedIn/GitHub + cube
 │   ├── work.tsx            # Mobile + web projects tab
+│   ├── about.tsx           # Bio, education and hobbies
 │   └── contact.tsx         # Contact tab
 ├── components/
 │   ├── tab-bar.tsx         # Liquid-glass bottom tab bar (primary nav)
 │   ├── animated-outlet.tsx # App-like per-tab enter transition
 │   ├── language-switcher.tsx
+│   ├── home/               # Social links (CV, LinkedIn, GitHub)
+│   ├── about/              # Interests row + hobby glyphs (knight, cube)
 │   ├── cube/               # Rubik's cube hero (lazy WebGL + static fallback)
+│   ├── easter-eggs/        # Konami rally, shuttle, console signature
 │   └── ui/                 # Reusable primitives (Reveal, ThemeToggle, …)
 ├── config/
 │   ├── nav.ts              # Tab definitions (single source of truth)
-│   └── site.ts             # Site-wide metadata (name, url, locales)
+│   ├── projects.ts         # Work-tab project data + filters
+│   └── site.ts             # Site-wide metadata (name, url, links, locales)
 ├── hooks/                  # Reusable hooks (useMounted, usePrefersReducedMotion, …)
 ├── i18n/
 │   ├── locales.ts          # Locales + default (single source of truth)

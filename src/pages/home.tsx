@@ -1,0 +1,36 @@
+import { useTranslation } from "react-i18next";
+
+import { CubeHero } from "@/components/cube/cube-hero";
+import { SocialLinks } from "@/components/home/social-links";
+import { Reveal } from "@/components/ui/reveal";
+
+/**
+ * Home — the locale index / landing tab. Leads with the professional pitch
+ * (who I am, what I build) and the primary links a recruiter reaches for
+ * (CV, LinkedIn, GitHub). The Rubik's cube stays here as the signature visual.
+ */
+const Home = () => {
+  const { t } = useTranslation();
+
+  return (
+    <section className="flex flex-1 flex-col justify-center gap-12 py-20 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
+      <Reveal className="lg:max-w-xl">
+        <p className="text-accent text-sm font-medium tracking-widest uppercase">
+          {t("Home.eyebrow")}
+        </p>
+        <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+          {t("Home.title")}
+        </h1>
+        <p className="text-muted mt-6 max-w-xl text-lg text-pretty">
+          {t("Home.subtitle")}
+        </p>
+        <SocialLinks />
+      </Reveal>
+      <div className="flex shrink-0 justify-center lg:justify-end">
+        <CubeHero />
+      </div>
+    </section>
+  );
+};
+
+export default Home;
