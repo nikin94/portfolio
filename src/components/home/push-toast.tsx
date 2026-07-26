@@ -1,6 +1,6 @@
 import { Bell } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { cn } from "@/lib/utils";
 
@@ -22,8 +22,6 @@ export const PushToast = ({
   onClick?: () => void;
   className?: string;
 }) => {
-  const { t } = useTranslation();
-
   return (
     <AnimatePresence>
       {show && (

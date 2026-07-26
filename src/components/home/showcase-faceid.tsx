@@ -2,7 +2,7 @@ import NumberFlow from "@number-flow/react";
 import { Check, Wifi } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
@@ -197,7 +197,6 @@ const PaymentSequence = ({
   active: boolean;
   reduced: boolean;
 }) => {
-  const { t } = useTranslation();
   const [phase, setPhase] = useState<Phase>(reduced ? "paid" : "scan");
 
   useEffect(() => {

@@ -1,28 +1,21 @@
 import { render, screen } from "@testing-library/react";
-import { I18nextProvider } from "react-i18next";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
-import { getLocaleI18n } from "@/i18n/config";
-
 import { TabBar } from "./tab-bar";
 
-// English i18n regardless of URL locale, so labels are stable while we assert
-// locale-dependent hrefs separately.
 const renderAt = (path: string) =>
   render(
-    <I18nextProvider i18n={getLocaleI18n("en")}>
-      <MemoryRouter initialEntries={[path]}>
-        <Routes>
-          <Route path="/:locale/*" element={<TabBar />} />
-        </Routes>
-      </MemoryRouter>
-    </I18nextProvider>,
+    <MemoryRouter initialEntries={[path]}>
+      <Routes>
+        <Route path="/*" element={<TabBar />} />
+      </Routes>
+    </MemoryRouter>,
   );
 
 describe("TabBar", () => {
-  it("renders a link per tab with localized labels", () => {
-    renderAt("/en");
+  it("renders a link per tab with its label", () => {
+    renderAt("/");
     expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Work" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "About" })).toBeInTheDocument();
@@ -30,7 +23,7 @@ describe("TabBar", () => {
   });
 
   it("marks the current tab active via aria-current", () => {
-    renderAt("/en/work");
+    renderAt("/work");
     expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute(
       "aria-current",
       "page",
@@ -40,23 +33,23 @@ describe("TabBar", () => {
     );
   });
 
-  it("keeps the active locale in every tab href", () => {
-    renderAt("/ru");
+  it("points each tab at its root-relative path", () => {
+    renderAt("/");
     expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute(
       "href",
-      "/ru",
+      "/",
     );
     expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute(
       "href",
-      "/ru/work",
+      "/work",
     );
     expect(screen.getByRole("link", { name: "About" })).toHaveAttribute(
       "href",
-      "/ru/about",
+      "/about",
     );
     expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute(
       "href",
-      "/ru/contact",
+      "/contact",
     );
   });
 });

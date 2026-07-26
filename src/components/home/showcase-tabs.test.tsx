@@ -1,17 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { I18nextProvider } from "react-i18next";
 import { describe, expect, it, vi } from "vitest";
-
-import { getLocaleI18n } from "@/i18n/config";
 
 import { ShowcaseTabs, showcaseTabs } from "./showcase-tabs";
 
 const renderTabs = (props: Partial<Parameters<typeof ShowcaseTabs>[0]> = {}) =>
-  render(
-    <I18nextProvider i18n={getLocaleI18n("en")}>
-      <ShowcaseTabs index={0} liveCount={2} {...props} />
-    </I18nextProvider>,
-  );
+  render(<ShowcaseTabs index={0} liveCount={2} {...props} />);
 
 describe("ShowcaseTabs", () => {
   it("renders live tabs as buttons and previews the rest", () => {

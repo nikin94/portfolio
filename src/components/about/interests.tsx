@@ -1,6 +1,6 @@
 import { useAnimate } from "motion/react";
 import type { ComponentType } from "react";
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { launchShuttleRally } from "@/lib/easter-egg-events";
 
@@ -26,7 +26,6 @@ const INTERESTS: Interest[] = [
 ];
 
 const InterestChip = ({ Icon, labelKey, effect }: Interest) => {
-  const { t } = useTranslation();
   const [scope, animate] = useAnimate();
 
   const play = () => {
@@ -63,8 +62,6 @@ const InterestChip = ({ Icon, labelKey, effect }: Interest) => {
 };
 
 export const Interests = () => {
-  const { t } = useTranslation();
-
   return (
     <div className="mt-10">
       <p className="text-muted mb-3 text-xs tracking-widest uppercase">

@@ -5,7 +5,7 @@ import {
   LineChart,
   type LucideIcon,
 } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { cn } from "@/lib/utils";
 
@@ -40,7 +40,6 @@ export const ShowcaseTabs = ({
   onSelect?: (i: number) => void;
   className?: string;
 }) => {
-  const { t } = useTranslation();
   const base =
     "flex size-7 items-center justify-center rounded-full transition-colors";
 

@@ -1,8 +1,8 @@
 import { motion } from "motion/react";
-import { useTranslation } from "react-i18next";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import { navItems } from "@/config/nav";
+import { t } from "@/i18n/strings";
 import { cn } from "@/lib/utils";
 
 /**
@@ -45,15 +45,12 @@ const GlassFilterDefs = () => (
 );
 
 /**
- * Native-app-style bottom tab bar. Floats as a liquid-glass pill, slides a
- * shared active indicator between tabs (Motion `layoutId`), and preserves the
- * active locale in every link. The indicator's resting position is derived
- * from the URL, so the server render and client hydration agree.
+ * Native-app-style bottom tab bar. Floats as a liquid-glass pill and slides a
+ * shared active indicator between tabs (Motion `layoutId`). The indicator's
+ * resting position is derived from the URL, so the server render and client
+ * hydration agree.
  */
 export const TabBar = () => {
-  const { t } = useTranslation();
-  const { locale } = useParams();
-
   return (
     <>
       <GlassFilterDefs />
@@ -65,7 +62,7 @@ export const TabBar = () => {
         {navItems.map(({ path, labelKey, Icon }) => (
           <NavLink
             key={labelKey}
-            to={`/${locale}${path ? `/${path}` : ""}`}
+            to={`/${path}`}
             end={path === ""}
             className={({ isActive }) =>
               cn(

@@ -1,18 +1,11 @@
 import { render, screen } from "@testing-library/react";
-import { I18nextProvider } from "react-i18next";
 import { describe, expect, it } from "vitest";
 
 import { siteConfig } from "@/config/site";
-import { getLocaleI18n } from "@/i18n/config";
 
 import { SocialLinks } from "./social-links";
 
-const renderLinks = () =>
-  render(
-    <I18nextProvider i18n={getLocaleI18n("en")}>
-      <SocialLinks />
-    </I18nextProvider>,
-  );
+const renderLinks = () => render(<SocialLinks />);
 
 describe("SocialLinks", () => {
   it("links to the CV, LinkedIn and GitHub from config", () => {

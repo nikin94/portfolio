@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { ProjectGrid } from "@/components/work/project-grid";
 import { Reveal } from "@/components/ui/reveal";
@@ -9,8 +9,6 @@ import { Reveal } from "@/components/ui/reveal";
  * screenshot) is written up.
  */
 const Work = () => {
-  const { t } = useTranslation();
-
   return (
     <section className="flex flex-1 flex-col py-16">
       <Reveal>

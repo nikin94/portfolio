@@ -1,40 +1,27 @@
 import type { RouteRecord } from "vite-react-ssg";
 
-import { locales } from "./i18n/locales";
 import About from "./pages/about";
 import Contact from "./pages/contact";
 import Home from "./pages/home";
-import LocaleLayout from "./pages/locale-layout";
 import RootLayout from "./pages/root-layout";
-import RootRedirect from "./pages/root-redirect";
 import Work from "./pages/work";
 
 /**
  * Route tree consumed by `vite-react-ssg`.
  *
- * - Pathless `RootLayout` holds app-wide providers so they survive navigations.
- * - `/` redirects to the default locale.
- * - `/:locale` is prerendered once per locale via `getStaticPaths`, producing
- *   static `/en/` and `/ru/` HTML, and hosts the tab-based sections.
- *
- * Tabs live as children of `LocaleLayout`; `Home` is the locale index.
+ * `RootLayout` holds the app-wide providers and shared chrome (document
+ * metadata, header, tab bar). Its children are the tab sections, prerendered to
+ * static `/`, `/work`, `/about` and `/contact` HTML. English is the only locale,
+ * so there's no locale segment or redirect.
  */
 export const routes: RouteRecord[] = [
   {
     element: <RootLayout />,
     children: [
-      { index: true, element: <RootRedirect /> },
-      {
-        path: ":locale",
-        element: <LocaleLayout />,
-        getStaticPaths: () => [...locales],
-        children: [
-          { index: true, element: <Home /> },
-          { path: "work", element: <Work /> },
-          { path: "about", element: <About /> },
-          { path: "contact", element: <Contact /> },
-        ],
-      },
+      { index: true, element: <Home /> },
+      { path: "work", element: <Work /> },
+      { path: "about", element: <About /> },
+      { path: "contact", element: <Contact /> },
     ],
   },
 ];

@@ -1,5 +1,5 @@
 import { Globe, Smartphone } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import type { Project } from "@/config/projects";
 
@@ -11,7 +11,6 @@ import { DeviceFrame } from "./device-frame";
  * Renders as a link when the project has an `href`, otherwise a plain article.
  */
 export const ProjectCard = ({ project }: { project: Project }) => {
-  const { t } = useTranslation();
   const { name, platform, tech, href, image, id } = project;
   const PlatformIcon = platform === "mobile" ? Smartphone : Globe;
 

@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { t } from "@/i18n/strings";
 
 import { Reveal } from "@/components/ui/reveal";
 
@@ -7,8 +7,6 @@ import { Reveal } from "@/components/ui/reveal";
  * a follow-up.
  */
 const Contact = () => {
-  const { t } = useTranslation();
-
   return (
     <section className="flex flex-1 flex-col justify-center py-20">
       <Reveal>
