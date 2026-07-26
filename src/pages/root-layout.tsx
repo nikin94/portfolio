@@ -2,6 +2,7 @@ import { Head } from "vite-react-ssg";
 
 import { AnimatedOutlet } from "@/components/animated-outlet";
 import { EasterEggs } from "@/components/easter-eggs/easter-eggs";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { TabBar } from "@/components/tab-bar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { siteConfig } from "@/config/site";
@@ -16,6 +17,7 @@ import { AppProviders } from "@/providers";
  */
 const RootLayout = () => (
   <AppProviders>
+    <ScrollToTop />
     <Head>
       <html lang="en" />
       <title>{siteConfig.name}</title>
