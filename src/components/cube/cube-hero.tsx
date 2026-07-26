@@ -66,7 +66,14 @@ const deviceHints = () => {
  * render / no-JS view, and reduced-motion / low-power devices (which therefore
  * never download three.js).
  */
-export const CubeHero = ({ className }: { className?: string }) => {
+export const CubeHero = ({
+  className,
+  active = true,
+}: {
+  className?: string;
+  /** When false (e.g. an off-screen carousel slide), the render loop pauses. */
+  active?: boolean;
+}) => {
   const { t } = useTranslation();
   const mounted = useMounted();
   const reducedMotion = usePrefersReducedMotion();
@@ -115,7 +122,7 @@ export const CubeHero = ({ className }: { className?: string }) => {
       ) : (
         <div ref={canvasWrap} className="absolute inset-0">
           <Suspense fallback={null}>
-            <CubeCanvas active={inView} />
+            <CubeCanvas active={inView && active} />
           </Suspense>
         </div>
       )}
