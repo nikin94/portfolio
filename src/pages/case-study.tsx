@@ -49,7 +49,7 @@ const CaseStudy = () => {
           {study.name}
         </h1>
         <p className="text-muted mt-2 text-sm">{study.year}</p>
-        <p className="text-muted mt-6 max-w-2xl text-lg text-pretty">
+        <p className="text-muted mt-6 text-lg text-pretty">
           {t(`${base}.summary`)}
         </p>
       </Reveal>
@@ -72,7 +72,7 @@ const CaseStudy = () => {
       </dl>
 
       {/* Narrative. */}
-      <div className="mt-14 max-w-2xl space-y-5">
+      <div className="mt-14 space-y-5">
         {study.bodyKeys.map((key) => (
           <p key={key} className="leading-relaxed text-pretty">
             {t(key)}
