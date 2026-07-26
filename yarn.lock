@@ -3661,6 +3661,7 @@ __metadata:
     vite: "npm:^8.1.5"
     vite-react-ssg: "npm:^0.9.2"
     vitest: "npm:^4.1.10"
+    yet-another-react-lightbox: "npm:^3.32.1"
   languageName: unknown
   linkType: soft
 
@@ -4905,6 +4906,23 @@ __metadata:
     y18n: "npm:^5.0.5"
     yargs-parser: "npm:^21.1.1"
   checksum: 10c0/7a28572f7e785a57886e34fdbddb9b28756dec552e1453d5f6e7cdd00ad8721a4e8c4321d33683f5e61cacb36ad43258adbb48396b71ec4ed14abee0fc0d0c1f
+  languageName: node
+  linkType: hard
+
+"yet-another-react-lightbox@npm:^3.32.1":
+  version: 3.32.1
+  resolution: "yet-another-react-lightbox@npm:3.32.1"
+  peerDependencies:
+    "@types/react": ^16 || ^17 || ^18 || ^19
+    "@types/react-dom": ^16 || ^17 || ^18 || ^19
+    react: ^16.8.0 || ^17 || ^18 || ^19
+    react-dom: ^16.8.0 || ^17 || ^18 || ^19
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: 10c0/06772cee49e0f098e9b81b84427768af274b3aa19e617cc58b3174d57a0a90472b4c42d40d48fdb4064b01936a3ff58a512bc6b45c452c0facbf10a2e4494c6d
   languageName: node
   linkType: hard
 

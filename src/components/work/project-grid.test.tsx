@@ -1,11 +1,19 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
 import { filterProjects } from "@/config/projects";
 
 import { ProjectGrid } from "./project-grid";
 
-const renderGrid = () => render(<ProjectGrid />);
+// A project with a slug renders as a react-router <Link>, so the grid needs a
+// router context in tests.
+const renderGrid = () =>
+  render(
+    <MemoryRouter>
+      <ProjectGrid />
+    </MemoryRouter>,
+  );
 
 // One card == one level-3 heading, so heading count is the visible-card count.
 const cardCount = () => screen.getAllByRole("heading", { level: 3 }).length;
