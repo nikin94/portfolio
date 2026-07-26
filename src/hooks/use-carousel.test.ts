@@ -35,11 +35,13 @@ describe("useCarousel", () => {
     expect(result.current.index).toBe(0);
   });
 
-  it("clamps goTo within [0, count-1]", () => {
+  it("wraps goTo around both ends", () => {
     const { result } = renderHook(() => useCarousel({ count: 3 }));
-    act(() => result.current.goTo(9));
-    expect(result.current.index).toBe(2);
-    act(() => result.current.goTo(-4));
+    act(() => result.current.goTo(3));
     expect(result.current.index).toBe(0);
+    act(() => result.current.goTo(-1));
+    expect(result.current.index).toBe(2);
+    act(() => result.current.goTo(4));
+    expect(result.current.index).toBe(1);
   });
 });

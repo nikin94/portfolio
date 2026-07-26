@@ -6,9 +6,11 @@ import {
   useMotionValueEvent,
   useTransform,
 } from "motion/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+
+import { PushToast } from "./push-toast";
 
 /**
  * Data points for a generally-rising series (y is SVG-space, so smaller = up).
@@ -85,36 +87,31 @@ const DataDot = ({
 };
 
 /**
- * Slide 2 of the phone showcase: an animated analytics chart. The line draws
- * left-to-right (stroke `pathLength`), a gradient area reveals under it in sync
- * (a growing clip), each data point pops in as the sweep passes, a glowing dot
- * rides the leading edge, and the headline value + growth badge count up — all
- * driven by a single `progress` MotionValue so everything stays in lockstep.
- *
- * Re-plays every time the slide becomes active; reduced-motion users get the
- * finished chart with no drawing. Decorative, so it's hidden from assistive
- * tech — the tab bar carries the label.
+ * The chart draw itself. Kept as an inner component so the parent can remount it
+ * (via `key`) whenever the slide becomes active — that replays the draw from
+ * scratch without resetting state inside an effect. A single `progress`
+ * MotionValue drives the line, area, dots, leading dot and the counting
+ * headline in lockstep; on completion the push toast drops in.
  */
-export const ShowcaseChart = ({ active }: { active: boolean }) => {
-  const reduced = usePrefersReducedMotion();
-  const progress = useMotionValue(0);
+const ChartSlide = ({
+  active,
+  reduced,
+}: {
+  active: boolean;
+  reduced: boolean;
+}) => {
+  const progress = useMotionValue(reduced ? 1 : 0);
+  const [drawn, setDrawn] = useState(reduced);
   const lineRef = useRef<SVGPathElement>(null);
   const leadRef = useRef<SVGGElement>(null);
 
-  // One value drives the whole reveal. Reduced motion jumps straight to the
-  // finished chart; leaving the slide resets so it re-draws on the next visit.
+  // Draw once the slide is active; the toast is armed when it finishes.
   useEffect(() => {
-    if (reduced) {
-      progress.set(1);
-      return;
-    }
-    if (!active) {
-      progress.set(0);
-      return;
-    }
+    if (reduced || !active) return;
     const controls = animate(progress, 1, {
       duration: DRAW_SECONDS,
       ease: "linear",
+      onComplete: () => setDrawn(true),
     });
     return () => controls.stop();
   }, [active, reduced, progress]);
@@ -131,10 +128,14 @@ export const ShowcaseChart = ({ active }: { active: boolean }) => {
 
   const clipWidth = useTransform(progress, (p) => p * 300);
   const value = useTransform(progress, (p) => (p * 48.2).toFixed(1));
-  const growth = useTransform(progress, (p) => Math.round(p * 142));
+  const growth = useTransform(progress, (p) => Math.round(p * 146));
 
   return (
-    <div aria-hidden className="flex h-full flex-col justify-center gap-4">
+    <div
+      aria-hidden
+      className="relative flex h-full flex-col justify-center gap-4"
+    >
+      <PushToast show={drawn} reduced={reduced} />
       <div className="px-1">
         <p className="text-[10px] font-medium tracking-widest text-white/40 uppercase">
           Revenue
@@ -222,5 +223,18 @@ export const ShowcaseChart = ({ active }: { active: boolean }) => {
         </g>
       </svg>
     </div>
+  );
+};
+
+/**
+ * Slide 2 of the phone showcase: an animated analytics chart that draws itself
+ * left-to-right, then drops in a push notification the moment it finishes.
+ * Remounted whenever it (de)activates so the draw replays on each visit;
+ * reduced-motion users get the finished chart and toast with no animation.
+ */
+export const ShowcaseChart = ({ active }: { active: boolean }) => {
+  const reduced = usePrefersReducedMotion();
+  return (
+    <ChartSlide key={active ? "on" : "off"} active={active} reduced={reduced} />
   );
 };
