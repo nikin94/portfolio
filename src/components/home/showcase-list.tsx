@@ -100,7 +100,11 @@ const ProductCard = ({
   <motion.div
     className={cn(
       "relative flex items-center gap-2.5 overflow-hidden rounded-xl p-2.5 transition-colors",
-      selected ? "bg-emerald-400/15 ring-1 ring-emerald-400/60" : "bg-white/5",
+      // Inset ring: drawn inside the card box, so the scroll container's
+      // `overflow-hidden` never clips the left/right edges of the highlight.
+      selected
+        ? "bg-emerald-400/15 ring-1 ring-emerald-400/60 ring-inset"
+        : "bg-white/5",
     )}
     animate={selected ? { scale: [1, 0.96, 1] } : {}}
     transition={{ duration: 0.32 }}

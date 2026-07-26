@@ -1,7 +1,8 @@
-import { motion, type PanInfo } from "motion/react";
+import useEmblaCarousel from "embla-carousel-react";
+import type { ReactNode } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { CubeHero } from "@/components/cube/cube-hero";
-import { useCarousel } from "@/hooks/use-carousel";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
 
@@ -11,120 +12,105 @@ import { ShowcaseFaceId } from "./showcase-faceid";
 import { ShowcaseList } from "./showcase-list";
 import { ShowcaseTabs } from "./showcase-tabs";
 
-const AUTO_MS = 4200;
-/** Swipe past this horizontal distance (px) to change slide. */
-const SWIPE_THRESHOLD = 45;
+interface Slide {
+  key: string;
+  /** Padding/layout for the slide's content area. */
+  className: string;
+  render: (active: boolean) => ReactNode;
+}
 
 /** The carousel slides, in order. Each renders with `active` when centred. */
-const SLIDES = [
+const SLIDES: Slide[] = [
   {
     key: "cube",
     className: "flex items-center justify-center px-4 pt-10 pb-20",
-    render: (active: boolean) => (
-      <CubeHero className="w-full" active={active} />
-    ),
+    render: (active) => <CubeHero className="w-full" active={active} />,
   },
   {
     key: "chart",
     className: "px-3 pt-12 pb-20",
-    render: (active: boolean) => <ShowcaseChart active={active} />,
+    render: (active) => <ShowcaseChart active={active} />,
   },
   {
     key: "faceid",
     className: "px-4 pt-10 pb-20",
-    render: (active: boolean) => <ShowcaseFaceId active={active} />,
+    render: (active) => <ShowcaseFaceId active={active} />,
   },
   {
     key: "list",
     className: "px-3 pt-12 pb-20",
-    render: (active: boolean) => <ShowcaseList active={active} />,
+    render: (active) => <ShowcaseList active={active} />,
   },
 ];
 
 const COUNT = SLIDES.length;
 
 /**
- * Shortest signed distance from the active slide to slide `i` around the ring,
- * in [-⌊N/2⌋ … ⌈N/2⌉]. Drives each slide's horizontal offset so the track loops:
- * the last slide's neighbour is the first, so advancing past the end slides the
- * first in from the right instead of rewinding through every slide.
+ * True on touch-primary devices. Swiping is enabled only here; on desktop the
+ * glass tab bar is the sole navigation (dragging a pointer felt wrong there).
  */
-const ringOffset = (i: number, active: number) => {
-  let d = (((i - active) % COUNT) + COUNT) % COUNT;
-  if (d > COUNT / 2) d -= COUNT;
-  return d;
-};
+const isTouchDevice = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(pointer: coarse)").matches;
 
 /**
  * The Home hero: an iPhone running a small carousel of app-feature demos on its
  * screen — the 3D Rubik's cube, an animated analytics chart, a Face ID unlock,
  * and content loading into a list.
  *
- * The carousel loops infinitely: every slide is mounted and positioned by its
- * ring offset, so only the active slide and its two neighbours are ever near the
- * viewport — the far slides sit off-screen and teleport (no transition) rather
- * than sweeping across. It auto-advances (paused on hover / drag / reduced
- * motion) and is driven by the glass tab bar or by swiping. Only the active
- * slide runs its expensive work — the cube's WebGL loop is gated on being
- * centred, and because slides never unmount the cube never tears down.
+ * Embla drives the carousel: it loops seamlessly (last → first slides the first
+ * in from the right, no other slides flashing past) and keeps every slide
+ * mounted, so the cube's WebGL context never tears down. There's no auto-play —
+ * navigation is the glass tab bar, plus swiping on touch devices only. Only the
+ * centred slide runs its expensive work (the cube's render loop is gated on it).
  */
 export const PhoneShowcase = () => {
   const reduced = usePrefersReducedMotion();
-  const { index, goTo, setPaused } = useCarousel({
-    count: COUNT,
-    intervalMs: AUTO_MS,
-    enabled: !reduced,
+  // Read once: pointer type doesn't change within a session in practice.
+  const [canSwipe] = useState(isTouchDevice);
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    align: "center",
+    watchDrag: canSwipe,
+    duration: reduced ? 0 : 26,
   });
+  const [selected, setSelected] = useState(0);
 
-  const onDragEnd = (_: unknown, info: PanInfo) => {
-    setPaused(false);
-    if (info.offset.x <= -SWIPE_THRESHOLD) goTo(index + 1);
-    else if (info.offset.x >= SWIPE_THRESHOLD) goTo(index - 1);
-  };
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
+    emblaApi.on("select", onSelect).on("reInit", onSelect);
+    onSelect();
+    return () => {
+      emblaApi.off("select", onSelect).off("reInit", onSelect);
+    };
+  }, [emblaApi]);
+
+  const goTo = useCallback((i: number) => emblaApi?.scrollTo(i), [emblaApi]);
 
   return (
     <PhoneFrame className="w-56 max-w-full sm:w-64">
-      <div
-        className="relative h-full w-full overflow-hidden"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-      >
-        <motion.div
-          className="absolute inset-0"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.12}
-          dragSnapToOrigin
-          onDragStart={() => setPaused(true)}
-          onDragEnd={onDragEnd}
-        >
-          {SLIDES.map((slide, i) => {
-            const d = ringOffset(i, index);
-            const centered = d === 0;
-            return (
-              <motion.div
-                key={slide.key}
-                className={cn("absolute inset-0", slide.className)}
-                style={{ pointerEvents: centered ? "auto" : "none" }}
-                initial={false}
-                animate={{ x: `${d * 100}%` }}
-                // Off-screen far slides teleport so they never sweep across the
-                // viewport; the active slide and its neighbours glide.
-                transition={
-                  Math.abs(d) >= 2
-                    ? { duration: 0 }
-                    : { type: "spring", stiffness: 260, damping: 32 }
-                }
-              >
-                {slide.render(centered)}
-              </motion.div>
-            );
-          })}
-        </motion.div>
+      <div ref={emblaRef} className="h-full w-full overflow-hidden">
+        <div className="flex h-full">
+          {SLIDES.map((slide, i) => (
+            <div
+              key={slide.key}
+              className={cn(
+                "relative h-full min-w-0 shrink-0 basis-full",
+                slide.className,
+                // Non-centred slides ignore pointers so a neighbour's canvas
+                // can't grab a drag; the centred slide stays interactive.
+                i === selected ? "" : "pointer-events-none",
+              )}
+            >
+              {slide.render(i === selected)}
+            </div>
+          ))}
+        </div>
       </div>
 
       <ShowcaseTabs
-        index={index}
+        index={selected}
         liveCount={COUNT}
         onSelect={goTo}
         className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2"
