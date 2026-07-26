@@ -5,6 +5,7 @@ import { useInViewport } from "@/hooks/use-in-viewport";
 import { useMounted } from "@/hooks/use-mounted";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { prefersStaticCube } from "@/lib/device";
+import { cn } from "@/lib/utils";
 
 import { CubeFallback } from "./cube-fallback";
 
@@ -65,7 +66,7 @@ const deviceHints = () => {
  * render / no-JS view, and reduced-motion / low-power devices (which therefore
  * never download three.js).
  */
-export const CubeHero = () => {
+export const CubeHero = ({ className }: { className?: string }) => {
   const { t } = useTranslation();
   const mounted = useMounted();
   const reducedMotion = usePrefersReducedMotion();
@@ -104,7 +105,10 @@ export const CubeHero = () => {
       ref={ref}
       role="img"
       aria-label={t("Home.cubeLabel")}
-      className="relative aspect-square w-72 max-w-full sm:w-96"
+      className={cn(
+        "relative aspect-square",
+        className ?? "w-72 max-w-full sm:w-96",
+      )}
     >
       {staticOnly ? (
         <CubeFallback />
