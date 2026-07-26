@@ -1,3 +1,4 @@
+import NumberFlow from "@number-flow/react";
 import { Check, Wifi } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
@@ -11,8 +12,14 @@ const UNLOCK_HOLD_MS = 2300;
 const FLIP_MS = 600;
 /** The confirm bar only starts once the flip to the card has finished. */
 const CONFIRM_START_MS = UNLOCK_HOLD_MS + FLIP_MS;
-const CONFIRM_BAR_MS = 1100;
+/** A touch longer so the confirm bar reads clearly before it resolves. */
+const CONFIRM_BAR_MS = 1700;
 const PAID_MS = CONFIRM_START_MS + CONFIRM_BAR_MS;
+
+/** Balance before/after the payment — the difference rolls in on "paid". */
+const BALANCE = 12480.5;
+const PAYMENT = 4.2;
+const BALANCE_FORMAT = { style: "currency", currency: "USD" } as const;
 
 /** The rounded Face ID reticle brackets (four corners). */
 const CORNERS = [
@@ -122,7 +129,11 @@ const PaymentCard = ({
           <p className="text-[9px] tracking-widest text-white/50 uppercase">
             Balance
           </p>
-          <motion.p
+          {/* De-blurs once Face ID clears it, then the payment rolls off the
+              balance slot-machine style (NumberFlow — iOS-like odometer digits;
+              it honours reduced motion and renders a static value on the
+              server). */}
+          <motion.div
             className="text-lg leading-tight font-semibold text-white tabular-nums"
             initial={reduced ? false : { filter: "blur(7px)", opacity: 0.5 }}
             animate={{
@@ -131,8 +142,12 @@ const PaymentCard = ({
             }}
             transition={{ duration: 0.5 }}
           >
-            $12,480.50
-          </motion.p>
+            <NumberFlow
+              value={paid ? BALANCE - PAYMENT : BALANCE}
+              format={BALANCE_FORMAT}
+              trend={-1}
+            />
+          </motion.div>
         </div>
 
         <div className="mt-2.5 flex items-end justify-between">

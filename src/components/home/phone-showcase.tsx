@@ -1,6 +1,6 @@
 import useEmblaCarousel from "embla-carousel-react";
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CubeHero } from "@/components/cube/cube-hero";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
@@ -109,11 +109,21 @@ export const PhoneShowcase = () => {
   const [gen, setGen] = useState<number[]>(() => SLIDES.map(() => 0));
   const [pushReady, setPushReady] = useState(false);
   const [pushDismissed, setPushDismissed] = useState(false);
+  // The last index we actually acted on, so late same-index embla events
+  // (a `reInit` after mount fires `select` again with the current snap) are
+  // ignored: otherwise they'd reset `started` without the arming effect —
+  // keyed on `selected` — re-running, leaving the slide stuck un-started.
+  const selectedRef = useRef(0);
 
   useEffect(() => {
     if (!emblaApi) return;
     const onSelect = () => {
       const idx = emblaApi.selectedScrollSnap();
+      // Only a genuine slide change should reset/replay; ignore same-index
+      // reInit/select so `started` never gets stuck false (which would leave
+      // the cube's render loop paused on a blank canvas).
+      if (idx === selectedRef.current) return;
+      selectedRef.current = idx;
       setSelected(idx);
       // Hold off animating the newcomer until its start delay elapses.
       setStarted(false);
