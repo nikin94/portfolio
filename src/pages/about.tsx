@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 
+import { Interests } from "@/components/about/interests";
 import { CubeHero } from "@/components/cube/cube-hero";
 import { Reveal } from "@/components/ui/reveal";
 
@@ -25,6 +26,7 @@ const About = () => {
         <p className="text-muted mt-10 max-w-xl text-sm text-pretty">
           {t("About.body")}
         </p>
+        <Interests />
       </Reveal>
       <div className="flex shrink-0 justify-center lg:justify-end">
         <CubeHero />

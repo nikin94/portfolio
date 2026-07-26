@@ -1,0 +1,78 @@
+import { useAnimate } from "motion/react";
+import { useTranslation } from "react-i18next";
+
+import { launchShuttleRally } from "@/lib/easter-egg-events";
+
+type Effect = "hop" | "spin" | "rally";
+
+interface Interest {
+  emoji: string;
+  labelKey: string;
+  effect: Effect;
+}
+
+/**
+ * The owner's hobbies, surfaced on every visit to the landing tab — the
+ * "frequent" easter-egg layer rather than a rare 404. Each chip plays a themed
+ * one-shot animation on tap: the knight hops an L, the cube spins, and the
+ * shuttle launches a rally across the whole page.
+ */
+const INTERESTS: Interest[] = [
+  { emoji: "♞", labelKey: "About.interests.chess", effect: "hop" },
+  { emoji: "🧩", labelKey: "About.interests.cube", effect: "spin" },
+  { emoji: "🏸", labelKey: "About.interests.badminton", effect: "rally" },
+];
+
+const InterestChip = ({ emoji, labelKey, effect }: Interest) => {
+  const { t } = useTranslation();
+  const [scope, animate] = useAnimate();
+
+  const play = () => {
+    if (effect === "hop") {
+      animate(
+        scope.current,
+        { x: [0, 10, 10, 0], y: [0, -12, 0, 0] },
+        { duration: 0.5 },
+      );
+    } else if (effect === "spin") {
+      animate(
+        scope.current,
+        { rotate: [0, 360] },
+        { duration: 0.6, ease: "easeInOut" },
+      );
+    } else {
+      animate(scope.current, { y: [0, -8, 0] }, { duration: 0.3 });
+      launchShuttleRally();
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={play}
+      className="border-border hover:bg-foreground/5 flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors"
+    >
+      <span ref={scope} aria-hidden className="inline-block text-base">
+        {emoji}
+      </span>
+      <span className="text-muted">{t(labelKey)}</span>
+    </button>
+  );
+};
+
+export const Interests = () => {
+  const { t } = useTranslation();
+
+  return (
+    <div className="mt-10">
+      <p className="text-muted mb-3 text-xs tracking-widest uppercase">
+        {t("About.interests.label")}
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {INTERESTS.map((interest) => (
+          <InterestChip key={interest.labelKey} {...interest} />
+        ))}
+      </div>
+    </div>
+  );
+};
