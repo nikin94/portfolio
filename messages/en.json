@@ -17,7 +17,10 @@
         "cube": "3D cube demo",
         "chart": "Analytics chart demo",
         "faceid": "Face ID demo",
-        "push": "Notifications demo"
+        "list": "Product list demo"
+      },
+      "list": {
+        "title": "Shop"
       },
       "faceid": {
         "title": "Face ID",

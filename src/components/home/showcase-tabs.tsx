@@ -1,18 +1,23 @@
-import { Bell, Box, LineChart, ScanFace, type LucideIcon } from "lucide-react";
+import {
+  Box,
+  LayoutList,
+  LineChart,
+  ScanFace,
+  type LucideIcon,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/utils";
 
 /**
- * One tab per showcase slide. Order matches the carousel: the cube and the
- * analytics chart are live; the Face ID unlock and push/skeleton demos land
- * later — their tabs preview them, dimmed and non-interactive until built.
+ * One tab per showcase slide, in carousel order: the 3D cube, the analytics
+ * chart, the Face ID unlock, and the product list.
  */
 export const showcaseTabs: { key: string; Icon: LucideIcon }[] = [
   { key: "cube", Icon: Box },
   { key: "chart", Icon: LineChart },
   { key: "faceid", Icon: ScanFace },
-  { key: "push", Icon: Bell },
+  { key: "list", Icon: LayoutList },
 ];
 
 /**
