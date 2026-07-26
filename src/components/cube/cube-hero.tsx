@@ -1,4 +1,5 @@
-import { Suspense, lazy } from "react";
+import { motion } from "motion/react";
+import { Suspense, lazy, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useInViewport } from "@/hooks/use-in-viewport";
@@ -34,6 +35,7 @@ export const CubeHero = () => {
   const mounted = useMounted();
   const reducedMotion = usePrefersReducedMotion();
   const [ref, inView] = useInViewport<HTMLDivElement>("200px");
+  const [ready, setReady] = useState(false);
 
   const staticOnly =
     !mounted || prefersStaticCube({ reducedMotion, ...deviceHints() });
@@ -45,11 +47,27 @@ export const CubeHero = () => {
       aria-label={t("Home.cubeLabel")}
       className="relative aspect-square w-full max-w-[20rem] sm:max-w-sm"
     >
-      {staticOnly ? (
+      {/* Base layer: static fallback. Fades out only once the WebGL cube has
+          painted, so there's no placeholder→cube flash. Stays put permanently
+          for static-only devices (the canvas never mounts, `ready` stays false). */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{ opacity: ready ? 0 : 1 }}
+        transition={{ duration: 0.45 }}
+      >
         <CubeFallback />
-      ) : (
-        <Suspense fallback={<CubeFallback />}>
-          <CubeCanvas active={inView} />
+      </motion.div>
+
+      {!staticOnly && (
+        <Suspense fallback={null}>
+          <motion.div
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: ready ? 1 : 0 }}
+            transition={{ duration: 0.45 }}
+          >
+            <CubeCanvas active={inView} onReady={() => setReady(true)} />
+          </motion.div>
         </Suspense>
       )}
     </div>

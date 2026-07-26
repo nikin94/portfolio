@@ -44,18 +44,25 @@ export const EasterEggs = () => {
         {flights > 0 && (
           <motion.div
             key={flights}
-            className="text-accent absolute top-0 left-0 h-12 w-12"
+            className="absolute top-0 left-0 h-12 w-12"
             initial={{ x: "-10vw", y: "70vh", rotate: -20, opacity: 0 }}
             animate={{
-              // Two straight legs (linear easing) → a triangular up-and-down
-              // arc, apex at mid-screen, rather than a smooth parabola.
-              x: ["-10vw", "50vw", "110vw"],
-              y: ["70vh", "8vh", "70vh"],
+              // Parabolic arc: x travels at constant speed while y rises
+              // decelerating (easeOut) then falls accelerating (easeIn) — the
+              // path of a real projectile, not two straight legs.
+              x: ["-10vw", "110vw"],
+              y: ["70vh", "6vh", "70vh"],
               rotate: [-20, 0, 20],
               opacity: [0, 1, 1],
             }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.4, ease: "linear", times: [0, 0.5, 1] }}
+            transition={{
+              duration: 1.4,
+              x: { ease: "linear" },
+              y: { ease: ["easeOut", "easeIn"], times: [0, 0.5, 1] },
+              rotate: { ease: "linear" },
+              opacity: { times: [0, 0.12, 1] },
+            }}
             onAnimationComplete={() => setFlights(0)}
           >
             <Shuttle className="h-full w-full drop-shadow-lg" />
