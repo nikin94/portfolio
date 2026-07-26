@@ -163,13 +163,15 @@ const ListSequence = ({
       window.setTimeout(() => setPhase("loaded"), 1000),
       window.setTimeout(() => {
         setPhase("scrolling");
-        // Natural deceleration: an easeOut curve slows the scroll to a stop.
+        // Natural deceleration: an easeOut curve slows the scroll to a stop,
+        // and the tap lands the moment it settles (selection on `onComplete`
+        // rather than a fixed timer that lagged behind the visual stop).
         controls = animate(y, SCROLL_Y, {
-          duration: 2,
+          duration: 1.4,
           ease: [0.16, 1, 0.3, 1],
+          onComplete: () => setPhase("selected"),
         });
       }, 1800),
-      window.setTimeout(() => setPhase("selected"), 3900),
     ];
     return () => {
       timers.forEach((id) => window.clearTimeout(id));

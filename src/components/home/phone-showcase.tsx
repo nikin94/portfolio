@@ -7,6 +7,7 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
 
 import { PhoneFrame } from "./phone-frame";
+import { PushToast } from "./push-toast";
 import { ShowcaseChart } from "./showcase-chart";
 import { ShowcaseFaceId } from "./showcase-faceid";
 import { ShowcaseList } from "./showcase-list";
@@ -44,6 +45,8 @@ const SLIDES: Slide[] = [
 ];
 
 const COUNT = SLIDES.length;
+/** Delay before the push notification drops onto the cube slide (ms). */
+const PUSH_DELAY_MS = 2000;
 
 /**
  * True on touch-primary devices. Swiping is enabled only here; on desktop the
@@ -63,6 +66,9 @@ const isTouchDevice = () =>
  * mounted, so the cube's WebGL context never tears down. There's no auto-play —
  * navigation is the glass tab bar, plus swiping on touch devices only. Only the
  * centred slide runs its expensive work (the cube's render loop is gated on it).
+ *
+ * A push notification drops onto the cube slide a couple of seconds after mount;
+ * tapping it jumps to the chart slide (and dismisses the toast).
  */
 export const PhoneShowcase = () => {
   const reduced = usePrefersReducedMotion();
@@ -75,6 +81,10 @@ export const PhoneShowcase = () => {
     duration: reduced ? 0 : 26,
   });
   const [selected, setSelected] = useState(0);
+  // Ready immediately under reduced motion (avoids a set-state-in-effect); a
+  // timer arms it otherwise.
+  const [pushReady, setPushReady] = useState(reduced);
+  const [pushDismissed, setPushDismissed] = useState(false);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -86,7 +96,21 @@ export const PhoneShowcase = () => {
     };
   }, [emblaApi]);
 
+  useEffect(() => {
+    if (reduced) return;
+    const id = window.setTimeout(() => setPushReady(true), PUSH_DELAY_MS);
+    return () => window.clearTimeout(id);
+  }, [reduced]);
+
   const goTo = useCallback((i: number) => emblaApi?.scrollTo(i), [emblaApi]);
+
+  const onPushClick = useCallback(() => {
+    setPushDismissed(true);
+    goTo(1);
+  }, [goTo]);
+
+  // The toast lives on the cube slide only, until it's tapped.
+  const showPush = pushReady && !pushDismissed && selected === 0;
 
   return (
     <PhoneFrame className="w-56 max-w-full sm:w-64">
@@ -107,6 +131,17 @@ export const PhoneShowcase = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Push notification over the cube slide's screen. The wrapper ignores
+          pointers so it never blocks the cube; the toast itself re-enables. */}
+      <div className="pointer-events-none absolute inset-x-3 top-10 z-40">
+        <PushToast
+          show={showPush}
+          reduced={reduced}
+          onClick={onPushClick}
+          className="pointer-events-auto"
+        />
       </div>
 
       <ShowcaseTabs

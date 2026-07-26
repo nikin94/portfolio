@@ -6,11 +6,9 @@ import {
   useMotionValueEvent,
   useTransform,
 } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-
-import { PushToast } from "./push-toast";
 
 /**
  * Data points for a generally-rising series (y is SVG-space, so smaller = up).
@@ -91,7 +89,7 @@ const DataDot = ({
  * (via `key`) whenever the slide becomes active — that replays the draw from
  * scratch without resetting state inside an effect. A single `progress`
  * MotionValue drives the line, area, dots, leading dot and the counting
- * headline in lockstep; on completion the push toast drops in.
+ * headline in lockstep.
  */
 const ChartSlide = ({
   active,
@@ -101,17 +99,15 @@ const ChartSlide = ({
   reduced: boolean;
 }) => {
   const progress = useMotionValue(reduced ? 1 : 0);
-  const [drawn, setDrawn] = useState(reduced);
   const lineRef = useRef<SVGPathElement>(null);
   const leadRef = useRef<SVGGElement>(null);
 
-  // Draw once the slide is active; the toast is armed when it finishes.
+  // Draw once the slide is active.
   useEffect(() => {
     if (reduced || !active) return;
     const controls = animate(progress, 1, {
       duration: DRAW_SECONDS,
       ease: "linear",
-      onComplete: () => setDrawn(true),
     });
     return () => controls.stop();
   }, [active, reduced, progress]);
@@ -131,11 +127,7 @@ const ChartSlide = ({
   const growth = useTransform(progress, (p) => Math.round(p * 146));
 
   return (
-    <div
-      aria-hidden
-      className="relative flex h-full flex-col justify-center gap-4"
-    >
-      <PushToast show={drawn} reduced={reduced} />
+    <div aria-hidden className="flex h-full flex-col justify-center gap-4">
       <div className="px-1">
         <p className="text-[10px] font-medium tracking-widest text-white/40 uppercase">
           Revenue
@@ -228,9 +220,8 @@ const ChartSlide = ({
 
 /**
  * Slide 2 of the phone showcase: an animated analytics chart that draws itself
- * left-to-right, then drops in a push notification the moment it finishes.
- * Remounted whenever it (de)activates so the draw replays on each visit;
- * reduced-motion users get the finished chart and toast with no animation.
+ * left-to-right. Remounted whenever it (de)activates so the draw replays on each
+ * visit; reduced-motion users get the finished chart with no animation.
  */
 export const ShowcaseChart = ({ active }: { active: boolean }) => {
   const reduced = usePrefersReducedMotion();
