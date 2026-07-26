@@ -1,7 +1,7 @@
 /**
- * Detailed hobby glyphs for the About interests row. Custom SVGs (not emoji or
- * a generic puzzle icon) so they read clearly at small sizes and inherit the
- * surrounding text colour via `currentColor`.
+ * Detailed hobby glyphs for the About interests row. Custom/curated SVGs (not
+ * emoji) so they read clearly at small sizes and inherit the surrounding text
+ * colour via `currentColor`.
  */
 
 /** A recognisable chess-knight silhouette, with a cut-out eye for detail. */
@@ -18,65 +18,27 @@ export const KnightIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-type Pt = [number, number];
-
-const lerp = (p: Pt, q: Pt, t: number): Pt => [
-  p[0] + (q[0] - p[0]) * t,
-  p[1] + (q[1] - p[1]) * t,
-];
-
-/** The two inner lines (thirds) of a quad, in both directions → a 3×3 grid. */
-const gridLines = ([a, b, c, d]: [Pt, Pt, Pt, Pt]): [Pt, Pt][] =>
-  [1 / 3, 2 / 3].flatMap((t): [Pt, Pt][] => [
-    [lerp(a, b, t), lerp(d, c, t)],
-    [lerp(a, d, t), lerp(b, c, t)],
-  ]);
-
-// Isometric cube corners (top, and the three visible faces).
-const T: Pt = [12, 3];
-const R: Pt = [21, 8];
-const Fr: Pt = [12, 13];
-const L: Pt = [3, 8];
-const Lb: Pt = [3, 16];
-const Fb: Pt = [12, 21];
-const Rb: Pt = [21, 16];
-
-const FACES: [Pt, Pt, Pt, Pt][] = [
-  [T, R, Fr, L], // top
-  [L, Fr, Fb, Lb], // front-left
-  [Fr, R, Rb, Fb], // front-right
-];
-
-/** An isometric Rubik's cube — three faces, each subdivided into a 3×3 grid. */
+/**
+ * A 3D Rubik's cube, from Hugeicons (MIT). Stroke-based, so it inherits the
+ * chip's text colour and reads clearly as an actual cube rather than a flat
+ * grid.
+ */
 export const CubeIcon = ({ className }: { className?: string }) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth={1.4}
-    strokeLinejoin="round"
+    strokeWidth={1.5}
     strokeLinecap="round"
+    strokeLinejoin="round"
     aria-hidden
     focusable="false"
     className={className}
   >
-    <polygon
-      points="12,3 21,8 21,16 12,21 3,16 3,8"
-      fill="currentColor"
-      fillOpacity={0.06}
-    />
-    {FACES.map((face, i) => (
-      <polygon key={i} points={face.map((p) => p.join(",")).join(" ")} />
-    ))}
-    {FACES.flatMap(gridLines).map(([p, q], i) => (
-      <line
-        key={i}
-        x1={p[0]}
-        y1={p[1]}
-        x2={q[0]}
-        y2={q[1]}
-        strokeOpacity={0.55}
-      />
-    ))}
+    <path d="M8.643 3.085C10.295 2.362 11.121 2 12 2s1.705.362 3.357 1.085l1.705.747C19.687 4.982 21 5.556 21 6.5s-1.313 1.518-3.938 2.668l-1.705.747C13.705 10.638 12.879 11 12 11s-1.705-.362-3.357-1.085l-1.705-.747C4.313 8.018 3 7.444 3 6.5s1.313-1.518 3.938-2.668z" />
+    <path d="M21 6.5v11c0 .944-1.313 1.518-3.938 2.668l-1.705.747C13.705 21.638 12.879 22 12 22s-1.705-.362-3.357-1.085l-1.705-.747C4.313 19.018 3 18.444 3 17.5v-11" />
+    <path d="M21 12.5L12 17l-9-4m9 9V11" />
+    <path d="M16.5 20V9L7 4" />
+    <path d="M7.5 20V9L17 4" />
   </svg>
 );

@@ -13,8 +13,8 @@ const Home = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="flex flex-1 flex-col justify-center gap-12 py-20 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
-      <Reveal className="lg:max-w-xl">
+    <section className="flex flex-1 flex-col justify-center gap-12 py-20 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
+      <Reveal className="min-w-0 lg:max-w-xl">
         <p className="text-accent text-sm font-medium tracking-widest uppercase">
           {t("Home.eyebrow")}
         </p>
