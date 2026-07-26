@@ -71,10 +71,11 @@ export const projects: Project[] = [
     image: "/projects/pyra/pyra-1.webp",
   },
   {
-    id: "mobile-2",
-    name: "Project Two",
+    id: "iovaro",
+    name: "iOvaro",
     platform: "mobile",
-    tech: ["React Native", "Reanimated", "Zustand"],
+    tech: ["React Native", "Expo", "Firebase", "Stripe", "RevenueCat"],
+    slug: "iovaro",
     image: null,
   },
   {
@@ -108,7 +109,7 @@ export const caseStudies: Record<string, CaseStudy> = {
   pyra: {
     slug: "pyra",
     name: "Pyra",
-    year: "2024 — 2025",
+    year: "2025 — 2026",
     metrics: [
       { value: "$4.8M+", labelKey: "Work.pyra.metrics.volume" },
       { value: "96×", labelKey: "Work.pyra.metrics.growth" },
@@ -141,6 +142,7 @@ export const caseStudies: Record<string, CaseStudy> = {
           "Privy embedded wallet",
           "Passkeys (WebAuthn)",
           "Face ID / Touch ID",
+          "Persona (KYC)",
           "Apple Sign-In",
           "Secure Store",
         ],
@@ -191,6 +193,81 @@ export const caseStudies: Record<string, CaseStudy> = {
       "Work.pyra.body.intro",
       "Work.pyra.body.built",
       "Work.pyra.body.scale",
+    ],
+  },
+  iovaro: {
+    slug: "iovaro",
+    name: "iOvaro",
+    year: "2024 — 2025",
+    metrics: [
+      { value: "~3 mo", labelKey: "Work.iovaro.metrics.speed" },
+      { value: "20+", labelKey: "Work.iovaro.metrics.features" },
+      { value: "2", labelKey: "Work.iovaro.metrics.payments" },
+    ],
+    stack: [
+      {
+        labelKey: "Work.iovaro.stack.core",
+        items: [
+          "React Native 0.76",
+          "Expo SDK 52",
+          "TypeScript",
+          "React Navigation",
+          "Zustand",
+        ],
+      },
+      {
+        labelKey: "Work.iovaro.stack.payments",
+        items: [
+          "Stripe Connect",
+          "Stripe payment links",
+          "RevenueCat",
+          "react-native-purchases",
+        ],
+      },
+      {
+        labelKey: "Work.iovaro.stack.firebase",
+        items: [
+          "Firebase Auth",
+          "Firestore",
+          "Cloud Functions",
+          "Analytics",
+          "Scheduled functions",
+        ],
+      },
+      {
+        labelKey: "Work.iovaro.stack.documents",
+        items: [
+          "expo-print",
+          "HTML PDF templates",
+          "react-native-pdf",
+          "expo-sharing",
+          "Multi-currency",
+        ],
+      },
+      {
+        labelKey: "Work.iovaro.stack.auth",
+        items: [
+          "Google / Apple / Facebook",
+          "OTP entry",
+          "Passcode + biometrics",
+          "Secure Store",
+        ],
+      },
+      {
+        labelKey: "Work.iovaro.stack.ops",
+        items: [
+          "EAS Build",
+          "App Store + Play Store",
+          "Deep linking",
+          "Background fetch",
+        ],
+      },
+    ],
+    gallery: [],
+    bodyKeys: [
+      "Work.iovaro.body.intro",
+      "Work.iovaro.body.built",
+      "Work.iovaro.body.delivery",
     ],
   },
 };

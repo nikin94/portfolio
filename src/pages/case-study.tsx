@@ -80,11 +80,16 @@ const CaseStudy = () => {
         ))}
       </div>
 
-      {/* Screenshot gallery — click a screen to open the full-screen viewer. */}
-      <h2 className="mt-16 text-lg font-semibold tracking-tight">
-        {t("Work.gallery")}
-      </h2>
-      <ScreenGallery shots={study.gallery} />
+      {/* Screenshot gallery — click a screen to open the full-screen viewer.
+          Skipped for case studies without screenshots. */}
+      {study.gallery.length > 0 && (
+        <>
+          <h2 className="mt-16 text-lg font-semibold tracking-tight">
+            {t("Work.gallery")}
+          </h2>
+          <ScreenGallery shots={study.gallery} />
+        </>
+      )}
 
       {/* Grouped tech stack. */}
       <h2 className="mt-16 text-lg font-semibold tracking-tight">
