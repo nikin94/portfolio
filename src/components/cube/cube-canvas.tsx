@@ -37,7 +37,7 @@ const CubeCanvas = ({ active }: { active: boolean }) => {
         enableZoom={false}
         enablePan={false}
         autoRotate
-        autoRotateSpeed={0.8}
+        autoRotateSpeed={1.1}
       />
     </Canvas>
   );
