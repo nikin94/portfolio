@@ -11,6 +11,12 @@
     "title": "Building fast, polished apps for every device",
     "subtitle": "React Native mobile apps and modern web experiences, crafted with an obsession for performance and motion.",
     "cubeLabel": "Interactive Rubik's cube — drag to rotate",
+    "showcase": {
+      "label": "App feature showcase",
+      "slides": {
+        "cube": "3D Rubik's cube · WebGL in React Native"
+      }
+    },
     "links": {
       "label": "Find me",
       "cv": "Download CV",

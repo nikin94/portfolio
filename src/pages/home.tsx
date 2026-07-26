@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { CubeHero } from "@/components/cube/cube-hero";
+import { PhoneShowcase } from "@/components/home/phone-showcase";
 import { SocialLinks } from "@/components/home/social-links";
 import { Reveal } from "@/components/ui/reveal";
 
@@ -27,7 +27,7 @@ const Home = () => {
         <SocialLinks />
       </Reveal>
       <div className="flex shrink-0 justify-center lg:justify-end">
-        <CubeHero />
+        <PhoneShowcase />
       </div>
     </section>
   );
