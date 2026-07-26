@@ -101,7 +101,7 @@
       "summary": "A cross-platform invoicing app for freelancers and small businesses — create and send professional invoices, get paid through Stripe, and manage subscriptions. I built it from the ground up as the sole mobile engineer at Applica.",
       "metrics": {
         "speed": "From concept to App Store & Play Store release",
-        "features": "Production features shipped across the two Applica products",
+        "screens": "Production screens built, from onboarding to the multi-step document builder",
         "payments": "Payment systems integrated — Stripe Connect payouts + RevenueCat subscriptions"
       },
       "body": {
