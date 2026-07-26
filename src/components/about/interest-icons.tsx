@@ -4,38 +4,45 @@ import knightUrl from "@/assets/knight.svg";
 import { cn } from "@/lib/utils";
 
 /**
- * Hobby glyphs for the About interests row. The real illustrated artwork
- * (a Rubik's cube and a chess knight, public-domain from Openclipart) imported
- * as static SVG assets and rendered as images, rather than hand-rolled inline
- * paths. `object-contain` preserves each drawing's aspect ratio inside the
- * square box the caller sizes with a `size-*` class.
+ * Hobby glyphs for the About interests row, imported as static SVG assets.
+ *
+ * The knight and racket are single-colour silhouettes, so they're painted via a
+ * CSS mask filled with `currentColor` (`bg-current`) instead of an `<img>`. That
+ * makes them theme-adaptive — the chip sets `currentColor` to the foreground, so
+ * they render dark on the light theme and light on the dark theme, whatever the
+ * source file's own fill colour is. The Rubik's cube keeps its real colours, so
+ * it stays a plain `<img>`.
  */
-export const KnightIcon = ({ className }: { className?: string }) => (
-  <img
-    src={knightUrl}
-    alt=""
+const maskStyle = (url: string) => ({
+  maskImage: `url(${url})`,
+  WebkitMaskImage: `url(${url})`,
+  maskRepeat: "no-repeat",
+  WebkitMaskRepeat: "no-repeat",
+  maskPosition: "center",
+  WebkitMaskPosition: "center",
+  maskSize: "contain",
+  WebkitMaskSize: "contain",
+});
+
+const MaskIcon = ({ url, className }: { url: string; className?: string }) => (
+  <span
     aria-hidden
-    className={cn("object-contain", className)}
+    className={cn("inline-block bg-current", className)}
+    style={maskStyle(url)}
   />
+);
+
+export const KnightIcon = ({ className }: { className?: string }) => (
+  <MaskIcon url={knightUrl} className={className} />
+);
+
+export const RacketIcon = ({ className }: { className?: string }) => (
+  <MaskIcon url={racketUrl} className={className} />
 );
 
 export const CubeIcon = ({ className }: { className?: string }) => (
   <img
     src={cubeUrl}
-    alt=""
-    aria-hidden
-    className={cn("object-contain", className)}
-  />
-);
-
-/**
- * A badminton racket, imported as a static SVG asset (provided artwork) and
- * rendered as an image — used on the About badminton chip instead of the
- * shuttlecock (the flying shuttle in the rally is unchanged).
- */
-export const RacketIcon = ({ className }: { className?: string }) => (
-  <img
-    src={racketUrl}
     alt=""
     aria-hidden
     className={cn("object-contain", className)}

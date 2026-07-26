@@ -61,26 +61,30 @@ export const CubeHero = () => {
       aria-label={t("Home.cubeLabel")}
       className="relative aspect-square w-72 max-w-full sm:w-96"
     >
-      {/* Base layer: static fallback. Fades out once the cube has painted so
-          there's no abrupt swap. Stays put for static-only devices (the canvas
-          never mounts, `painted` stays false). */}
+      {/* Base layer: static fallback. Held fully opaque and stable until the
+          cube's first frame is actually painted, then cross-fades out. Stays put
+          for static-only devices (the canvas never mounts, `painted` stays
+          false). */}
       <motion.div
         className="absolute inset-0"
+        initial={false}
         animate={{ opacity: staticOnly || !painted ? 1 : 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         <CubeFallback />
       </motion.div>
 
       {!staticOnly && (
         <Suspense fallback={null}>
-          {/* Canvas fades in on mount, over the fallback — never gated on
-              `painted`, so the interactive cube always appears. */}
+          {/* Canvas opacity is gated on `painted` (not mount): while three.js
+              loads and the renderer initialises it stays fully transparent, so a
+              blank/black canvas never flashes over the fallback. The moment the
+              first frame is ready both layers cross-fade in lockstep. */}
           <motion.div
             className="absolute inset-0"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            animate={{ opacity: painted ? 1 : 0 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
           >
             <CubeCanvas active={inView} onReady={() => setPainted(true)} />
           </motion.div>
