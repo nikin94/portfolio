@@ -4,6 +4,8 @@
  */
 export const siteConfig = {
   name: "Serhiy — Mobile & Frontend Developer",
+  /** Full name shown as the header wordmark. */
+  author: "Serhiy Nikiforov",
   description:
     "Portfolio of a mobile and frontend developer specialising in React Native apps and high-performance web experiences.",
   url: "https://example.com",
