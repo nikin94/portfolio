@@ -2,10 +2,9 @@ import { useAnimate } from "motion/react";
 import type { ComponentType } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Shuttle } from "@/components/easter-eggs/shuttle";
 import { launchShuttleRally } from "@/lib/easter-egg-events";
 
-import { CubeIcon, KnightIcon } from "./interest-icons";
+import { CubeIcon, KnightIcon, RacketIcon } from "./interest-icons";
 
 type Effect = "hop" | "spin" | "rally";
 
@@ -23,7 +22,7 @@ interface Interest {
 const INTERESTS: Interest[] = [
   { Icon: KnightIcon, labelKey: "About.interests.chess", effect: "hop" },
   { Icon: CubeIcon, labelKey: "About.interests.cube", effect: "spin" },
-  { Icon: Shuttle, labelKey: "About.interests.badminton", effect: "rally" },
+  { Icon: RacketIcon, labelKey: "About.interests.badminton", effect: "rally" },
 ];
 
 const InterestChip = ({ Icon, labelKey, effect }: Interest) => {

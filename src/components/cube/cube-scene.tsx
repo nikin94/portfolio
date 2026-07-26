@@ -1,5 +1,7 @@
 import { RoundedBox } from "@react-three/drei";
-import { useMemo } from "react";
+import { useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import type { Group } from "three";
 
 /** Classic Rubik's colour scheme, one per outward-facing side. */
 const COLORS = {
@@ -98,11 +100,21 @@ const Cubie = ({
 );
 
 /**
- * The 3×3×3 cube. Rendered at full size immediately (no scale-up entrance);
- * rotation is left to `OrbitControls` (auto-rotate + drag). Purely visual — no
- * layer-turn logic yet; that can layer on later without touching the wrapper.
+ * The 3×3×3 cube. Rendered at full size immediately (no scale-up entrance).
+ * The gentle auto-spin lives on the model itself (rotating its own group)
+ * rather than on the camera controls, so `TrackballControls` can orbit the
+ * cube freely in every direction — including a full vertical flip — without a
+ * competing camera auto-orbit. Purely visual — no layer-turn logic yet.
  */
 export const CubeModel = () => {
+  const group = useRef<Group>(null);
+
+  // Continuous slow spin. Delta is clamped so resuming the render loop after
+  // the hero scrolls back into view can't jump the cube by a large step.
+  useFrame((_, delta) => {
+    if (group.current) group.current.rotation.y += Math.min(delta, 0.1) * 0.3;
+  });
+
   const cubies = useMemo(() => {
     const list: {
       key: string;
@@ -121,7 +133,7 @@ export const CubeModel = () => {
   }, []);
 
   return (
-    <group rotation={[-0.35, 0.6, 0]}>
+    <group ref={group} rotation={[-0.35, 0.6, 0]}>
       {cubies.map(({ key, position, stickers }) => (
         <Cubie key={key} position={position} stickers={stickers} />
       ))}
