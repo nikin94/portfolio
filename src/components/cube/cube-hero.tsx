@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useInViewport } from "@/hooks/use-in-viewport";
@@ -8,7 +8,33 @@ import { prefersStaticCube } from "@/lib/device";
 
 import { CubeFallback } from "./cube-fallback";
 
-const CubeCanvas = lazy(() => import("./cube-canvas"));
+/**
+ * Single import of the WebGL chunk, shared between `lazy()` and `preload()`.
+ * The module system caches it, so calling it more than once is a no-op after
+ * the first — the second caller just gets the in-flight/settled promise.
+ */
+const importCubeCanvas = () => import("./cube-canvas");
+
+const CubeCanvas = lazy(importCubeCanvas);
+
+/**
+ * Warm the three.js chunk (~240 kB gz) ahead of time so it's already
+ * downloading — or done — by the time the cube renders, shrinking the empty
+ * gap before the cube appears. Runs during idle time to avoid competing with
+ * critical first-paint work.
+ */
+const preloadCubeCanvas = () => {
+  const warm = () => {
+    void importCubeCanvas();
+  };
+  const ric = (
+    window as Window & {
+      requestIdleCallback?: (cb: () => void) => number;
+    }
+  ).requestIdleCallback;
+  if (ric) ric(warm);
+  else window.setTimeout(warm, 200);
+};
 
 /** Reads capability hints from `navigator`, guarding for non-browser envs. */
 const deviceHints = () => {
@@ -27,11 +53,13 @@ const deviceHints = () => {
  * absolutely-filled canvas never collapses it.
  *
  * Capable devices render the interactive cube directly — there is no static
- * fallback layered underneath and no cross-fade. While the three.js chunk loads
- * the space is simply empty/transparent (Suspense fallback is `null`, and the
- * canvas clears transparent), so a flat placeholder never flashes in; the cube
- * then plays a short scale-up entrance as it paints, reading as "the cube grows
- * into view" rather than "a flat picture, then a swap".
+ * fallback layered underneath and no cross-fade. The three.js chunk is prefetched
+ * on idle as soon as a capable client mounts, so it's usually already in cache by
+ * the time the cube renders; while it loads the space is simply empty/transparent
+ * (Suspense fallback is `null`, and the canvas clears transparent), so a flat
+ * placeholder never flashes in. The cube then plays a short scale-up entrance as
+ * it paints, reading as "the cube grows into view" rather than "a flat picture,
+ * then a swap".
  *
  * The static fallback is used only where WebGL can't or shouldn't run: the server
  * render / no-JS view, and reduced-motion / low-power devices (which therefore
@@ -45,6 +73,12 @@ export const CubeHero = () => {
 
   const staticOnly =
     !mounted || prefersStaticCube({ reducedMotion, ...deviceHints() });
+
+  // Prefetch the WebGL chunk once we know this is a capable client, so three.js
+  // is already downloading before React reaches the Suspense boundary.
+  useEffect(() => {
+    if (!staticOnly) preloadCubeCanvas();
+  }, [staticOnly]);
 
   return (
     <div
