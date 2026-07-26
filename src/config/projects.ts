@@ -79,10 +79,11 @@ export const projects: Project[] = [
     image: null,
   },
   {
-    id: "mobile-3",
-    name: "Project Three",
+    id: "pocket-caddie",
+    name: "Pocket Caddie",
     platform: "mobile",
-    tech: ["React Native", "Expo Router", "React Query"],
+    tech: ["React Native", "Expo", "Vision Camera", "Firebase", "AI"],
+    slug: "pocket-caddie",
     image: null,
   },
   {
@@ -201,7 +202,7 @@ export const caseStudies: Record<string, CaseStudy> = {
     year: "2024 — 2025",
     metrics: [
       { value: "~3 mo", labelKey: "Work.iovaro.metrics.speed" },
-      { value: "20+", labelKey: "Work.iovaro.metrics.features" },
+      { value: "25+", labelKey: "Work.iovaro.metrics.screens" },
       { value: "2", labelKey: "Work.iovaro.metrics.payments" },
     ],
     stack: [
@@ -268,6 +269,76 @@ export const caseStudies: Record<string, CaseStudy> = {
       "Work.iovaro.body.intro",
       "Work.iovaro.body.built",
       "Work.iovaro.body.delivery",
+    ],
+  },
+  "pocket-caddie": {
+    slug: "pocket-caddie",
+    name: "Pocket Caddie",
+    year: "2024 — 2025",
+    metrics: [
+      { value: "+40%", labelKey: "Work.pocket-caddie.metrics.session" },
+      { value: "AI", labelKey: "Work.pocket-caddie.metrics.ai" },
+      { value: "9+", labelKey: "Work.pocket-caddie.metrics.screens" },
+    ],
+    stack: [
+      {
+        labelKey: "Work.pocket-caddie.stack.core",
+        items: [
+          "React Native 0.76",
+          "Expo SDK 52",
+          "TypeScript",
+          "React Navigation",
+          "Zustand",
+        ],
+      },
+      {
+        labelKey: "Work.pocket-caddie.stack.media",
+        items: [
+          "Vision Camera",
+          "expo-video",
+          "expo-video-thumbnails",
+          "expo-media-library",
+          "expo-image-picker",
+        ],
+      },
+      {
+        labelKey: "Work.pocket-caddie.stack.ai",
+        items: [
+          "Cloud Functions",
+          "Backend AI models",
+          "Video trimming pipeline",
+          "Storage uploads",
+        ],
+      },
+      {
+        labelKey: "Work.pocket-caddie.stack.firebase",
+        items: ["Firebase Auth", "Firestore", "Cloud Storage", "Analytics"],
+      },
+      {
+        labelKey: "Work.pocket-caddie.stack.ux",
+        items: [
+          "Reanimated 3",
+          "gifted-charts",
+          "circular-progress",
+          "Range slider",
+          "Linear gradient",
+        ],
+      },
+      {
+        labelKey: "Work.pocket-caddie.stack.ops",
+        items: [
+          "Google / Apple sign-in",
+          "i18next",
+          "EAS Build",
+          "App Store + Play Store",
+        ],
+      },
+    ],
+    gallery: [],
+    bodyKeys: [
+      "Work.pocket-caddie.body.intro",
+      "Work.pocket-caddie.body.built",
+      "Work.pocket-caddie.body.delivery",
     ],
   },
 };
