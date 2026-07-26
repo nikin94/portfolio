@@ -67,16 +67,18 @@ src/
 │   ├── tab-bar.tsx         # Liquid-glass bottom tab bar (primary nav)
 │   ├── animated-outlet.tsx # App-like per-tab enter transition
 │   ├── language-switcher.tsx
+│   ├── cube/               # Rubik's cube hero (lazy WebGL + static fallback)
 │   └── ui/                 # Reusable primitives (Reveal, ThemeToggle, …)
 ├── config/
 │   ├── nav.ts              # Tab definitions (single source of truth)
 │   └── site.ts             # Site-wide metadata (name, url, locales)
-├── hooks/                  # Reusable hooks (useMounted, …)
+├── hooks/                  # Reusable hooks (useMounted, usePrefersReducedMotion, …)
 ├── i18n/
 │   ├── locales.ts          # Locales + default (single source of truth)
 │   └── config.ts           # i18next init + per-locale cloned instances
 ├── lib/
 │   ├── motion.ts           # Shared Motion variants
+│   ├── device.ts           # Capability hints (interactive vs static cube)
 │   └── utils.ts            # cn() class merger
 └── providers/
     └── index.tsx           # ThemeProvider + MotionConfig + Lenis
@@ -108,6 +110,12 @@ messages/
 - Case-study media should be exported as WebP/AVIF; heavy/interactive visuals,
   when added, go behind `React.lazy` + viewport lazy-loading so they never
   block the first paint.
+- The Rubik's cube hero (`components/cube/`) is the reference example: three.js
+  lands in its own lazy chunk (never in the first paint), a static 3×3 fallback
+  is prerendered and shown on the server / during load / for reduced-motion and
+  low-power devices (which never download three.js — see `lib/device.ts`), the
+  render loop pauses when scrolled out of view, and `PerformanceMonitor` lowers
+  the pixel ratio if the framerate dips.
 - Fonts use a system stack (zero network cost, no layout shift); swap for a
   self-hosted webfont once the visual design lands.
 - The tab bar's liquid glass is a robust CSS base (`backdrop-filter` blur +
