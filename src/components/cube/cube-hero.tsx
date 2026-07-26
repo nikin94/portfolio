@@ -28,9 +28,10 @@ const deviceHints = () => {
  * two absolutely-filled layers never collapse it.
  *
  * Smoothing: the static fallback is the base layer and the WebGL canvas fades in
- * on top of it; the fallback only fades out once the canvas has actually painted
- * (`onReady`, with a safety timeout in case the callback is missed). So there's
- * never a blank gap or an abrupt placeholder→cube pop — the two cross-fade.
+ * on top of it; the fallback only fades out once the cube's first frame is
+ * actually painted (`onFirstFrame`, with a safety timeout in case it's missed).
+ * The canvas stays fully transparent until then, so a blank/clearing buffer
+ * never flashes over the fallback — the two cross-fade only when the cube is up.
  *
  * On the server and the first client paint only the fallback renders (no WebGL
  * server-side, and it's the no-JS view). Reduced-motion / low-power devices keep
@@ -47,7 +48,7 @@ export const CubeHero = () => {
     !mounted || prefersStaticCube({ reducedMotion, ...deviceHints() });
 
   // Safety net: retire the fallback shortly after the cube mounts even if the
-  // WebGL `onReady` callback is missed, so we never get stuck cross-faded.
+  // `onFirstFrame` callback is missed, so we never get stuck cross-faded.
   useEffect(() => {
     if (staticOnly) return;
     const id = setTimeout(() => setPainted(true), 1200);
@@ -86,7 +87,7 @@ export const CubeHero = () => {
             animate={{ opacity: painted ? 1 : 0 }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
           >
-            <CubeCanvas active={inView} onReady={() => setPainted(true)} />
+            <CubeCanvas active={inView} onFirstFrame={() => setPainted(true)} />
           </motion.div>
         </Suspense>
       )}

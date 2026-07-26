@@ -1,8 +1,25 @@
 import { PerformanceMonitor, TrackballControls } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
-import { useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef, useState } from "react";
 
 import { CubeModel } from "./cube-scene";
+
+/**
+ * Fires `onFirstFrame` exactly once, on the first *rendered* frame. This is the
+ * only reliable "the cube is actually on screen now" signal: `onCreated` fires
+ * when the renderer exists but before anything is drawn, so revealing the
+ * canvas on it exposes a blank, still-clearing buffer (the white flash) a beat
+ * before the cube paints.
+ */
+const FirstFrameSignal = ({ onFirstFrame }: { onFirstFrame: () => void }) => {
+  const fired = useRef(false);
+  useFrame(() => {
+    if (fired.current) return;
+    fired.current = true;
+    onFirstFrame();
+  });
+  return null;
+};
 
 /**
  * WebGL layer for the Rubik's cube. Lazy-loaded (this is where three.js lands
@@ -14,17 +31,18 @@ import { CubeModel } from "./cube-scene";
  *   it smooth on weaker GPUs and high-DPR screens.
  * - `TrackballControls` (not `OrbitControls`) so the cube rotates freely in
  *   every axis. OrbitControls clamps the vertical/polar angle to 180° and pins
- *   the world "up"; trackball has no such limit — vertical spins as freely as
- *   horizontal. The auto-spin is on the model, so there's no camera auto-orbit.
- * - `onReady` fires once the renderer exists (first frame imminent) so the host
- *   can cross-fade the static fallback out — no abrupt placeholder→cube pop.
+ *   the world "up"; trackball has no such limit. The auto-spin is on the model.
+ * - `onFirstFrame` reports the first *painted* frame so the host cross-fades the
+ *   fallback out only once the cube is truly visible.
+ * - The clear colour is forced fully transparent so the canvas can never flash
+ *   white/black behind the (alpha) scene.
  */
 const CubeCanvas = ({
   active,
-  onReady,
+  onFirstFrame,
 }: {
   active: boolean;
-  onReady?: () => void;
+  onFirstFrame?: () => void;
 }) => {
   const [dpr, setDpr] = useState(1.5);
 
@@ -35,8 +53,9 @@ const CubeCanvas = ({
       camera={{ position: [4, 4, 5.5], fov: 40 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ background: "transparent" }}
-      onCreated={() => onReady?.()}
+      onCreated={({ gl }) => gl.setClearColor(0x000000, 0)}
     >
+      {onFirstFrame && <FirstFrameSignal onFirstFrame={onFirstFrame} />}
       <PerformanceMonitor
         onDecline={() => setDpr(1)}
         onIncline={() => setDpr(2)}
