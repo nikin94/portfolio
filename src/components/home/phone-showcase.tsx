@@ -6,18 +6,20 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 import { PhoneFrame } from "./phone-frame";
 import { ShowcaseChart } from "./showcase-chart";
+import { ShowcaseFaceId } from "./showcase-faceid";
+import { ShowcasePush } from "./showcase-push";
 import { ShowcaseTabs } from "./showcase-tabs";
 
-/** Slides that are actually built and drive the carousel (cube + chart). */
-const LIVE_SLIDES = 2;
+/** Slides that are actually built and drive the carousel. */
+const LIVE_SLIDES = 4;
 const AUTO_MS = 4200;
 /** Swipe past this horizontal distance (px) to change slide. */
 const SWIPE_THRESHOLD = 45;
 
 /**
  * The Home hero: an iPhone running a small carousel of app-feature demos on its
- * screen. Slide 1 is the 3D Rubik's cube, slide 2 an animated analytics chart;
- * a Face ID unlock and push/skeleton demos land later behind their preview tabs.
+ * screen — the 3D Rubik's cube, an animated analytics chart, a Face ID unlock,
+ * and a push notification with skeleton content loading in.
  *
  * The carousel auto-advances (paused on hover / drag / reduced-motion), and can
  * be driven by the glass tab bar or by swiping the screen. Only the active slide
@@ -66,6 +68,12 @@ export const PhoneShowcase = () => {
           </div>
           <div style={slideStyle} className="px-3 pt-12 pb-20">
             <ShowcaseChart active={index === 1} />
+          </div>
+          <div style={slideStyle} className="px-4 pt-10 pb-20">
+            <ShowcaseFaceId active={index === 2} />
+          </div>
+          <div style={slideStyle} className="px-3 pt-12 pb-20">
+            <ShowcasePush active={index === 3} />
           </div>
         </motion.div>
       </div>
