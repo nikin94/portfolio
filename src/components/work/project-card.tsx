@@ -18,21 +18,26 @@ export const ProjectCard = ({ project }: { project: Project }) => {
   const PlatformIcon = platform === "mobile" ? Smartphone : Globe;
 
   const media = (
-    <div className="grid aspect-[4/3] place-items-center px-8 py-6">
-      <DeviceFrame platform={platform}>
-        {image ? (
-          <img
-            src={image}
-            alt=""
-            loading="lazy"
-            className="h-full w-full object-contain"
-          />
-        ) : (
-          <div className="text-muted/50 grid h-full w-full place-items-center">
-            <PlatformIcon className="size-8" aria-hidden />
-          </div>
-        )}
-      </DeviceFrame>
+    <div className="aspect-[4/3] px-8 py-6">
+      {image ? (
+        <div className="grid h-full place-items-center">
+          <DeviceFrame platform={platform}>
+            <img
+              src={image}
+              alt=""
+              loading="lazy"
+              className="h-full w-full object-contain"
+            />
+          </DeviceFrame>
+        </div>
+      ) : (
+        // Placeholder (no screenshot yet): a full-width dashed panel rather than
+        // a thin device sliver, so the empty card doesn't read as too narrow.
+        // Temporary — these cards go away once every project has a case study.
+        <div className="border-border bg-muted/5 text-muted/40 grid h-full w-full place-items-center rounded-2xl border border-dashed">
+          <PlatformIcon className="size-8" aria-hidden />
+        </div>
+      )}
     </div>
   );
 

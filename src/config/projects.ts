@@ -171,11 +171,6 @@ export const caseStudies: Record<string, CaseStudy> = {
       },
     ],
     gallery: [
-      {
-        src: "/projects/pyra/pyra-5.webp",
-        captionKey: "Work.pyra.shots.onboarding",
-      },
-      { src: "/projects/pyra/pyra-6.webp", captionKey: "Work.pyra.shots.kyc" },
       { src: "/projects/pyra/pyra-1.webp", captionKey: "Work.pyra.shots.home" },
       {
         src: "/projects/pyra/pyra-2.webp",
@@ -186,6 +181,11 @@ export const caseStudies: Record<string, CaseStudy> = {
         captionKey: "Work.pyra.shots.credit",
       },
       { src: "/projects/pyra/pyra-4.webp", captionKey: "Work.pyra.shots.card" },
+      {
+        src: "/projects/pyra/pyra-5.webp",
+        captionKey: "Work.pyra.shots.onboarding",
+      },
+      { src: "/projects/pyra/pyra-6.webp", captionKey: "Work.pyra.shots.kyc" },
     ],
     bodyKeys: [
       "Work.pyra.body.intro",

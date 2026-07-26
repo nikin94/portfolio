@@ -29,7 +29,7 @@ export const ScreenGallery = ({ shots }: { shots: CaseStudyShot[] }) => {
 
   return (
     <>
-      <ul className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-4">
+      <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {shots.map((shot, i) => (
           <li key={shot.src} className="flex flex-col items-center gap-3">
             <button
@@ -38,7 +38,9 @@ export const ScreenGallery = ({ shots }: { shots: CaseStudyShot[] }) => {
               aria-label={t(shot.captionKey)}
               className="hover:border-foreground/30 focus-visible:ring-accent w-full cursor-pointer rounded-[1.6rem] border border-transparent transition-colors focus-visible:ring-2 focus-visible:outline-none"
             >
-              <DeviceFrame platform="mobile" className="h-72">
+              {/* Width-driven so each frame fills its grid cell (no side gaps),
+                  and the tall 9/19.5 phones stay a sensible height. */}
+              <DeviceFrame platform="mobile" className="h-auto w-full">
                 <img
                   src={shot.src}
                   alt={t(shot.captionKey)}
