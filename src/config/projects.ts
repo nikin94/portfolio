@@ -109,7 +109,7 @@ export const caseStudies: Record<string, CaseStudy> = {
   pyra: {
     slug: "pyra",
     name: "Pyra",
-    year: "2024 — 2025",
+    year: "2025 — 2026",
     metrics: [
       { value: "$4.8M+", labelKey: "Work.pyra.metrics.volume" },
       { value: "96×", labelKey: "Work.pyra.metrics.growth" },
@@ -142,6 +142,7 @@ export const caseStudies: Record<string, CaseStudy> = {
           "Privy embedded wallet",
           "Passkeys (WebAuthn)",
           "Face ID / Touch ID",
+          "Persona (KYC)",
           "Apple Sign-In",
           "Secure Store",
         ],
@@ -197,7 +198,7 @@ export const caseStudies: Record<string, CaseStudy> = {
   iovaro: {
     slug: "iovaro",
     name: "iOvaro",
-    year: "2024",
+    year: "2024 — 2025",
     metrics: [
       { value: "~3 mo", labelKey: "Work.iovaro.metrics.speed" },
       { value: "20+", labelKey: "Work.iovaro.metrics.features" },
