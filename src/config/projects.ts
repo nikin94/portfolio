@@ -87,17 +87,11 @@ export const projects: Project[] = [
     image: "/projects/pocket-caddie/pca-1.webp",
   },
   {
-    id: "web-1",
-    name: "Web One",
+    id: "alex-motors",
+    name: "Alex Motors",
     platform: "web",
-    tech: ["React", "Vite", "TypeScript"],
-    image: null,
-  },
-  {
-    id: "web-2",
-    name: "Web Two",
-    platform: "web",
-    tech: ["Next.js", "Tailwind CSS", "Motion"],
+    tech: ["React 19", "TypeScript", "Cloudflare Workers", "Tailwind CSS"],
+    slug: "alex-motors",
     image: null,
   },
 ];
@@ -389,6 +383,76 @@ export const caseStudies: Record<string, CaseStudy> = {
       "Work.pocket-caddie.body.intro",
       "Work.pocket-caddie.body.built",
       "Work.pocket-caddie.body.delivery",
+    ],
+  },
+  "alex-motors": {
+    slug: "alex-motors",
+    name: "Alex Motors",
+    year: "2026",
+    metrics: [
+      { value: "~75 kB", labelKey: "Work.alex-motors.metrics.bundle" },
+      { value: "3 languages", labelKey: "Work.alex-motors.metrics.i18n" },
+      { value: "0 cookies", labelKey: "Work.alex-motors.metrics.privacy" },
+    ],
+    stack: [
+      {
+        labelKey: "Work.alex-motors.stack.core",
+        items: ["React 19", "TypeScript", "Vite 8", "Tailwind CSS v4"],
+      },
+      {
+        labelKey: "Work.alex-motors.stack.edge",
+        items: [
+          "Cloudflare Workers",
+          "Email Routing",
+          "run_worker_first routing",
+          "Wrangler",
+          "Workers Builds",
+        ],
+      },
+      {
+        labelKey: "Work.alex-motors.stack.i18n",
+        items: [
+          "Custom typed i18n (EN / GA / RU)",
+          "Bebas Neue",
+          "Oswald Cyrillic (unicode-range)",
+          "font-display: block",
+        ],
+      },
+      {
+        labelKey: "Work.alex-motors.stack.motion",
+        items: [
+          "Native CSS scroll snap",
+          "IntersectionObserver reveals",
+          "CSS-only neon & flicker",
+          "grid-rows accordion",
+          "prefers-reduced-motion",
+        ],
+      },
+      {
+        labelKey: "Work.alex-motors.stack.quality",
+        items: [
+          "Vitest",
+          "Playwright",
+          "GitHub Actions CI",
+          "oxlint",
+          "Shared validation contract",
+        ],
+      },
+      {
+        labelKey: "Work.alex-motors.stack.seo",
+        items: [
+          "schema.org AutoRepair JSON-LD",
+          "ARIA tablists & live regions",
+          "inert crossfade decks",
+          "Honeypot anti-spam",
+        ],
+      },
+    ],
+    gallery: [],
+    bodyKeys: [
+      "Work.alex-motors.body.intro",
+      "Work.alex-motors.body.built",
+      "Work.alex-motors.body.delivery",
     ],
   },
 };

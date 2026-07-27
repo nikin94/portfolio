@@ -63,8 +63,7 @@
       "pyra": "Solana-based fintech app — a full React Native rebuild I owned as the first external engineer, from onboarding and KYC to cards, payments and virtual accounts.",
       "iovaro": "Cross-platform invoicing app — built from the ground up as sole mobile engineer, with Stripe payments, RevenueCat subscriptions, PDF documents and Firebase.",
       "pocket-caddie": "AI-powered golf analytics app — I built the mobile experience around swing capture, video uploads, AI analysis and progress tracking.",
-      "web-1": "Placeholder — a web project case study lands here soon.",
-      "web-2": "Placeholder — a web project case study lands here soon."
+      "alex-motors": "A cinematic one-page site for a real auto-repair workshop — designed and built solo in three languages, from the neon-sign concept to a Cloudflare edge backend."
     },
     "pyra": {
       "eyebrow": "React Native · Solana fintech",
@@ -154,6 +153,36 @@
         "analysis": "My Swing — AI swing score & breakdown",
         "drills": "Drills — guided practice & progress",
         "academy": "Academy — coaching video library"
+      }
+    },
+    "alex-motors": {
+      "eyebrow": "React · Cloudflare edge · Solo design + build",
+      "summary": "A cinematic one-page site for a real auto-repair workshop on the Irish border — designed and built solo, from the neon-sign concept to the edge backend, in three languages.",
+      "metrics": {
+        "bundle": "Gzipped JS for the whole site, React 19 included",
+        "i18n": "English, Irish (Gaeilge) and Russian on a custom typed i18n",
+        "privacy": "No third-party scripts or trackers — and no GDPR banner"
+      },
+      "body": {
+        "intro": "Alex Motors is a working one-man garage on the Donegal–Derry border. The site is its entire digital presence: a single cinematic page that has to earn a local customer's trust in one scroll — services, customer reviews, an FAQ and instant ways to get in touch. I owned everything solo: concept and art direction, front end, edge backend, testing and CI.",
+        "built": "The visual idea is a neon garage sign at night. The logo flickers on over a brick wall that runs seamlessly beneath all five full-screen scenes, and paging between them is owned entirely by native CSS scroll snap — after prototyping a JS wheel-paging layer I removed it completely, having proven that the browser's directional snapping does the job with zero scroll-hijacking bugs. Everything is built accessibility-first: ARIA tablists with roving tabindex, live regions, inert crossfade decks that keep all content crawlable, and every animation gated behind prefers-reduced-motion.",
+        "delivery": "The site ships as a Cloudflare Worker: static assets at the edge plus a POST /api/contact endpoint that validates against the same shared contract as the browser form, filters bots with a honeypot, and hand-builds an RFC 5322 email for Cloudflare Email Routing. Three languages — English, Irish and Russian — run on a custom typed dictionary instead of an i18n library, including a unicode-range font fallback that serves a heavier Cyrillic cut so Russian display text matches the Latin face optically. Quality is enforced by Vitest unit tests, a Playwright smoke suite against the real dev server, and GitHub Actions CI on every PR."
+      },
+      "stack": {
+        "core": "Core",
+        "edge": "Edge & backend",
+        "i18n": "i18n & typography",
+        "motion": "Motion & UX",
+        "quality": "Quality",
+        "seo": "SEO & a11y"
+      },
+      "shots": {
+        "hero": "Hero — the sign switches on",
+        "services": "Services — master-detail showcase",
+        "reviews": "Reviews — infinite carousel",
+        "faq": "FAQ — neon-glow master-detail",
+        "contact": "Contact — details & enquiry form",
+        "language": "Language menu — call / WhatsApp / language cluster"
       }
     },
     "note": "These are a few recent highlights. There's plenty more behind them — earlier work, and projects I can't show publicly. Happy to walk through the rest on request."
