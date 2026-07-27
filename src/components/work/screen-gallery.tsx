@@ -4,8 +4,9 @@ import Captions from "yet-another-react-lightbox/plugins/captions";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/captions.css";
 
-import type { CaseStudyShot } from "@/config/projects";
+import type { CaseStudyShot, Platform } from "@/config/projects";
 import { t } from "@/i18n/strings";
+import { cn } from "@/lib/utils";
 
 import { DeviceFrame } from "./device-frame";
 
@@ -19,8 +20,16 @@ import { DeviceFrame } from "./device-frame";
  * `open` defaults to false, so the lightbox portal renders nothing during
  * static generation / first paint — the thumbnails are the SSR content.
  */
-export const ScreenGallery = ({ shots }: { shots: CaseStudyShot[] }) => {
+export const ScreenGallery = ({
+  shots,
+  platform = "mobile",
+}: {
+  shots: CaseStudyShot[];
+  /** Phone frames pack 6-up; browser frames are landscape, so 3-up reads best. */
+  platform?: Platform;
+}) => {
   const [index, setIndex] = useState(-1);
+  const isWeb = platform === "web";
 
   const slides = shots.map((shot) => ({
     src: shot.src,
@@ -29,23 +38,37 @@ export const ScreenGallery = ({ shots }: { shots: CaseStudyShot[] }) => {
 
   return (
     <>
-      <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+      <ul
+        className={cn(
+          "mt-6 grid gap-4",
+          isWeb
+            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-6",
+        )}
+      >
         {shots.map((shot, i) => (
           <li key={shot.src} className="flex flex-col items-center gap-3">
             <button
               type="button"
               onClick={() => setIndex(i)}
               aria-label={t(shot.captionKey)}
-              className="hover:border-foreground/30 focus-visible:ring-accent w-full cursor-pointer rounded-[1.6rem] border border-transparent transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              className={cn(
+                "hover:border-foreground/30 focus-visible:ring-accent w-full cursor-pointer border border-transparent transition-colors focus-visible:ring-2 focus-visible:outline-none",
+                isWeb ? "rounded-xl" : "rounded-[1.6rem]",
+              )}
             >
-              {/* Width-driven so each frame fills its grid cell (no side gaps),
-                  and the tall 9/19.5 phones stay a sensible height. */}
-              <DeviceFrame platform="mobile" className="h-auto w-full">
+              {/* Width-driven so each frame fills its grid cell (no side gaps).
+                  Phone shots are `contain` (letterbox tall portrait); web shots
+                  are `cover` so the screenshot fills the browser viewport. */}
+              <DeviceFrame platform={platform} className="h-auto w-full">
                 <img
                   src={shot.src}
                   alt={t(shot.captionKey)}
                   loading="lazy"
-                  className="h-full w-full object-contain"
+                  className={cn(
+                    "h-full w-full",
+                    isWeb ? "object-cover" : "object-contain",
+                  )}
                 />
               </DeviceFrame>
             </button>
