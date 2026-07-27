@@ -2,8 +2,8 @@ import { Head } from "vite-react-ssg";
 
 import { AnimatedOutlet } from "@/components/animated-outlet";
 import { EasterEggs } from "@/components/easter-eggs/easter-eggs";
+import { MainNav } from "@/components/main-nav";
 import { ScrollToTop } from "@/components/scroll-to-top";
-import { TabBar } from "@/components/tab-bar";
 import { siteConfig } from "@/config/site";
 import { AppProviders } from "@/providers";
 
@@ -29,16 +29,16 @@ const RootLayout = () => (
     </Head>
 
     <div className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-6">
-      <header className="flex items-center py-6">
+      <header className="flex items-center justify-between gap-4 py-6">
         <span className="text-sm font-semibold tracking-widest uppercase">
           {siteConfig.author}
         </span>
+        <MainNav />
       </header>
-      <main className="flex flex-1 flex-col pb-28">
+      <main className="flex flex-1 flex-col pb-16">
         <AnimatedOutlet />
       </main>
     </div>
-    <TabBar />
     <EasterEggs />
   </AppProviders>
 );
