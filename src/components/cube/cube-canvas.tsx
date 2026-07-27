@@ -1,8 +1,23 @@
 import { PerformanceMonitor, TrackballControls } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
-import { useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef, useState } from "react";
 
 import { CubeModel } from "./cube-scene";
+
+/**
+ * Fires `onReady` once, on the first rendered frame — the moment the cube
+ * actually paints. The parent uses it to fade out the static fallback only when
+ * the live cube is on screen, so there's never a blank gap or a fallback flash.
+ */
+const FirstFrameSignal = ({ onReady }: { onReady: () => void }) => {
+  const fired = useRef(false);
+  useFrame(() => {
+    if (fired.current) return;
+    fired.current = true;
+    onReady();
+  });
+  return null;
+};
 
 /**
  * WebGL layer for the Rubik's cube. Lazy-loaded (this is where three.js lands
@@ -18,7 +33,14 @@ import { CubeModel } from "./cube-scene";
  * - The clear colour is forced fully transparent so the canvas can never flash
  *   white/black behind the (alpha) scene while the cube fades/scales in.
  */
-const CubeCanvas = ({ active }: { active: boolean }) => {
+const CubeCanvas = ({
+  active,
+  onReady,
+}: {
+  active: boolean;
+  /** Called once the cube has painted its first frame. */
+  onReady?: () => void;
+}) => {
   const [dpr, setDpr] = useState(1.5);
 
   return (
@@ -38,6 +60,7 @@ const CubeCanvas = ({ active }: { active: boolean }) => {
       <directionalLight position={[5, 8, 5]} intensity={1.1} />
       <directionalLight position={[-5, -2, -4]} intensity={0.35} />
       <CubeModel />
+      {onReady && <FirstFrameSignal onReady={onReady} />}
       <TrackballControls enabled={active} noZoom noPan rotateSpeed={3} />
     </Canvas>
   );

@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { t } from "@/i18n/strings";
 
 import { useInViewport } from "@/hooks/use-in-viewport";
@@ -53,18 +53,18 @@ const deviceHints = () => {
  * The wrapper has a *definite* size (`w-72 … sm:w-96` + `aspect-square`) so the
  * absolutely-filled canvas never collapses it.
  *
- * Capable devices render the interactive cube directly — there is no static
- * fallback layered underneath and no cross-fade. The three.js chunk is prefetched
- * on idle as soon as a capable client mounts, so it's usually already in cache by
- * the time the cube renders; while it loads the space is simply empty/transparent
- * (Suspense fallback is `null`, and the canvas clears transparent), so a flat
- * placeholder never flashes in. The cube then plays a short scale-up entrance as
- * it paints, reading as "the cube grows into view" rather than "a flat picture,
- * then a swap".
+ * On capable devices the static fallback is kept layered *underneath* the WebGL
+ * canvas and only fades out once the live cube has painted its first frame. That
+ * removes the flash the old direct-swap caused: the prerendered fallback used to
+ * be replaced by an empty/transparent canvas the instant the client mounted,
+ * then sit blank while the three.js chunk (~240 kB) loaded, then pop the cube in
+ * — a visible "fallback → blank → cube" flicker. Now it's a continuous
+ * "fallback → cube" cross-fade with no blank gap. The chunk is still prefetched
+ * on idle so the fade happens quickly.
  *
- * The static fallback is used only where WebGL can't or shouldn't run: the server
- * render / no-JS view, and reduced-motion / low-power devices (which therefore
- * never download three.js).
+ * The static fallback is the *only* thing rendered where WebGL can't or shouldn't
+ * run: the server render / no-JS view, and reduced-motion / low-power devices
+ * (which therefore never download three.js).
  */
 export const CubeHero = ({
   className,
@@ -78,6 +78,8 @@ export const CubeHero = ({
   const reducedMotion = usePrefersReducedMotion();
   const [ref, inView] = useInViewport<HTMLDivElement>("200px");
   const canvasWrap = useRef<HTMLDivElement>(null);
+  // Flips once the live cube paints, fading the layered fallback out.
+  const [cubeReady, setCubeReady] = useState(false);
 
   const staticOnly =
     !mounted || prefersStaticCube({ reducedMotion, ...deviceHints() });
@@ -120,11 +122,27 @@ export const CubeHero = ({
       {staticOnly ? (
         <CubeFallback />
       ) : (
-        <div ref={canvasWrap} className="absolute inset-0">
-          <Suspense fallback={null}>
-            <CubeCanvas active={inView && active} />
-          </Suspense>
-        </div>
+        <>
+          {/* Fallback stays underneath and fades out only once the live cube
+              has painted — no blank gap, no flash swapping to an empty canvas. */}
+          <div
+            aria-hidden
+            className={cn(
+              "absolute inset-0 transition-opacity duration-500",
+              cubeReady ? "opacity-0" : "opacity-100",
+            )}
+          >
+            <CubeFallback />
+          </div>
+          <div ref={canvasWrap} className="absolute inset-0">
+            <Suspense fallback={null}>
+              <CubeCanvas
+                active={inView && active}
+                onReady={() => setCubeReady(true)}
+              />
+            </Suspense>
+          </div>
+        </>
       )}
     </div>
   );
