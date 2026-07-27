@@ -11,7 +11,6 @@
     "title": "Building fast, polished cross-platform mobile apps",
     "subtitle": "iOS and Android apps built with React Native — crafted with an obsession for performance, native feel and motion. Plus modern web experiences on the side.",
     "cubeLabel": "Interactive Rubik's cube — drag to rotate",
-    "cubeBuild": "Build",
     "showcase": {
       "label": "App feature demos",
       "tabs": {

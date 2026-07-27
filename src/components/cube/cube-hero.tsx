@@ -30,13 +30,14 @@ const deviceHints = () => {
  * The wrapper has a *definite* size (`w-72 … sm:w-96` + `aspect-square`) so the
  * absolutely-filled canvas never collapses it.
  *
- * While the three.js chunk loads there's a deliberate intro — a "Build" button
- * that presses itself on a loop (`CubeIntro`), layered on top of the (loading)
- * canvas. Once the live cube paints its first frame it cross-fades away and the
- * cube scales into its place, so the load delay reads as an intentional
- * micro-scene rather than a blank box or a flashing placeholder. The intro is
- * prerendered at rest (no motion) — the server / no-JS view and any
- * pre-hydration paint — and starts pressing only after mount, so there's no
+ * While the three.js chunk loads there's a deliberate intro — an isometric
+ * "blueprint" wireframe of the cube that draws and un-draws itself on a loop
+ * (`CubeIntro`), layered on top of the (loading) canvas. Once the live cube
+ * paints its first frame it cross-fades away and the cube scales into its place,
+ * so the load delay reads as an intentional micro-scene (a cube being sketched)
+ * rather than a blank box or a flashing placeholder. The intro is prerendered at
+ * rest as the finished wireframe (no motion) — the server / no-JS view and any
+ * pre-hydration paint — and starts drawing only after mount, so there's no
  * `opacity:0`-before-JS and nothing jarring at hydration.
  *
  * The static `CubeFallback` (flat 3×3) is shown *only* when the live cube can't
@@ -117,8 +118,9 @@ export const CubeHero = ({
             </CubeErrorBoundary>
           )}
 
-          {/* Build-button intro on top, fading out once the cube resolves.
-              Prerendered at rest (SSR / no-JS); presses only after mount. */}
+          {/* Blueprint wireframe intro on top, fading out once the cube
+              resolves. Prerendered as the finished wireframe (SSR / no-JS); it
+              draws itself only after mount. */}
           <div
             className={cn(
               "absolute inset-0 transition-opacity duration-300",
