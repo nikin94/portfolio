@@ -203,8 +203,27 @@
   "Contact": {
     "eyebrow": "Get in touch",
     "title": "Let's build something",
-    "subtitle": "Open to React Native and frontend roles and collaborations.",
-    "cta": "Contact links land here soon."
+    "subtitle": "Open to React Native and frontend roles and collaborations — send a note and I'll get back to you.",
+    "directLabel": "Or reach me directly",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "message": "Message",
+      "messagePlaceholder": "Tell me about the project or role…",
+      "send": "Send message",
+      "sending": "Sending…",
+      "sent": "Message sent",
+      "error": "Something went wrong. Please try again, or email me directly.",
+      "errors": {
+        "nameRequired": "Please enter your name.",
+        "emailRequired": "Please enter your email.",
+        "emailInvalid": "Please enter a valid email address.",
+        "messageRequired": "Please enter a message.",
+        "messageShort": "A little short — add a few more details."
+      }
+    }
   },
   "Common": {}
 }
