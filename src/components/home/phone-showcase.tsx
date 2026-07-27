@@ -62,7 +62,7 @@ const SLIDES: Slide[] = [
 
 const COUNT = SLIDES.length;
 /** Delay before the push notification drops onto the cube slide (ms). */
-const PUSH_DELAY_MS = 1500;
+const PUSH_DELAY_MS = 1000;
 /**
  * How long the phone takes to finish rising into view on the initial page load
  * — the `hero-rise-phone` animation's delay (0.85s) plus its duration (1s).
