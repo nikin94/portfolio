@@ -19,22 +19,15 @@ const importCubeCanvas = () => import("./cube-canvas");
 const CubeCanvas = lazy(importCubeCanvas);
 
 /**
- * Warm the three.js chunk (~240 kB gz) ahead of time so it's already
- * downloading — or done — by the time the cube renders, shrinking the empty
- * gap before the cube appears. Runs during idle time to avoid competing with
- * critical first-paint work.
+ * Warm the three.js chunk (~240 kB gz) as soon as we know this is a capable
+ * client. The cube is the above-the-fold hero, so the chunk is fetched eagerly
+ * (not deferred to idle) — the sooner it lands, the sooner the live cube paints
+ * and the shorter the fallback is on screen. It's a separate async chunk, so it
+ * never blocks the HTML/critical-CSS first paint; it only starts its own
+ * download a beat earlier.
  */
 const preloadCubeCanvas = () => {
-  const warm = () => {
-    void importCubeCanvas();
-  };
-  const ric = (
-    window as Window & {
-      requestIdleCallback?: (cb: () => void) => number;
-    }
-  ).requestIdleCallback;
-  if (ric) ric(warm);
-  else window.setTimeout(warm, 200);
+  void importCubeCanvas();
 };
 
 /** Reads capability hints from `navigator`, guarding for non-browser envs. */
@@ -59,8 +52,9 @@ const deviceHints = () => {
  * be replaced by an empty/transparent canvas the instant the client mounted,
  * then sit blank while the three.js chunk (~240 kB) loaded, then pop the cube in
  * — a visible "fallback → blank → cube" flicker. Now it's a continuous
- * "fallback → cube" cross-fade with no blank gap. The chunk is still prefetched
- * on idle so the fade happens quickly.
+ * "fallback → cube" cross-fade with no blank gap. The chunk is prefetched
+ * eagerly (not on idle) so the live cube lands fast and the fallback's time on
+ * screen — plus the crossfade — stays short.
  *
  * The static fallback is the *only* thing rendered where WebGL can't or shouldn't
  * run: the server render / no-JS view, and reduced-motion / low-power devices
@@ -128,7 +122,7 @@ export const CubeHero = ({
           <div
             aria-hidden
             className={cn(
-              "absolute inset-0 transition-opacity duration-500",
+              "absolute inset-0 transition-opacity duration-200",
               cubeReady ? "opacity-0" : "opacity-100",
             )}
           >
