@@ -2,18 +2,18 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
-import { TabBar } from "./tab-bar";
+import { MainNav } from "./main-nav";
 
 const renderAt = (path: string) =>
   render(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
-        <Route path="/*" element={<TabBar />} />
+        <Route path="/*" element={<MainNav />} />
       </Routes>
     </MemoryRouter>,
   );
 
-describe("TabBar", () => {
+describe("MainNav", () => {
   it("renders a link per tab with its label", () => {
     renderAt("/");
     expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
