@@ -130,14 +130,14 @@
       "eyebrow": "React Native · AI golf analytics",
       "summary": "An AI-powered golf analytics app: players record their swings, upload the videos for analysis by backend AI models, and track their progress over time. I built the mobile experience end to end as a contractor at Applica.",
       "metrics": {
-        "pipeline": "Complete mobile experience built solo — a functional AI prototype, from swing capture to analytics",
-        "ai": "Every uploaded swing analysed by backend AI models",
-        "screens": "Production screens — capture, trim, analysis, drills, coaching and more"
+        "build": "Complete mobile app built solo and handed to the client as a working prototype",
+        "pipeline": "Swing-capture video pipeline built from scratch — camera, frame-accurate trimming and resumable uploads to the AI backend",
+        "screens": "Production screens — capture, trim, swing review, drills, coaching and more"
       },
       "body": {
         "intro": "Pocket Caddie is an AI-powered golf analytics app. Players record their golf swings on their phone, upload the clips for analysis by backend AI models, and get performance feedback they can track over time. I built the mobile experience from the ground up as a contractor at Applica.",
-        "built": "I built the full video pipeline around Vision Camera — swing capture, frame-accurate trimming with a custom range slider, thumbnail generation and resumable uploads to Firebase Storage — feeding the clips to Cloud Functions and the AI analysis backend. On top of it I shipped the analytics dashboards, swing comparison, progress tracking and performance visualisation with animated charts and circular score gauges.",
-        "delivery": "Beyond feature work I owned architecture decisions, release management and both the App Store and Play Store submissions, and mentored a junior developer through code reviews and pair programming. The result was a complete, working AI-analysis prototype delivered end to end — from swing capture through to the performance dashboards."
+        "built": "I built the full video pipeline around Vision Camera — swing capture, frame-accurate trimming with a custom range slider, thumbnail generation and resumable uploads to Firebase Storage — feeding the clips to Cloud Functions and the AI analysis backend. On top of it I built the swing-review, comparison and progress-tracking screens with animated charts and circular score gauges.",
+        "delivery": "Beyond feature work I owned architecture decisions, release management and both the App Store and Play Store submissions, and mentored a junior developer through code reviews and pair programming. The result was a complete, working prototype delivered to the client end to end — from swing capture and trimming through to video upload for AI analysis."
       },
       "stack": {
         "core": "Core",
