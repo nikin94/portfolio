@@ -153,9 +153,38 @@
   "About": {
     "eyebrow": "About me",
     "title": "A bit about me",
-    "bio": "Placeholder — a short biography goes here: who I am, how I got into React Native and mobile development, and what I care about building.",
-    "educationLabel": "Education",
-    "education": "Placeholder — degree, university and years land here soon.",
+    "bio": "I'm a Senior React Native developer focused on cross-platform mobile delivery, performance and product scaling — most recently across FinTech and HealthTech. I care about apps that feel fast and truly native, and I lean on AI-assisted tooling to ship production-quality work quickly.",
+    "timeline": {
+      "label": "Career",
+      "pyra": {
+        "role": "Senior React Native Developer",
+        "blurb": "Joined a Web3 FinTech card product as the first external engineer and led the iOS/Android rebuild while volume scaled from $50K to $4.8M+ over 10 months — shipping 40+ screens and cutting cold-start time by ~60%."
+      },
+      "applica": {
+        "role": "React Native Developer",
+        "blurb": "Delivered two production apps end to end — a cross-platform invoicing product and an AI-powered golf analytics app — owning architecture, implementation and store releases, and mentored a junior developer."
+      },
+      "freelance": {
+        "role": "React Native / Full-Stack Developer",
+        "blurb": "Modernised a legacy React Native dating app across mobile and a Node.js/MongoDB backend, cutting screen load times by ~50% and crash rates by ~70% while lifting registration completion."
+      },
+      "cloudfactory": {
+        "role": "React Native / Web Developer",
+        "blurb": "Built mobile and web for a large-scale FinTech investment platform serving 200K+ users, with real-time portfolio management and trade-execution flows."
+      },
+      "decision-mapper": {
+        "role": "React Native / Full-Stack Developer",
+        "blurb": "Delivered 4+ cross-platform apps across education, dating and social domains, designing scalable mobile and backend architecture from build to release."
+      },
+      "kport": {
+        "role": "Web Developer",
+        "blurb": "Built 10+ Drupal websites end to end — backend configuration through responsive frontend — and shipped SEO improvements that grew organic visibility."
+      },
+      "graduation": {
+        "role": "MSc, Applied Mathematics",
+        "blurb": "The maths grounding behind the engineering — still shapes how I break problems down."
+      }
+    },
     "interests": {
       "label": "Off the clock",
       "chess": "Chess",
