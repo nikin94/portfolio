@@ -62,7 +62,9 @@ describe("ContactForm", () => {
         message: "I'd love to talk about a React Native role.",
       }),
     );
-    expect(await screen.findByText(/on its way/)).toBeInTheDocument();
+    expect(
+      await screen.findByRole("button", { name: /Message sent/ }),
+    ).toBeInTheDocument();
   });
 
   it("surfaces an error when delivery fails", async () => {

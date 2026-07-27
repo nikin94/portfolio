@@ -214,8 +214,7 @@
       "messagePlaceholder": "Tell me about the project or role…",
       "send": "Send message",
       "sending": "Sending…",
-      "sentSuccess": "Thanks — your message is on its way. I'll be in touch soon.",
-      "mailtoSuccess": "Your email app is opening — send from there and it'll reach me.",
+      "sent": "Message sent",
       "error": "Something went wrong. Please try again, or email me directly.",
       "errors": {
         "nameRequired": "Please enter your name.",

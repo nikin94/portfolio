@@ -1,4 +1,4 @@
-import { CheckCircle2, Loader2, Send } from "lucide-react";
+import { Check, Loader2, Send } from "lucide-react";
 import { useState } from "react";
 
 import { submitContact, type ContactValues } from "@/lib/contact";
@@ -75,25 +75,18 @@ export const ContactForm = () => {
     setStatus("sending");
     void (async () => {
       try {
-        const result = await submitContact(values);
-        setStatus(result);
-        // A delivered message clears the form; a mailto compose keeps it (the
-        // user may still be finishing the draft in their mail app).
-        if (result === "sent") setValues(EMPTY);
+        setStatus(await submitContact(values));
+        // Delivered — reset the form; the button now reads "Message sent".
+        setValues(EMPTY);
       } catch {
         setStatus("error");
       }
     })();
   };
 
-  const statusMessage =
-    status === "sent"
-      ? t("Contact.form.sentSuccess")
-      : status === "mailto"
-        ? t("Contact.form.mailtoSuccess")
-        : status === "error"
-          ? t("Contact.form.error")
-          : null;
+  // The button itself confirms success ("Message sent"); only a failure needs a
+  // spelled-out message.
+  const statusMessage = status === "error" ? t("Contact.form.error") : null;
 
   return (
     <form onSubmit={onSubmit} noValidate className="mt-10 max-w-xl">
@@ -128,7 +121,7 @@ export const ContactForm = () => {
           aria-describedby={
             errors.message ? "contact-message-error" : undefined
           }
-          className={cn(fieldClass(!!errors.message), "resize-y")}
+          className={cn(fieldClass(!!errors.message), "min-h-32 resize-y")}
         />
         <FieldError id="contact-message-error" message={errors.message} />
       </div>
@@ -136,32 +129,35 @@ export const ContactForm = () => {
       <div className="mt-6 flex flex-wrap items-center gap-4">
         <button
           type="submit"
-          disabled={sending}
+          // Non-interactive while sending and once sent — no cursor or hover
+          // feedback after delivery, only in the idle (submittable) state.
+          disabled={sending || done}
           className={cn(
             "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium",
             "bg-foreground text-background transition-opacity",
-            "hover:opacity-90 disabled:opacity-60",
+            status === "idle" && "cursor-pointer hover:opacity-90",
+            sending && "opacity-60",
           )}
         >
           {sending ? (
             <Loader2 className="size-4 animate-spin" aria-hidden />
           ) : done ? (
-            <CheckCircle2 className="size-4" aria-hidden />
+            <Check className="size-4" aria-hidden />
           ) : (
             <Send className="size-4" aria-hidden />
           )}
-          {sending ? t("Contact.form.sending") : t("Contact.form.send")}
+          {sending
+            ? t("Contact.form.sending")
+            : done
+              ? t("Contact.form.sent")
+              : t("Contact.form.send")}
         </button>
 
-        <p
-          aria-live="polite"
-          className={cn(
-            "text-sm",
-            status === "error" ? "text-red-400" : "text-accent",
-          )}
-        >
-          {statusMessage}
-        </p>
+        {statusMessage && (
+          <p aria-live="polite" className="text-sm text-red-400">
+            {statusMessage}
+          </p>
+        )}
       </div>
     </form>
   );
@@ -176,12 +172,13 @@ const FieldLabel = ({ field }: { field: Field }) => (
   </label>
 );
 
-const FieldError = ({ id, message }: { id: string; message?: string }) =>
-  message ? (
-    <p id={id} className="mt-1.5 text-xs text-red-400">
-      {message}
-    </p>
-  ) : null;
+// The error line reserves its height at all times (`min-h-4`), so an error
+// appearing or clearing swaps text in place instead of pushing the layout.
+const FieldError = ({ id, message }: { id: string; message?: string }) => (
+  <p id={id} className="mt-1.5 min-h-4 text-xs text-red-400">
+    {message}
+  </p>
+);
 
 const FormField = ({
   field,
