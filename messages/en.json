@@ -146,6 +146,14 @@
         "firebase": "Backend & data",
         "ux": "Charts & motion",
         "ops": "Auth & delivery"
+      },
+      "shots": {
+        "onboarding": "Onboarding — how to video your swing",
+        "trim": "Trim — frame-accurate swing clip",
+        "home": "Home — swing scores at a glance",
+        "analysis": "My Swing — AI swing score & breakdown",
+        "drills": "Drills — guided practice & progress",
+        "academy": "Academy — coaching video library"
       }
     },
     "note": "These are a few recent highlights. There's plenty more behind them — earlier work, and projects I can't show publicly. Happy to walk through the rest on request."
