@@ -301,7 +301,7 @@ export const caseStudies: Record<string, CaseStudy> = {
     name: "Pocket Caddie AI",
     year: "2024 — 2025",
     metrics: [
-      { value: "+40%", labelKey: "Work.pocket-caddie.metrics.session" },
+      { value: "E2E", labelKey: "Work.pocket-caddie.metrics.pipeline" },
       { value: "AI", labelKey: "Work.pocket-caddie.metrics.ai" },
       { value: "9+", labelKey: "Work.pocket-caddie.metrics.screens" },
     ],
