@@ -94,16 +94,17 @@ export const CubeHero = ({
   // during a reload. Hiding it synchronously (direct DOM write, not React state,
   // so it lands before the unload frame paints) lets the transparent page
   // background show through instead of a white square.
+  //
+  // Only `pagehide` — it covers the same unload/reload path (and bfcache/mobile)
+  // without the `beforeunload` listener, which disqualifies the page from the
+  // browser's back/forward cache and would make every back navigation slower
+  // than the flash it prevents.
   useEffect(() => {
     const hide = () => {
       if (canvasWrap.current) canvasWrap.current.style.visibility = "hidden";
     };
     window.addEventListener("pagehide", hide);
-    window.addEventListener("beforeunload", hide);
-    return () => {
-      window.removeEventListener("pagehide", hide);
-      window.removeEventListener("beforeunload", hide);
-    };
+    return () => window.removeEventListener("pagehide", hide);
   }, []);
 
   return (
