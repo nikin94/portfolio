@@ -81,11 +81,11 @@ export const projects: Project[] = [
     image: "/projects/iovaro/iovaro-1.webp",
   },
   {
-    id: "pocket-caddie",
+    id: "pocket-caddie-ai",
     name: "Pocket Caddie AI",
     platform: "mobile",
     tech: ["React Native", "Expo", "Vision Camera", "Firebase", "AI"],
-    slug: "pocket-caddie",
+    slug: "pocket-caddie-ai",
     image: "/projects/pocket-caddie/pca-1.webp",
   },
   {
@@ -294,19 +294,19 @@ export const caseStudies: Record<string, CaseStudy> = {
       "Work.iovaro.body.delivery",
     ],
   },
-  "pocket-caddie": {
-    slug: "pocket-caddie",
+  "pocket-caddie-ai": {
+    slug: "pocket-caddie-ai",
     name: "Pocket Caddie AI",
     platform: "mobile",
     year: "2024 — 2025",
     metrics: [
-      { value: "E2E", labelKey: "Work.pocket-caddie.metrics.build" },
-      { value: "Pipeline", labelKey: "Work.pocket-caddie.metrics.pipeline" },
-      { value: "9+", labelKey: "Work.pocket-caddie.metrics.screens" },
+      { value: "E2E", labelKey: "Work.pocket-caddie-ai.metrics.build" },
+      { value: "Pipeline", labelKey: "Work.pocket-caddie-ai.metrics.pipeline" },
+      { value: "9+", labelKey: "Work.pocket-caddie-ai.metrics.screens" },
     ],
     stack: [
       {
-        labelKey: "Work.pocket-caddie.stack.core",
+        labelKey: "Work.pocket-caddie-ai.stack.core",
         items: [
           "React Native 0.76",
           "Expo SDK 52",
@@ -316,7 +316,7 @@ export const caseStudies: Record<string, CaseStudy> = {
         ],
       },
       {
-        labelKey: "Work.pocket-caddie.stack.media",
+        labelKey: "Work.pocket-caddie-ai.stack.media",
         items: [
           "Vision Camera",
           "expo-video",
@@ -326,7 +326,7 @@ export const caseStudies: Record<string, CaseStudy> = {
         ],
       },
       {
-        labelKey: "Work.pocket-caddie.stack.ai",
+        labelKey: "Work.pocket-caddie-ai.stack.ai",
         items: [
           "Cloud Functions",
           "Backend AI models",
@@ -335,11 +335,11 @@ export const caseStudies: Record<string, CaseStudy> = {
         ],
       },
       {
-        labelKey: "Work.pocket-caddie.stack.firebase",
+        labelKey: "Work.pocket-caddie-ai.stack.firebase",
         items: ["Firebase Auth", "Firestore", "Cloud Storage", "Analytics"],
       },
       {
-        labelKey: "Work.pocket-caddie.stack.ux",
+        labelKey: "Work.pocket-caddie-ai.stack.ux",
         items: [
           "Reanimated 3",
           "gifted-charts",
@@ -349,7 +349,7 @@ export const caseStudies: Record<string, CaseStudy> = {
         ],
       },
       {
-        labelKey: "Work.pocket-caddie.stack.ops",
+        labelKey: "Work.pocket-caddie-ai.stack.ops",
         items: [
           "Google / Apple sign-in",
           "i18next",
@@ -361,33 +361,33 @@ export const caseStudies: Record<string, CaseStudy> = {
     gallery: [
       {
         src: "/projects/pocket-caddie/pca-1.webp",
-        captionKey: "Work.pocket-caddie.shots.onboarding",
+        captionKey: "Work.pocket-caddie-ai.shots.onboarding",
       },
       {
         src: "/projects/pocket-caddie/pca-2.webp",
-        captionKey: "Work.pocket-caddie.shots.trim",
+        captionKey: "Work.pocket-caddie-ai.shots.trim",
       },
       {
         src: "/projects/pocket-caddie/pca-3.webp",
-        captionKey: "Work.pocket-caddie.shots.home",
+        captionKey: "Work.pocket-caddie-ai.shots.home",
       },
       {
         src: "/projects/pocket-caddie/pca-4.webp",
-        captionKey: "Work.pocket-caddie.shots.analysis",
+        captionKey: "Work.pocket-caddie-ai.shots.analysis",
       },
       {
         src: "/projects/pocket-caddie/pca-5.webp",
-        captionKey: "Work.pocket-caddie.shots.drills",
+        captionKey: "Work.pocket-caddie-ai.shots.drills",
       },
       {
         src: "/projects/pocket-caddie/pca-6.webp",
-        captionKey: "Work.pocket-caddie.shots.academy",
+        captionKey: "Work.pocket-caddie-ai.shots.academy",
       },
     ],
     bodyKeys: [
-      "Work.pocket-caddie.body.intro",
-      "Work.pocket-caddie.body.built",
-      "Work.pocket-caddie.body.delivery",
+      "Work.pocket-caddie-ai.body.intro",
+      "Work.pocket-caddie-ai.body.built",
+      "Work.pocket-caddie-ai.body.delivery",
     ],
   },
   "alex-motors": {
