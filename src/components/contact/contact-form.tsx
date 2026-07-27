@@ -1,4 +1,5 @@
 import { Check, Loader2, Send } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 
 import { submitContact, type ContactValues } from "@/lib/contact";
@@ -127,31 +128,53 @@ export const ContactForm = () => {
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-4">
-        <button
+        <motion.button
           type="submit"
           // Non-interactive while sending and once sent — no cursor or hover
           // feedback after delivery, only in the idle (submittable) state.
           disabled={sending || done}
+          // A short springy scale-pop the moment delivery lands, so the flip to
+          // "Message sent" reads as a confirmation, not a silent relabel.
+          animate={done ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
           className={cn(
             "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium",
-            "bg-foreground text-background transition-opacity",
+            "transition-colors",
+            done
+              ? "bg-emerald-500 text-white"
+              : "bg-foreground text-background transition-opacity",
             status === "idle" && "cursor-pointer hover:opacity-90",
             sending && "opacity-60",
           )}
         >
-          {sending ? (
-            <Loader2 className="size-4 animate-spin" aria-hidden />
-          ) : done ? (
-            <Check className="size-4" aria-hidden />
-          ) : (
-            <Send className="size-4" aria-hidden />
-          )}
+          <AnimatePresence mode="wait" initial={false}>
+            {sending ? (
+              <motion.span key="sending" className="inline-flex">
+                <Loader2 className="size-4 animate-spin" aria-hidden />
+              </motion.span>
+            ) : done ? (
+              // Pops in on success — the visual "sent" feedback.
+              <motion.span
+                key="done"
+                className="inline-flex"
+                initial={{ scale: 0, rotate: -30 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 500, damping: 18 }}
+              >
+                <Check className="size-4" aria-hidden />
+              </motion.span>
+            ) : (
+              <motion.span key="idle" className="inline-flex">
+                <Send className="size-4" aria-hidden />
+              </motion.span>
+            )}
+          </AnimatePresence>
           {sending
             ? t("Contact.form.sending")
             : done
               ? t("Contact.form.sent")
               : t("Contact.form.send")}
-        </button>
+        </motion.button>
 
         {statusMessage && (
           <p aria-live="polite" className="text-sm text-red-400">
