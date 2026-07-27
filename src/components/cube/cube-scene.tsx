@@ -1,7 +1,14 @@
-import { RoundedBox } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
-import type { Group } from "three";
+import { useEffect, useMemo, useRef } from "react";
+import {
+  ExtrudeGeometry,
+  MeshStandardMaterial,
+  PlaneGeometry,
+  Shape,
+  type BufferGeometry,
+  type Group,
+} from "three";
+import { toCreasedNormals } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 /** Classic Rubik's colour scheme, one per outward-facing side. */
 const COLORS = {
@@ -18,11 +25,60 @@ const AXIS = [-1, 0, 1] as const;
 /** Distance from a cubie's centre to its face. */
 const HALF = 0.5;
 
+const CUBIE_SIZE = 0.94;
+const CUBIE_RADIUS = 0.1;
+const STICKER_SIZE = 0.78;
+
 type Sticker = {
   position: [number, number, number];
   rotation: [number, number, number];
   color: string;
 };
+
+/**
+ * A single rounded-cube geometry, built once and shared by every cubie. This
+ * mirrors `@react-three/drei`'s `<RoundedBox>` recipe (an `ExtrudeGeometry`
+ * over a rounded shape, centred, with creased normals) so the look is identical
+ * — but constructed a single time instead of once per cubie, which is the bulk
+ * of the scene's geometry cost.
+ */
+const EPS = 0.00001;
+const makeRoundedBoxGeometry = (
+  size: number,
+  radius: number,
+  smoothness = 3,
+  bevelSegments = 4,
+  steps = 1,
+  creaseAngle = 0.4,
+): BufferGeometry => {
+  const r = radius - EPS;
+  const shape = new Shape();
+  shape.absarc(EPS, EPS, EPS, -Math.PI / 2, -Math.PI, true);
+  shape.absarc(EPS, size - r * 2, EPS, Math.PI, Math.PI / 2, true);
+  shape.absarc(size - r * 2, size - r * 2, EPS, Math.PI / 2, 0, true);
+  shape.absarc(size - r * 2, EPS, EPS, 0, -Math.PI / 2, true);
+  const geometry = new ExtrudeGeometry(shape, {
+    depth: size - radius * 2,
+    bevelEnabled: true,
+    bevelSegments: bevelSegments * 2,
+    steps,
+    bevelSize: radius - EPS,
+    bevelThickness: radius,
+    curveSegments: smoothness,
+  });
+  geometry.center();
+  toCreasedNormals(geometry, creaseAngle);
+  return geometry;
+};
+
+/** GPU resources shared across all 27 cubies. */
+interface CubeResources {
+  bodyGeometry: BufferGeometry;
+  bodyMaterial: MeshStandardMaterial;
+  stickerGeometry: PlaneGeometry;
+  /** One material per sticker colour (6), keyed by colour. */
+  stickerMaterials: Map<string, MeshStandardMaterial>;
+}
 
 /** A sticker only exists on faces that sit on the cube's outer shell. */
 const stickersFor = (x: number, y: number, z: number): Sticker[] => {
@@ -69,32 +125,23 @@ const stickersFor = (x: number, y: number, z: number): Sticker[] => {
 const Cubie = ({
   position,
   stickers,
+  resources,
 }: {
   position: [number, number, number];
   stickers: Sticker[];
+  resources: CubeResources;
 }) => (
   <group position={position}>
-    <RoundedBox args={[0.94, 0.94, 0.94]} radius={0.1} smoothness={3}>
-      <meshStandardMaterial
-        color={COLORS.body}
-        roughness={0.55}
-        metalness={0.1}
-      />
-    </RoundedBox>
+    <mesh geometry={resources.bodyGeometry} material={resources.bodyMaterial} />
     {stickers.map((sticker, i) => (
       <mesh
         // A cubie's stickers are positionally unique and never reorder.
         key={i}
         position={sticker.position}
         rotation={sticker.rotation}
-      >
-        <planeGeometry args={[0.78, 0.78]} />
-        <meshStandardMaterial
-          color={sticker.color}
-          roughness={0.35}
-          metalness={0.05}
-        />
-      </mesh>
+        geometry={resources.stickerGeometry}
+        material={resources.stickerMaterials.get(sticker.color)}
+      />
     ))}
   </group>
 );
@@ -110,6 +157,47 @@ const Cubie = ({
 export const CubeModel = () => {
   const group = useRef<Group>(null);
   const startedAt = useRef<number | null>(null);
+
+  // Geometry and materials are built once and shared by every cubie, then
+  // disposed when the hero unmounts. Sharing turns ~80 geometries/materials
+  // (one body geometry + material and up to two sticker materials per cubie)
+  // into 2 geometries + 7 materials — far less GPU memory and setup time.
+  const resources = useMemo<CubeResources>(() => {
+    const stickerMaterials = new Map<string, MeshStandardMaterial>();
+    for (const color of [
+      COLORS.right,
+      COLORS.left,
+      COLORS.up,
+      COLORS.down,
+      COLORS.front,
+      COLORS.back,
+    ]) {
+      stickerMaterials.set(
+        color,
+        new MeshStandardMaterial({ color, roughness: 0.35, metalness: 0.05 }),
+      );
+    }
+    return {
+      bodyGeometry: makeRoundedBoxGeometry(CUBIE_SIZE, CUBIE_RADIUS),
+      bodyMaterial: new MeshStandardMaterial({
+        color: COLORS.body,
+        roughness: 0.55,
+        metalness: 0.1,
+      }),
+      stickerGeometry: new PlaneGeometry(STICKER_SIZE, STICKER_SIZE),
+      stickerMaterials,
+    };
+  }, []);
+
+  useEffect(
+    () => () => {
+      resources.bodyGeometry.dispose();
+      resources.bodyMaterial.dispose();
+      resources.stickerGeometry.dispose();
+      resources.stickerMaterials.forEach((material) => material.dispose());
+    },
+    [resources],
+  );
 
   useFrame((state, delta) => {
     const g = group.current;
@@ -148,7 +236,12 @@ export const CubeModel = () => {
   return (
     <group ref={group} rotation={[-0.35, 0.6, 0]}>
       {cubies.map(({ key, position, stickers }) => (
-        <Cubie key={key} position={position} stickers={stickers} />
+        <Cubie
+          key={key}
+          position={position}
+          stickers={stickers}
+          resources={resources}
+        />
       ))}
     </group>
   );
