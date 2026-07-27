@@ -2,17 +2,21 @@ import { t } from "@/i18n/strings";
 
 import { PhoneShowcase } from "@/components/home/phone-showcase";
 import { SocialLinks } from "@/components/home/social-links";
-import { Reveal } from "@/components/ui/reveal";
 
 /**
- * Home — the locale index / landing tab. Leads with the professional pitch
- * (who I am, what I build) and the primary links a recruiter reaches for
- * (CV, LinkedIn, GitHub). The Rubik's cube stays here as the signature visual.
+ * Home — the landing tab. Leads with the professional pitch (who I am, what I
+ * build) and the primary links a recruiter reaches for (CV, LinkedIn, GitHub).
+ * The Rubik's cube stays here as the signature visual.
+ *
+ * The hero plays a staged entrance on load (see `.hero-rise-*` in `index.css`):
+ * the text rises up first, then after a short pause the phone rises in behind
+ * it — so the phone has arrived by the time the 3D cube streams onto its screen,
+ * reading as text → device → cube rather than a blank box waiting on three.js.
  */
 const Home = () => {
   return (
     <section className="flex flex-1 flex-col justify-center gap-12 py-20 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
-      <Reveal className="min-w-0 lg:max-w-xl">
+      <div className="hero-rise-text min-w-0 lg:max-w-xl">
         <p className="text-accent text-sm font-medium tracking-widest uppercase">
           {t("Home.eyebrow")}
         </p>
@@ -23,8 +27,8 @@ const Home = () => {
           {t("Home.subtitle")}
         </p>
         <SocialLinks />
-      </Reveal>
-      <div className="flex shrink-0 justify-center lg:justify-end">
+      </div>
+      <div className="hero-rise-phone flex shrink-0 justify-center lg:justify-end">
         <PhoneShowcase />
       </div>
     </section>

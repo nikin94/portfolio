@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef } from "react";
 import { t } from "@/i18n/strings";
 
 import { useInViewport } from "@/hooks/use-in-viewport";
@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 
 import { CubeErrorBoundary } from "./cube-error-boundary";
 import { CubeFallback } from "./cube-fallback";
-import { CubeIntro } from "./cube-intro";
 
 /** The WebGL chunk (three.js lands here) — loaded on demand, client-only. */
 const CubeCanvas = lazy(() => import("./cube-canvas"));
@@ -30,21 +29,22 @@ const deviceHints = () => {
  * The wrapper has a *definite* size (`w-72 … sm:w-96` + `aspect-square`) so the
  * absolutely-filled canvas never collapses it.
  *
- * While the three.js chunk loads there's a deliberate intro — an isometric
- * "blueprint" wireframe of the cube that draws and un-draws itself on a loop
- * (`CubeIntro`), layered on top of the (loading) canvas. Once the live cube
- * paints its first frame it cross-fades away and the cube scales into its place,
- * so the load delay reads as an intentional micro-scene (a cube being sketched)
- * rather than a blank box or a flashing placeholder. The intro is prerendered at
- * rest as the finished wireframe (no motion) — the server / no-JS view and any
- * pre-hydration paint — and starts drawing only after mount, so there's no
- * `opacity:0`-before-JS and nothing jarring at hydration.
+ * There's no placeholder in the loading path. The hero starts empty and the live
+ * WebGL cube scales into view once it paints; while the three.js chunk loads the
+ * Suspense fallback is `null` (empty, transparent). This is by design: on the
+ * Home tab the cube sits inside the phone, which rises in with its own staged
+ * entrance (see `home.tsx`), so the phone has arrived and covers the brief empty
+ * gap — the cube then streams onto its screen. No flat placeholder ever flashes.
  *
  * The static `CubeFallback` (flat 3×3) is shown *only* when the live cube can't
  * run at all: reduced-motion / low-power devices (detected on mount; they never
  * download three.js), and a WebGL / chunk-load failure caught by
- * `CubeErrorBoundary` — in which case the intro is also dismissed so the
- * fallback isn't hidden beneath it.
+ * `CubeErrorBoundary`.
+ *
+ * The server render (and any pre-hydration paint) is empty — nothing is
+ * prerendered into the hero, so there's no placeholder in the HTML to flash
+ * before hydration. The cube is decorative (`role="img"` carries its label), so
+ * an empty hero on the no-JS path is acceptable.
  */
 export const CubeHero = ({
   className,
@@ -58,9 +58,6 @@ export const CubeHero = ({
   const reducedMotion = usePrefersReducedMotion();
   const [ref, inView] = useInViewport<HTMLDivElement>("200px");
   const canvasWrap = useRef<HTMLDivElement>(null);
-  // Flips once the live cube has resolved — painted its first frame, or errored
-  // out — which fades the intro away. It only ever goes false → true.
-  const [cubeResolved, setCubeResolved] = useState(false);
 
   // Only known on the client (navigator hints + reduced-motion), so it stays
   // false until mount — capable clients render the canvas straight away.
@@ -96,40 +93,18 @@ export const CubeHero = ({
         className ?? "w-72 max-w-full sm:w-96",
       )}
     >
-      {staticOnly ? (
+      {!mounted ? null : staticOnly ? (
         <CubeFallback />
       ) : (
-        <>
-          {/* Live cube underneath — client-only. On error the boundary swaps in
-              the flat fallback and dismisses the intro (via `cubeResolved`). */}
-          {mounted && (
-            <CubeErrorBoundary
-              fallback={<CubeFallback />}
-              onError={() => setCubeResolved(true)}
-            >
-              <div ref={canvasWrap} className="absolute inset-0">
-                <Suspense fallback={null}>
-                  <CubeCanvas
-                    active={inView && active}
-                    onReady={() => setCubeResolved(true)}
-                  />
-                </Suspense>
-              </div>
-            </CubeErrorBoundary>
-          )}
-
-          {/* Blueprint wireframe intro on top, fading out once the cube
-              resolves. Prerendered as the finished wireframe (SSR / no-JS); it
-              draws itself only after mount. */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-opacity duration-300",
-              cubeResolved ? "pointer-events-none opacity-0" : "opacity-100",
-            )}
-          >
-            <CubeIntro animate={mounted && !cubeResolved} />
+        // Empty while three.js loads (Suspense `null`); the static fallback
+        // appears only if the live cube errors out.
+        <CubeErrorBoundary fallback={<CubeFallback />}>
+          <div ref={canvasWrap} className="absolute inset-0">
+            <Suspense fallback={null}>
+              <CubeCanvas active={inView && active} />
+            </Suspense>
           </div>
-        </>
+        </CubeErrorBoundary>
       )}
     </div>
   );

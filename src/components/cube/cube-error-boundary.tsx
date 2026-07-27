@@ -10,19 +10,13 @@ import { Component, type ReactNode } from "react";
  * genuinely can't run. Error boundaries must be class components.
  */
 export class CubeErrorBoundary extends Component<
-  { fallback: ReactNode; onError?: () => void; children: ReactNode },
+  { fallback: ReactNode; children: ReactNode },
   { failed: boolean }
 > {
   state = { failed: false };
 
   static getDerivedStateFromError() {
     return { failed: true };
-  }
-
-  componentDidCatch() {
-    // Let the parent dismiss the loading intro so the fallback isn't hidden
-    // beneath it — the intro only ever fades away, on cube-ready or on error.
-    this.props.onError?.();
   }
 
   render() {
