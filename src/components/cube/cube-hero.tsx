@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef } from "react";
 import { t } from "@/i18n/strings";
 
 import { useInViewport } from "@/hooks/use-in-viewport";
@@ -7,35 +7,11 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { prefersStaticCube } from "@/lib/device";
 import { cn } from "@/lib/utils";
 
+import { CubeErrorBoundary } from "./cube-error-boundary";
 import { CubeFallback } from "./cube-fallback";
 
-/**
- * Single import of the WebGL chunk, shared between `lazy()` and `preload()`.
- * The module system caches it, so calling it more than once is a no-op after
- * the first — the second caller just gets the in-flight/settled promise.
- */
-const importCubeCanvas = () => import("./cube-canvas");
-
-const CubeCanvas = lazy(importCubeCanvas);
-
-/**
- * Warm the three.js chunk (~240 kB gz) ahead of time so it's already
- * downloading — or done — by the time the cube renders, shrinking the empty
- * gap before the cube appears. Runs during idle time to avoid competing with
- * critical first-paint work.
- */
-const preloadCubeCanvas = () => {
-  const warm = () => {
-    void importCubeCanvas();
-  };
-  const ric = (
-    window as Window & {
-      requestIdleCallback?: (cb: () => void) => number;
-    }
-  ).requestIdleCallback;
-  if (ric) ric(warm);
-  else window.setTimeout(warm, 200);
-};
+/** The WebGL chunk (three.js lands here) — loaded on demand, client-only. */
+const CubeCanvas = lazy(() => import("./cube-canvas"));
 
 /** Reads capability hints from `navigator`, guarding for non-browser envs. */
 const deviceHints = () => {
@@ -53,18 +29,22 @@ const deviceHints = () => {
  * The wrapper has a *definite* size (`w-72 … sm:w-96` + `aspect-square`) so the
  * absolutely-filled canvas never collapses it.
  *
- * On capable devices the static fallback is kept layered *underneath* the WebGL
- * canvas and only fades out once the live cube has painted its first frame. That
- * removes the flash the old direct-swap caused: the prerendered fallback used to
- * be replaced by an empty/transparent canvas the instant the client mounted,
- * then sit blank while the three.js chunk (~240 kB) loaded, then pop the cube in
- * — a visible "fallback → blank → cube" flicker. Now it's a continuous
- * "fallback → cube" cross-fade with no blank gap. The chunk is still prefetched
- * on idle so the fade happens quickly.
+ * There's no placeholder in the loading path. The hero starts empty and the live
+ * WebGL cube scales into view once it paints; while the three.js chunk loads the
+ * Suspense fallback is `null` (empty, transparent). This is by design: on the
+ * Home tab the cube sits inside the phone, which rises in with its own staged
+ * entrance (see `home.tsx`), so the phone has arrived and covers the brief empty
+ * gap — the cube then streams onto its screen. No flat placeholder ever flashes.
  *
- * The static fallback is the *only* thing rendered where WebGL can't or shouldn't
- * run: the server render / no-JS view, and reduced-motion / low-power devices
- * (which therefore never download three.js).
+ * The static `CubeFallback` (flat 3×3) is shown *only* when the live cube can't
+ * run at all: reduced-motion / low-power devices (detected on mount; they never
+ * download three.js), and a WebGL / chunk-load failure caught by
+ * `CubeErrorBoundary`.
+ *
+ * The server render (and any pre-hydration paint) is empty — nothing is
+ * prerendered into the hero, so there's no placeholder in the HTML to flash
+ * before hydration. The cube is decorative (`role="img"` carries its label), so
+ * an empty hero on the no-JS path is acceptable.
  */
 export const CubeHero = ({
   className,
@@ -78,17 +58,11 @@ export const CubeHero = ({
   const reducedMotion = usePrefersReducedMotion();
   const [ref, inView] = useInViewport<HTMLDivElement>("200px");
   const canvasWrap = useRef<HTMLDivElement>(null);
-  // Flips once the live cube paints, fading the layered fallback out.
-  const [cubeReady, setCubeReady] = useState(false);
 
+  // Only known on the client (navigator hints + reduced-motion), so it stays
+  // false until mount — capable clients render the canvas straight away.
   const staticOnly =
-    !mounted || prefersStaticCube({ reducedMotion, ...deviceHints() });
-
-  // Prefetch the WebGL chunk once we know this is a capable client, so three.js
-  // is already downloading before React reaches the Suspense boundary.
-  useEffect(() => {
-    if (!staticOnly) preloadCubeCanvas();
-  }, [staticOnly]);
+    mounted && prefersStaticCube({ reducedMotion, ...deviceHints() });
 
   // Hide the canvas the instant the page starts unloading. As the browser tears
   // the page down the WebGL context is lost and the `<canvas>` briefly paints
@@ -119,30 +93,18 @@ export const CubeHero = ({
         className ?? "w-72 max-w-full sm:w-96",
       )}
     >
-      {staticOnly ? (
+      {!mounted ? null : staticOnly ? (
         <CubeFallback />
       ) : (
-        <>
-          {/* Fallback stays underneath and fades out only once the live cube
-              has painted — no blank gap, no flash swapping to an empty canvas. */}
-          <div
-            aria-hidden
-            className={cn(
-              "absolute inset-0 transition-opacity duration-500",
-              cubeReady ? "opacity-0" : "opacity-100",
-            )}
-          >
-            <CubeFallback />
-          </div>
+        // Empty while three.js loads (Suspense `null`); the static fallback
+        // appears only if the live cube errors out.
+        <CubeErrorBoundary fallback={<CubeFallback />}>
           <div ref={canvasWrap} className="absolute inset-0">
             <Suspense fallback={null}>
-              <CubeCanvas
-                active={inView && active}
-                onReady={() => setCubeReady(true)}
-              />
+              <CubeCanvas active={inView && active} />
             </Suspense>
           </div>
-        </>
+        </CubeErrorBoundary>
       )}
     </div>
   );

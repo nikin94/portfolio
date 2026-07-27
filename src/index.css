@@ -47,6 +47,38 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Home hero entrance: the text rises up and fades in, then — after a short
+   pause — the phone rises in behind it, turning the moment before the 3D cube
+   has streamed in into a deliberate sequence. Pure CSS so it plays on first
+   paint without waiting for hydration/JS, and `both` fill-mode holds the end
+   (shown) state, so no-JS settles on the content visible too. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-rise-text {
+  animation: hero-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.hero-rise-phone {
+  animation: hero-rise 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.85s both;
+}
+
+/* Reduced motion: no rise, content at rest (visible) from the first paint. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise-text,
+  .hero-rise-phone {
+    animation: none;
+  }
+}
+
 /* Recommended Lenis smooth-scroll styles. */
 html.lenis,
 html.lenis body {
