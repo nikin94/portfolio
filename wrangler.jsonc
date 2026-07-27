@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "portfolio",
+  "compatibility_date": "2025-06-01",
+  // Static-assets-only Worker: no server script, just the prerendered `dist/`.
+  // `npx wrangler deploy` (the dashboard's deploy command) reads this.
+  "assets": {
+    "directory": "./dist",
+    // Unknown URLs serve the app shell (index.html); the router's catch-all
+    // route then redirects them home — a soft "404 → home".
+    "not_found_handling": "single-page-application"
+  }
+}
