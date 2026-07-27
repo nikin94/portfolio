@@ -162,6 +162,8 @@
     "cta": "Contact links land here soon."
   },
   "Common": {
-    "toggleTheme": "Toggle theme"
+    "toggleTheme": "Toggle theme",
+    "switchToDark": "Switch to dark theme",
+    "switchToLight": "Switch to light theme"
   }
 }
