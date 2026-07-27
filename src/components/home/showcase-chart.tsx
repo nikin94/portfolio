@@ -101,6 +101,8 @@ const ChartSlide = ({
   const progress = useMotionValue(reduced ? 1 : 0);
   const lineRef = useRef<SVGPathElement>(null);
   const leadRef = useRef<SVGGElement>(null);
+  // The path is static, so its length never changes — measure it once and cache.
+  const lineLength = useRef<number | null>(null);
 
   // Draw once the slide is active.
   useEffect(() => {
@@ -112,12 +114,15 @@ const ChartSlide = ({
     return () => controls.stop();
   }, [active, reduced, progress]);
 
-  // Move the glowing leading dot to the exact tip of the drawn line.
+  // Move the glowing leading dot to the exact tip of the drawn line. The path
+  // length is computed once (it's static) and cached, so each frame only runs
+  // getPointAtLength — not a fresh synchronous getTotalLength geometry recalc.
   useMotionValueEvent(progress, "change", (p) => {
     const path = lineRef.current;
     const lead = leadRef.current;
     if (!path || !lead || typeof path.getTotalLength !== "function") return;
-    const pt = path.getPointAtLength(p * path.getTotalLength());
+    if (lineLength.current === null) lineLength.current = path.getTotalLength();
+    const pt = path.getPointAtLength(p * lineLength.current);
     lead.setAttribute("transform", `translate(${pt.x} ${pt.y})`);
     lead.style.opacity = p > 0.01 && p < 0.999 ? "1" : "0";
   });

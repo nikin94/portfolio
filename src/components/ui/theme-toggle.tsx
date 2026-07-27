@@ -13,10 +13,17 @@ export const ThemeToggle = () => {
 
   const isDark = resolvedTheme === "dark";
 
+  // Announce what the press will do — but only once the theme is resolved on the
+  // client; before mount the direction is unknown, so fall back to the neutral
+  // label (which also keeps the SSR/first-paint markup stable).
+  const label = mounted
+    ? t(isDark ? "Common.switchToLight" : "Common.switchToDark")
+    : t("Common.toggleTheme");
+
   return (
     <button
       type="button"
-      aria-label={t("Common.toggleTheme")}
+      aria-label={label}
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className="border-border hover:bg-foreground/5 flex h-9 w-9 items-center justify-center rounded-full border text-sm transition-colors"
     >

@@ -13,31 +13,46 @@ import { cn } from "@/lib/utils";
  * source file's own fill colour is. The Rubik's cube keeps its real colours, so
  * it stays a plain `<img>`.
  */
-const maskStyle = (url: string) => ({
-  maskImage: `url(${url})`,
-  WebkitMaskImage: `url(${url})`,
-  maskRepeat: "no-repeat",
-  WebkitMaskRepeat: "no-repeat",
-  maskPosition: "center",
-  WebkitMaskPosition: "center",
-  maskSize: "contain",
-  WebkitMaskSize: "contain",
-});
+/**
+ * Mask style for a given SVG url. The urls are module constants, so each icon's
+ * style object is built once at module load rather than re-allocated on every
+ * render.
+ */
+const maskStyle = (url: string) =>
+  ({
+    maskImage: `url(${url})`,
+    WebkitMaskImage: `url(${url})`,
+    maskRepeat: "no-repeat",
+    WebkitMaskRepeat: "no-repeat",
+    maskPosition: "center",
+    WebkitMaskPosition: "center",
+    maskSize: "contain",
+    WebkitMaskSize: "contain",
+  }) as const;
 
-const MaskIcon = ({ url, className }: { url: string; className?: string }) => (
+const KNIGHT_MASK = maskStyle(knightUrl);
+const RACKET_MASK = maskStyle(racketUrl);
+
+const MaskIcon = ({
+  style,
+  className,
+}: {
+  style: React.CSSProperties;
+  className?: string;
+}) => (
   <span
     aria-hidden
     className={cn("inline-block bg-current", className)}
-    style={maskStyle(url)}
+    style={style}
   />
 );
 
 export const KnightIcon = ({ className }: { className?: string }) => (
-  <MaskIcon url={knightUrl} className={className} />
+  <MaskIcon style={KNIGHT_MASK} className={className} />
 );
 
 export const RacketIcon = ({ className }: { className?: string }) => (
-  <MaskIcon url={racketUrl} className={className} />
+  <MaskIcon style={RACKET_MASK} className={className} />
 );
 
 export const CubeIcon = ({ className }: { className?: string }) => (
