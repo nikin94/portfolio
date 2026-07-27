@@ -62,7 +62,14 @@ const SLIDES: Slide[] = [
 
 const COUNT = SLIDES.length;
 /** Delay before the push notification drops onto the cube slide (ms). */
-const PUSH_DELAY_MS = 1500;
+const PUSH_DELAY_MS = 1000;
+/**
+ * How long the phone takes to finish rising into view on the initial page load
+ * — the `hero-rise-phone` animation's delay (0.85s) plus its duration (1s).
+ * The push pause is offset by this on the first arrival so the timer starts
+ * when the device has actually appeared, not while it's still sliding in.
+ */
+const PHONE_RISE_MS = 1850;
 
 /**
  * True on touch-primary devices. Swiping is enabled only here; on desktop the
@@ -109,6 +116,10 @@ export const PhoneShowcase = () => {
   const [gen, setGen] = useState<number[]>(() => SLIDES.map(() => 0));
   const [pushReady, setPushReady] = useState(false);
   const [pushDismissed, setPushDismissed] = useState(false);
+  // The phone rises in once, on the initial page load. Tracks whether that has
+  // happened so the push pause is offset by the rise only the first time — on
+  // later returns to the cube slide the device is already in place.
+  const phoneRisenRef = useRef(false);
   // The last index we actually acted on, so late same-index embla events
   // (a `reInit` after mount fires `select` again with the current snap) are
   // ignored: otherwise they'd reset `started` without the arming effect —
@@ -154,11 +165,17 @@ export const PhoneShowcase = () => {
   // 1.5s later, and re-arms on every return — not just the first render. Leaving
   // the slide (cleanup) resets both flags so the next entry replays cleanly.
   // Under reduced motion there's no timer — `showPush` shows it immediately.
+  //
+  // On the very first arrival the phone is still rising into view, so the pause
+  // is offset by the rise (`PHONE_RISE_MS`) — the timer starts once the device
+  // has appeared, not while it's sliding in. Later returns skip the offset.
   useEffect(() => {
     if (selected !== 0) return;
+    const offset = phoneRisenRef.current ? 0 : PHONE_RISE_MS;
+    phoneRisenRef.current = true;
     const id = reduced
       ? undefined
-      : window.setTimeout(() => setPushReady(true), PUSH_DELAY_MS);
+      : window.setTimeout(() => setPushReady(true), offset + PUSH_DELAY_MS);
     return () => {
       if (id) window.clearTimeout(id);
       setPushReady(false);

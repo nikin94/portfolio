@@ -87,7 +87,7 @@ const CaseStudy = () => {
           <h2 className="mt-16 text-lg font-semibold tracking-tight">
             {t("Work.gallery")}
           </h2>
-          <ScreenGallery shots={study.gallery} />
+          <ScreenGallery shots={study.gallery} platform={study.platform} />
         </>
       )}
 

@@ -49,13 +49,15 @@ export interface CaseStudyShot {
 export interface CaseStudy {
   slug: string;
   name: string;
+  /** Drives the gallery frame: phone (portrait) vs. browser window. */
+  platform: Platform;
   /** When the work took place, shown in the hero. */
   year: string;
   /** Headline metrics for the hero. */
   metrics: CaseStudyMetric[];
   /** Tech stack, grouped by domain. */
   stack: TechGroup[];
-  /** Screenshot gallery (mobile frames). */
+  /** Screenshot gallery, framed per `platform`. */
   gallery: CaseStudyShot[];
   /** Ordered prose paragraph keys under `Work.<slug>.body`. */
   bodyKeys: string[];
@@ -92,7 +94,7 @@ export const projects: Project[] = [
     platform: "web",
     tech: ["React 19", "TypeScript", "Cloudflare Workers", "Tailwind CSS"],
     slug: "alex-motors",
-    image: null,
+    image: "/projects/alex-motors/alex-1.webp",
   },
 ];
 
@@ -104,6 +106,7 @@ export const caseStudies: Record<string, CaseStudy> = {
   pyra: {
     slug: "pyra",
     name: "Pyra",
+    platform: "mobile",
     year: "2025 — 2026",
     metrics: [
       { value: "$4.8M+", labelKey: "Work.pyra.metrics.volume" },
@@ -193,6 +196,7 @@ export const caseStudies: Record<string, CaseStudy> = {
   iovaro: {
     slug: "iovaro",
     name: "iOvaro",
+    platform: "mobile",
     year: "2024 — 2025",
     metrics: [
       { value: "~3 mo", labelKey: "Work.iovaro.metrics.speed" },
@@ -293,6 +297,7 @@ export const caseStudies: Record<string, CaseStudy> = {
   "pocket-caddie": {
     slug: "pocket-caddie",
     name: "Pocket Caddie AI",
+    platform: "mobile",
     year: "2024 — 2025",
     metrics: [
       { value: "E2E", labelKey: "Work.pocket-caddie.metrics.build" },
@@ -388,6 +393,7 @@ export const caseStudies: Record<string, CaseStudy> = {
   "alex-motors": {
     slug: "alex-motors",
     name: "Alex Motors",
+    platform: "web",
     year: "2026",
     metrics: [
       { value: "~75 kB", labelKey: "Work.alex-motors.metrics.bundle" },
@@ -448,7 +454,28 @@ export const caseStudies: Record<string, CaseStudy> = {
         ],
       },
     ],
-    gallery: [],
+    gallery: [
+      {
+        src: "/projects/alex-motors/alex-1.webp",
+        captionKey: "Work.alex-motors.shots.hero",
+      },
+      {
+        src: "/projects/alex-motors/alex-2.webp",
+        captionKey: "Work.alex-motors.shots.services",
+      },
+      {
+        src: "/projects/alex-motors/alex-3.webp",
+        captionKey: "Work.alex-motors.shots.reviews",
+      },
+      {
+        src: "/projects/alex-motors/alex-4.webp",
+        captionKey: "Work.alex-motors.shots.faq",
+      },
+      {
+        src: "/projects/alex-motors/alex-5.webp",
+        captionKey: "Work.alex-motors.shots.contact",
+      },
+    ],
     bodyKeys: [
       "Work.alex-motors.body.intro",
       "Work.alex-motors.body.built",
