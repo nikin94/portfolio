@@ -1,3 +1,4 @@
+import { Navigate } from "react-router-dom";
 import type { RouteRecord } from "vite-react-ssg";
 
 import About from "./pages/about";
@@ -18,6 +19,11 @@ import { caseStudySlugs } from "./config/projects";
  *
  * `work/:slug` prerenders one case-study page per slug that has a case study
  * (`getStaticPaths`), producing static `/work/pyra` HTML.
+ *
+ * The catch-all `*` route redirects unknown URLs home. On Cloudflare the edge
+ * serves the app shell for missing paths (`not_found_handling: SPA`), then this
+ * route sends them to `/` — a soft "404 → home". It isn't a concrete path, so
+ * SSG never prerenders it.
  */
 export const routes: RouteRecord[] = [
   {
@@ -33,6 +39,7 @@ export const routes: RouteRecord[] = [
       },
       { path: "about", element: <About /> },
       { path: "contact", element: <Contact /> },
+      { path: "*", element: <Navigate to="/" replace /> },
     ],
   },
 ];
