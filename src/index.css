@@ -33,6 +33,14 @@
   --font-mono: var(--font-mono);
 }
 
+html {
+  /* Always reserve the scrollbar's gutter so short pages (no overflow) and
+     tall pages (overflow) keep the same content width. Without this the
+     centred layout and header shift horizontally whenever the scrollbar
+     appears/disappears between routes. */
+  scrollbar-gutter: stable;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
