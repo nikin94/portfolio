@@ -116,6 +116,14 @@
         "documents": "Documents",
         "auth": "Auth & security",
         "ops": "Delivery"
+      },
+      "shots": {
+        "onboarding": "Onboarding — simplify your invoicing",
+        "documents": "Documents — invoices & estimates at a glance",
+        "detail": "Document — preview, share and get paid",
+        "builder": "Builder — pick an invoice template",
+        "settings": "Settings — Stripe, currency and preferences",
+        "subscription": "Subscription — upgrade your plan"
       }
     },
     "pocket-caddie": {
