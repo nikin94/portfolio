@@ -38,7 +38,7 @@ const SLIDES: Slide[] = [
   },
   {
     key: "chart",
-    className: "px-3 pt-8 pb-14",
+    className: "px-3 pt-4 pb-12",
     startDelayMs: 350,
     render: (active, playKey) => (
       <ShowcaseChart key={playKey} active={active} />

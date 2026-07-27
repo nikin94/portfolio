@@ -188,7 +188,7 @@
   },
   "About": {
     "eyebrow": "About me",
-    "title": "A bit about me",
+    "title": "Who I am & how I got here",
     "bio": "I'm a Senior React Native developer focused on cross-platform mobile delivery, performance and product scaling — most recently across FinTech and HealthTech. I care about apps that feel fast and truly native, and I lean on AI-assisted tooling to ship production-quality work quickly.",
     "timeline": {
       "label": "Career",
