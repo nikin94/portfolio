@@ -80,11 +80,11 @@ export const projects: Project[] = [
   },
   {
     id: "pocket-caddie",
-    name: "Pocket Caddie",
+    name: "Pocket Caddie AI",
     platform: "mobile",
     tech: ["React Native", "Expo", "Vision Camera", "Firebase", "AI"],
     slug: "pocket-caddie",
-    image: null,
+    image: "/projects/pocket-caddie/pca-1.webp",
   },
   {
     id: "web-1",
@@ -298,11 +298,11 @@ export const caseStudies: Record<string, CaseStudy> = {
   },
   "pocket-caddie": {
     slug: "pocket-caddie",
-    name: "Pocket Caddie",
+    name: "Pocket Caddie AI",
     year: "2024 — 2025",
     metrics: [
-      { value: "+40%", labelKey: "Work.pocket-caddie.metrics.session" },
-      { value: "AI", labelKey: "Work.pocket-caddie.metrics.ai" },
+      { value: "E2E", labelKey: "Work.pocket-caddie.metrics.build" },
+      { value: "Pipeline", labelKey: "Work.pocket-caddie.metrics.pipeline" },
       { value: "9+", labelKey: "Work.pocket-caddie.metrics.screens" },
     ],
     stack: [
@@ -359,7 +359,32 @@ export const caseStudies: Record<string, CaseStudy> = {
         ],
       },
     ],
-    gallery: [],
+    gallery: [
+      {
+        src: "/projects/pocket-caddie/pca-1.webp",
+        captionKey: "Work.pocket-caddie.shots.onboarding",
+      },
+      {
+        src: "/projects/pocket-caddie/pca-2.webp",
+        captionKey: "Work.pocket-caddie.shots.trim",
+      },
+      {
+        src: "/projects/pocket-caddie/pca-3.webp",
+        captionKey: "Work.pocket-caddie.shots.home",
+      },
+      {
+        src: "/projects/pocket-caddie/pca-4.webp",
+        captionKey: "Work.pocket-caddie.shots.analysis",
+      },
+      {
+        src: "/projects/pocket-caddie/pca-5.webp",
+        captionKey: "Work.pocket-caddie.shots.drills",
+      },
+      {
+        src: "/projects/pocket-caddie/pca-6.webp",
+        captionKey: "Work.pocket-caddie.shots.academy",
+      },
+    ],
     bodyKeys: [
       "Work.pocket-caddie.body.intro",
       "Work.pocket-caddie.body.built",
