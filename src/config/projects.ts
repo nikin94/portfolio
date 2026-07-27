@@ -76,7 +76,7 @@ export const projects: Project[] = [
     platform: "mobile",
     tech: ["React Native", "Expo", "Firebase", "Stripe", "RevenueCat"],
     slug: "iovaro",
-    image: null,
+    image: "/projects/iovaro/iovaro-1.webp",
   },
   {
     id: "pocket-caddie",
@@ -264,7 +264,32 @@ export const caseStudies: Record<string, CaseStudy> = {
         ],
       },
     ],
-    gallery: [],
+    gallery: [
+      {
+        src: "/projects/iovaro/iovaro-1.webp",
+        captionKey: "Work.iovaro.shots.onboarding",
+      },
+      {
+        src: "/projects/iovaro/iovaro-2.webp",
+        captionKey: "Work.iovaro.shots.documents",
+      },
+      {
+        src: "/projects/iovaro/iovaro-3.webp",
+        captionKey: "Work.iovaro.shots.detail",
+      },
+      {
+        src: "/projects/iovaro/iovaro-4.webp",
+        captionKey: "Work.iovaro.shots.builder",
+      },
+      {
+        src: "/projects/iovaro/iovaro-5.webp",
+        captionKey: "Work.iovaro.shots.settings",
+      },
+      {
+        src: "/projects/iovaro/iovaro-6.webp",
+        captionKey: "Work.iovaro.shots.subscription",
+      },
+    ],
     bodyKeys: [
       "Work.iovaro.body.intro",
       "Work.iovaro.body.built",
