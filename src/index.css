@@ -1,15 +1,13 @@
 @import "tailwindcss";
 
-/* Drive `dark:` utilities from a `.dark` class (set by next-themes) instead
-   of the OS media query, so the theme toggle can override the system. */
-@custom-variant dark (&:where(.dark, .dark *));
-
+/* The site is dark-only, so the palette lives directly on `:root` — no theme
+   class, no light variant, no runtime switching. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --accent: #4f46e5;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --muted: #9ca3af;
+  --border: #1f2937;
+  --accent: #818cf8;
 
   /* System font stacks — zero network cost, no layout shift. Swap for a
      self-hosted webfont (e.g. @fontsource) when the visual design lands. */
@@ -19,14 +17,10 @@
   --font-mono:
     ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas,
     "Liberation Mono", monospace;
-}
 
-.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --muted: #9ca3af;
-  --border: #1f2937;
-  --accent: #818cf8;
+  /* Ensure form controls / native UI render dark, and the browser knows the
+     page is dark (scrollbars, etc.). */
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -77,12 +71,6 @@ html.lenis body {
   border: 1px solid color-mix(in oklab, var(--foreground) 14%, transparent);
   backdrop-filter: blur(16px) saturate(1.7);
   -webkit-backdrop-filter: blur(16px) saturate(1.7);
-  box-shadow:
-    0 8px 30px -12px color-mix(in oklab, var(--foreground) 45%, transparent),
-    inset 0 1px 0 0 color-mix(in oklab, #fff 55%, transparent);
-}
-
-.dark .glass-surface {
   box-shadow:
     0 10px 34px -12px rgb(0 0 0 / 0.6),
     inset 0 1px 0 0 color-mix(in oklab, #fff 12%, transparent);

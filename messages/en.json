@@ -169,9 +169,5 @@
     "subtitle": "Open to React Native and frontend roles and collaborations.",
     "cta": "Contact links land here soon."
   },
-  "Common": {
-    "toggleTheme": "Toggle theme",
-    "switchToDark": "Switch to dark theme",
-    "switchToLight": "Switch to light theme"
-  }
+  "Common": {}
 }
