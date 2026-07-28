@@ -26,7 +26,7 @@ const validate = (v: ContactValues): Errors => {
 
 const fieldClass = (invalid: boolean) =>
   cn(
-    "w-full rounded-xl border bg-white/[0.03] px-4 py-2.5 text-sm text-foreground",
+    "block w-full rounded-xl border bg-white/[0.03] px-4 py-2.5 text-sm text-foreground",
     "placeholder:text-muted/60 transition-colors outline-none",
     "focus-visible:border-accent focus-visible:ring-accent/40 focus-visible:ring-2",
     invalid ? "border-red-400/60" : "border-border",
@@ -105,7 +105,7 @@ export const ContactForm = () => {
         />
       </div>
 
-      <div className="grid gap-1.5 sm:grid-cols-2">
+      <div className="grid gap-x-4 gap-y-1.5 sm:grid-cols-2">
         <FormField
           field="name"
           type="text"
@@ -124,7 +124,7 @@ export const ContactForm = () => {
         />
       </div>
 
-      <div className="mt-1.5">
+      <div className="mt-2">
         <FieldLabel field="message" />
         <textarea
           id="contact-message"
