@@ -88,7 +88,7 @@ export const ContactForm = () => {
   const statusMessage = status === "error" ? t("Contact.form.error") : null;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="mt-10 max-w-xl">
+    <form onSubmit={onSubmit} noValidate className="mt-7 max-w-xl">
       {/* Honeypot — off-screen, hidden from assistive tech and tab order. Real
           users never see or fill it; bots that auto-fill get silently dropped. */}
       <div
@@ -105,7 +105,7 @@ export const ContactForm = () => {
         />
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-1.5 sm:grid-cols-2">
         <FormField
           field="name"
           type="text"
@@ -124,7 +124,7 @@ export const ContactForm = () => {
         />
       </div>
 
-      <div className="mt-3">
+      <div className="mt-1.5">
         <FieldLabel field="message" />
         <textarea
           id="contact-message"
@@ -141,7 +141,7 @@ export const ContactForm = () => {
         <FieldError id="contact-message-error" message={errors.message} />
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-4">
+      <div className="mt-2 flex flex-wrap items-center gap-4">
         <motion.button
           type="submit"
           // Non-interactive while sending and once sent — no cursor or hover
