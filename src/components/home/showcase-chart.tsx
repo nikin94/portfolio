@@ -6,18 +6,18 @@ import {
   useMotionValue,
   useMotionValueEvent,
   useTransform,
-  type AnimationPlaybackControls,
 } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 /**
- * The chart is a rolling conveyor of points. `xAt` maps a series index to an
- * x in SVG space: index 0 sits one slot off the left (a buffer that scrolls
- * out), the last index sits at/just past the right edge as the incoming point.
+ * The chart is a conveyor of evenly-spaced points. `xAt` maps a series index to
+ * an x in SVG space: index 0 is a buffer one slot off the left (scrolls out),
+ * index `N-2` sits on the right edge (the newest visible reading), and index
+ * `N-1` is the incoming point one slot off the right, sliding in.
  */
-const SLOT = 42;
+const SLOT = 50;
 /** Points held in the series: 1 off-left buffer + visible span + 1 incoming. */
 const N = 9;
 const VB_W = 300;
@@ -27,18 +27,24 @@ const BOTTOM = 206;
 const Y_HI = 22;
 const Y_LO = 188;
 
-const xAt = (i: number) => (i - 1) * SLOT; // -42, 0, 42 … 294
-/** The point the breathing endpoint rides — the newest fully on-screen reading. */
-const END = N - 2;
+const xAt = (i: number) => (i - 1) * SLOT; // -50, 0, 50 … 350
+/** Screen x of the right edge — where the breathing endpoint is pinned. */
+const RIGHT = xAt(N - 2); // 300
 
 /** A gently rising starter shape so the first draw already reads as real data. */
 const INITIAL_Y = [196, 172, 150, 118, 130, 92, 70, 44, 24];
 
 const GRID_Y = [30, 75, 120, 165, 210];
 const DRAW_SECONDS = 1.7;
-/** How often a new reading rolls in, and how long the leftward slide takes. */
-const ROLL_EVERY_MS = 2200;
-const ROLL_SECONDS = 1.1;
+/** Time to scroll one slot left — also the cadence at which a new reading (and
+ *  a headline roll) arrives. The scroll runs continuously at this speed. */
+const ROLL_SECONDS = 2.8;
+
+/** Headline stays within a believable band rather than climbing forever. */
+const GROWTH_LO = 142;
+const GROWTH_HI = 150;
+const VALUE_LO = 46;
+const VALUE_HI = 50;
 
 const clamp = (v: number, lo: number, hi: number) =>
   Math.min(hi, Math.max(lo, v));
@@ -46,6 +52,30 @@ const clamp = (v: number, lo: number, hi: number) =>
 /** Next reading: a bounded random walk, so the line stays lively and in view. */
 const nextY = (prev: number) =>
   clamp(prev + (Math.random() - 0.5) * 80, Y_HI, Y_LO);
+
+/** Headline figures drift inside their band on each new reading. */
+const nextGrowth = (g: number) =>
+  clamp(Math.round(g + (Math.random() * 4 - 2)), GROWTH_LO, GROWTH_HI);
+const nextValue = (v: number) =>
+  clamp(
+    Math.round((v + (Math.random() - 0.5) * 2.2) * 10) / 10,
+    VALUE_LO,
+    VALUE_HI,
+  );
+
+/** Catmull-Rom → cubic bezier control ys for the segment starting at index `i`. */
+const segCtrl = (ys: number[], i: number) => {
+  const y0 = ys[i - 1] ?? ys[i];
+  const y1 = ys[i];
+  const y2 = ys[i + 1];
+  const y3 = ys[i + 2] ?? y2;
+  return {
+    y1,
+    y2,
+    c1: y1 + (y2 - y0) / 6,
+    c2: y2 - (y3 - y1) / 6,
+  };
+};
 
 /** Catmull-Rom → cubic bezier, for a smooth curve through every point. */
 const smoothPath = (pts: [number, number][]) => {
@@ -69,6 +99,24 @@ const lineD = (ys: number[]) => smoothPath(ys.map((y, i) => [xAt(i), y]));
 const areaD = (ys: number[]) =>
   `${lineD(ys)} L ${xAt(ys.length - 1)},${BOTTOM} L ${xAt(0)},${BOTTOM} Z`;
 
+/**
+ * Curve y at a local x. Because the points are evenly spaced, the x-bezier of
+ * each segment is exactly linear, so `t` is just the fractional position within
+ * the slot — and evaluating the same Catmull-Rom y-bezier gives the exact height
+ * of the drawn line. Used to keep the pinned endpoint sitting on the line as the
+ * conveyor scrolls beneath it.
+ */
+const yAtX = (ys: number[], x: number) => {
+  const cx = clamp(x, xAt(0), xAt(ys.length - 1));
+  const i = clamp(Math.floor((cx - xAt(0)) / SLOT), 0, ys.length - 2);
+  const t = (cx - xAt(i)) / SLOT;
+  const { y1, y2, c1, c2 } = segCtrl(ys, i);
+  const u = 1 - t;
+  return (
+    u * u * u * y1 + 3 * u * u * t * c1 + 3 * u * t * t * c2 + t * t * t * y2
+  );
+};
+
 const VALUE_FORMAT = { minimumFractionDigits: 1, maximumFractionDigits: 1 };
 
 /**
@@ -78,10 +126,14 @@ const VALUE_FORMAT = { minimumFractionDigits: 1, maximumFractionDigits: 1 };
  *
  * The line first draws itself left-to-right (a single `progress` MotionValue
  * drives it and the counting headline). Once it reaches the top it starts
- * rolling: every couple of seconds the whole line slides one slot left as a new
- * reading arrives at the right, continuing the drawing — a live feed. The
- * headline figures roll with each new reading via `NumberFlow`, and the endpoint
- * keeps breathing. Reduced-motion users get the finished chart at rest.
+ * scrolling: the whole line slides left at a constant speed, as if an
+ * already-built chart is running in from the right — the offset loops one slot
+ * and, on each loop, the series commits (drop the oldest, append a fresh
+ * reading) while the offset snaps back, so the motion is seamless and never
+ * stutters. The glowing endpoint stays pinned to the right edge, riding the
+ * incoming curve. The headline figures roll (via `NumberFlow`) within a
+ * believable band on each new reading. Reduced-motion users get the finished
+ * chart at rest.
  */
 const ChartSlide = ({
   active,
@@ -92,22 +144,25 @@ const ChartSlide = ({
 }) => {
   const [series, setSeries] = useState<number[]>(INITIAL_Y);
   const progress = useMotionValue(reduced ? 1 : 0);
-  // Leftward conveyor offset, reset to 0 the instant a new reading commits.
+  // Leftward conveyor offset (0 → -SLOT), looping; reset the instant a new
+  // reading commits so the scroll is continuous, not stepped.
   const shiftX = useMotionValue(0);
   const lineRef = useRef<SVGPathElement>(null);
   const leadRef = useRef<SVGGElement>(null);
+  const endRef = useRef<SVGGElement>(null);
   const lineLength = useRef<number | null>(null);
   // Flips true once the intro draw completes (or immediately under reduced
-  // motion), switching the chart from "drawing" into its live rolling phase.
+  // motion), switching the chart from "drawing" into its live scrolling phase.
   const [done, setDone] = useState(reduced);
-  // Headline figures once live — animated by NumberFlow on every change. They
-  // begin at the drawn total; each roll bumps them.
+  // Headline figures once live — animated by NumberFlow on every change.
   const [value, setValue] = useState(48.2);
   const [growth, setGrowth] = useState(146);
 
+  const live = done && !reduced;
+  const introLead = !reduced && !done;
+
   // Draw once the slide is active and mark done when the line reaches the top.
-  // The parent remounts this slide on entry, so state already starts fresh —
-  // no reset needed here.
+  // The parent remounts this slide on entry, so state already starts fresh.
   useEffect(() => {
     if (reduced || !active) return;
     const controls = animate(progress, 1, {
@@ -118,31 +173,26 @@ const ChartSlide = ({
     return () => controls.stop();
   }, [active, reduced, progress]);
 
-  // Roll a new reading in on a loop once live: slide left one slot, then commit
-  // the shifted series (drop the oldest, append a fresh reading) and snap the
-  // offset back to 0 in the same render — seamless, no jump.
+  // Continuous conveyor once live: scroll one slot left at constant speed on an
+  // infinite loop. `onRepeat` fires at each slot boundary — the moment the
+  // offset loops from -SLOT back to 0 — where we commit the shifted series (drop
+  // oldest, append a fresh reading) and roll the headline. The one-slot content
+  // shift cancels the offset reset, so there's no visible jump.
   useEffect(() => {
     if (reduced || !done || !active) return;
-    let slide: AnimationPlaybackControls | null = null;
-    const id = window.setInterval(() => {
-      slide = animate(shiftX, -SLOT, {
-        duration: ROLL_SECONDS,
-        ease: "easeInOut",
-        onComplete: () => {
-          shiftX.jump(0);
-          setSeries((s) => [...s.slice(1), nextY(s[s.length - 1])]);
-          setValue(
-            (v) => Math.round((v + 0.2 + Math.random() * 1.1) * 10) / 10,
-          );
-          setGrowth((g) =>
-            clamp(g + Math.round(Math.random() * 6 - 2), 120, 180),
-          );
-        },
-      });
-    }, ROLL_EVERY_MS);
+    const controls = animate(shiftX, -SLOT, {
+      duration: ROLL_SECONDS,
+      ease: "linear",
+      repeat: Infinity,
+      repeatType: "loop",
+      onRepeat: () => {
+        setSeries((s) => [...s.slice(1), nextY(s[s.length - 1])]);
+        setValue((v) => nextValue(v));
+        setGrowth((g) => nextGrowth(g));
+      },
+    });
     return () => {
-      window.clearInterval(id);
-      slide?.stop();
+      controls.stop();
       shiftX.jump(0);
     };
   }, [active, done, reduced, shiftX]);
@@ -161,12 +211,32 @@ const ChartSlide = ({
     lead.style.opacity = p > 0.01 ? "1" : "0";
   });
 
+  // Keep the live endpoint pinned to the right edge, its height following the
+  // incoming curve as the conveyor scrolls beneath it. Sampled at the screen
+  // right edge, whose local x is `RIGHT - shiftX`.
+  useMotionValueEvent(shiftX, "change", (sx) => {
+    if (!live) return;
+    const end = endRef.current;
+    if (!end) return;
+    end.setAttribute(
+      "transform",
+      `translate(${RIGHT} ${yAtX(series, RIGHT - sx)})`,
+    );
+  });
+
+  // Pin the endpoint for the first live frame (before change events fire) and
+  // after each commit, and place the static one for reduced motion.
+  useEffect(() => {
+    const end = endRef.current;
+    if (!end || (!live && !reduced)) return;
+    const y = reduced ? series[N - 2] : yAtX(series, RIGHT - shiftX.get());
+    end.setAttribute("transform", `translate(${RIGHT} ${y})`);
+  }, [live, reduced, series, shiftX]);
+
   const areaOpacity = useTransform(progress, [0, 0.05, 1], [0, 1, 1]);
   // Headline counts up alongside the intro draw; NumberFlow takes over once live.
   const valueText = useTransform(progress, (p) => (p * 48.2).toFixed(1));
   const growthText = useTransform(progress, (p) => Math.round(p * 146));
-  const live = done && !reduced;
-  const introLead = !reduced && !done;
 
   return (
     <div aria-hidden className="flex h-full flex-col gap-6 pt-14">
@@ -211,7 +281,7 @@ const ChartSlide = ({
             <stop offset="0%" stopColor="#34d399" stopOpacity={0.4} />
             <stop offset="100%" stopColor="#34d399" stopOpacity={0} />
           </linearGradient>
-          {/* Clip the rolling conveyor to the chart viewport so points scrolling
+          {/* Clip the scrolling conveyor to the chart viewport so points sliding
               off either edge never bleed past it. */}
           <clipPath id="chart-viewport">
             <rect x={0} y={0} width={VB_W} height={VB_H} />
@@ -239,7 +309,7 @@ const ChartSlide = ({
           />
         ))}
 
-        {/* The conveyor: area, line and endpoint slide left together. */}
+        {/* The conveyor: area + line slide left together, clipped to the view. */}
         <g clipPath="url(#chart-viewport)">
           <motion.g style={{ x: shiftX }}>
             <motion.path
@@ -258,46 +328,36 @@ const ChartSlide = ({
               filter="url(#chart-glow)"
               style={{ pathLength: reduced ? 1 : progress }}
             />
-
-            {/* Endpoint once live/at rest: rides the newest reading, breathing,
-                with a "new reading" ring radiating out on a loop. */}
-            {(live || reduced) && (
-              <g transform={`translate(${xAt(END)} ${series[END]})`}>
-                {live && (
-                  <motion.circle
-                    r={5}
-                    fill="#34d399"
-                    style={{
-                      transformBox: "fill-box",
-                      transformOrigin: "center",
-                    }}
-                    animate={{ scale: [1, 3], opacity: [0.45, 0] }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 2.4,
-                      ease: "easeOut",
-                    }}
-                  />
-                )}
-                <motion.g
-                  style={{
-                    transformBox: "fill-box",
-                    transformOrigin: "center",
-                  }}
-                  animate={live ? { scale: [1, 1.18, 1] } : {}}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 2,
-                    ease: "easeInOut",
-                  }}
-                >
-                  <circle r={3.5} fill="#ecfdf5" />
-                  <circle r={3.5} fill="#34d399" opacity={0.5} />
-                </motion.g>
-              </g>
-            )}
           </motion.g>
         </g>
+
+        {/* Endpoint pinned to the right edge once live/at rest: rides the
+            incoming curve, breathing, with a "new reading" ring on a loop. */}
+        {(live || reduced) && (
+          <g ref={endRef}>
+            {live && (
+              <motion.circle
+                r={5}
+                fill="#34d399"
+                style={{ transformBox: "fill-box", transformOrigin: "center" }}
+                animate={{ scale: [1, 3], opacity: [0.45, 0] }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 2.4,
+                  ease: "easeOut",
+                }}
+              />
+            )}
+            <motion.g
+              style={{ transformBox: "fill-box", transformOrigin: "center" }}
+              animate={live ? { scale: [1, 1.18, 1] } : {}}
+              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            >
+              <circle r={3.5} fill="#ecfdf5" />
+              <circle r={3.5} fill="#34d399" opacity={0.5} />
+            </motion.g>
+          </g>
+        )}
 
         {/* Leading dot that rides the tip while the intro line draws. */}
         {introLead && (
@@ -320,8 +380,9 @@ const ChartSlide = ({
 
 /**
  * Slide 2 of the phone showcase: an animated analytics chart that draws itself
- * left-to-right, then rolls live — new readings slide in from the right as the
- * headline figures roll over, the endpoint breathing. Remounted whenever it
+ * left-to-right, then scrolls live — an already-built line runs in from the
+ * right at a constant speed, headline figures rolling within a believable band,
+ * the endpoint pinned to the right edge and breathing. Remounted whenever it
  * (de)activates so the draw replays on each visit; reduced-motion users get the
  * finished chart at rest.
  */
