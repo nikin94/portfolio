@@ -21,4 +21,18 @@
   "send_email": [
     { "name": "SEND_EMAIL", "destination_address": "nikin1994@gmail.com" },
   ],
+  // Per-IP rate limit for the contact endpoint — configured entirely here, so
+  // no dashboard/KV setup is needed. `period` is limited to 10 or 60s by the
+  // platform; 5 requests / 60s is plenty for a real sender and throttles a
+  // script hammering the inbox. `namespace_id` is any account-unique integer.
+  "unsafe": {
+    "bindings": [
+      {
+        "name": "CONTACT_RATE_LIMITER",
+        "type": "ratelimit",
+        "namespace_id": "2001",
+        "simple": { "limit": 5, "period": 60 },
+      },
+    ],
+  },
 }

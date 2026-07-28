@@ -14,15 +14,28 @@ import {
  * doesn't own — falls through to `env.ASSETS`, so the site is unaffected.
  *
  * `POST /api/contact` is the contact form's backend: it validates against the
- * same shared contract as the browser (`src/lib/contact-schema.ts`), drops bots
- * via a honeypot, hand-builds an RFC 5322 message and sends it through
- * Cloudflare Email Routing — no third-party form service.
+ * same shared contract as the browser (`src/lib/contact-schema.ts`), rejects
+ * abuse (same-origin only, per-IP rate limit, honeypot + submit-timing), then
+ * hand-builds an RFC 5322 message and sends it through Cloudflare Email Routing
+ * — no third-party form service.
  */
+
+/** Minimal shape of the Workers Rate Limiting binding (`unsafe` ratelimit),
+ *  declared locally so the Worker doesn't depend on the binding's generated
+ *  types being present. */
+interface RateLimiter {
+  limit(options: { key: string }): Promise<{ success: boolean }>;
+}
+
 interface Env {
   /** Email Routing binding (see `send_email` in wrangler.jsonc). */
   SEND_EMAIL: SendEmail;
   /** Static-asset binding for everything this Worker doesn't handle. */
   ASSETS: Fetcher;
+  /** Per-IP rate limiter for the contact endpoint (see `unsafe` in
+   *  wrangler.jsonc). Optional so a missing binding degrades to "no limit"
+   *  rather than a 500. */
+  CONTACT_RATE_LIMITER?: RateLimiter;
 }
 
 /** From-address on the Email-Routing-enabled zone; To must be a verified
@@ -30,14 +43,21 @@ interface Env {
 const FROM = "contact@nikin.dev";
 const TO = "nikin1994@gmail.com";
 
+/** Reject a submission that arrives sooner than this after the form mounted —
+ *  a human can't fill three fields that fast, so it reads as an auto-submit. */
+const MIN_FILL_MS = 1500;
+/** Hard cap on the request body so a large payload can't burn Worker CPU before
+ *  the per-field limits ever apply. Real submissions are a few KB. */
+const MAX_BODY_BYTES = 64 * 1024;
+
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json" },
   });
 
-/** UTF-8 → base64, so Cyrillic / accented text survives the message body and
- *  headers (contact messages are short, so building the binary string is fine). */
+/** UTF-8 → base64, so Cyrillic / accented text survives the message body
+ *  (contact messages are short, so building the binary string is fine). */
 const toBase64 = (s: string) => {
   const bytes = new TextEncoder().encode(s);
   let bin = "";
@@ -45,10 +65,11 @@ const toBase64 = (s: string) => {
   return btoa(bin);
 };
 
-/** RFC 2047 encoded-word for a header value, only when it has non-ASCII. */
-const encodeHeader = (s: string) =>
-  // eslint-disable-next-line no-control-regex
-  /[^\x00-\x7f]/.test(s) ? `=?UTF-8?B?${toBase64(s)}?=` : s;
+/** Fold a base64 payload to 76-char lines (RFC 2045), joined with CRLF, so no
+ *  single line exceeds the SMTP 998-octet limit and long messages deliver
+ *  intact instead of being truncated or spam-filed. */
+const foldBase64 = (b64: string) =>
+  (b64.match(/.{1,76}/g) ?? [b64]).join("\r\n");
 
 /** Strip CR/LF so a value can never inject extra headers. */
 const oneLine = (s: string) => s.replace(/[\r\n]+/g, " ").trim();
@@ -56,25 +77,67 @@ const oneLine = (s: string) => s.replace(/[\r\n]+/g, " ").trim();
 const buildEmail = (v: ContactValues, id: string, date: string) => {
   const name = oneLine(v.name);
   const replyTo = oneLine(v.email);
-  const subject = encodeHeader(`Portfolio enquiry from ${name}`);
   const body = `${v.message.trim()}\n\n— ${name} <${replyTo}>\n`;
 
   return [
-    `From: ${encodeHeader("Portfolio")} <${FROM}>`,
+    // A fixed ASCII subject — the sender's name (possibly non-ASCII) lives in
+    // the body, so the header never needs an RFC 2047 encoded-word (which is
+    // capped at 75 chars and would garble long / Cyrillic names).
+    `From: Portfolio <${FROM}>`,
     `To: ${TO}`,
     `Reply-To: ${replyTo}`,
     `Message-ID: <${id}@nikin.dev>`,
     `Date: ${date}`,
-    `Subject: ${subject}`,
+    "Subject: New portfolio enquiry",
     "MIME-Version: 1.0",
     "Content-Type: text/plain; charset=utf-8",
     "Content-Transfer-Encoding: base64",
     "",
-    toBase64(body),
+    foldBase64(toBase64(body)),
   ].join("\r\n");
 };
 
-const handleContact = async (request: Request, env: Env) => {
+/** Same-origin guard: accept the POST only when the browser's `Origin` (or, as
+ *  a fallback, `Referer`) matches this deployment's own origin. Blocks
+ *  cross-site scripted posts while still working on prod and preview URLs. */
+const isSameOrigin = (request: Request, self: string) => {
+  const origin = request.headers.get("Origin");
+  if (origin) return origin === self;
+  const referer = request.headers.get("Referer");
+  if (referer) {
+    try {
+      return new URL(referer).origin === self;
+    } catch {
+      return false;
+    }
+  }
+  // A browser always sends Origin on a cross-origin-capable POST; its absence
+  // means a non-browser client, which this endpoint doesn't serve.
+  return false;
+};
+
+const handleContact = async (
+  request: Request,
+  env: Env,
+  selfOrigin: string,
+) => {
+  if (!isSameOrigin(request, selfOrigin)) {
+    return json({ error: "Forbidden." }, 403);
+  }
+
+  const declaredLen = Number(request.headers.get("Content-Length"));
+  if (Number.isFinite(declaredLen) && declaredLen > MAX_BODY_BYTES) {
+    return json({ error: "Payload too large." }, 413);
+  }
+
+  // Per-IP rate limit. Optional binding, so a misconfig degrades to "no limit"
+  // (the same-origin + honeypot guards still apply) rather than a hard failure.
+  if (env.CONTACT_RATE_LIMITER) {
+    const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
+    const { success } = await env.CONTACT_RATE_LIMITER.limit({ key: ip });
+    if (!success) return json({ error: "Too many requests." }, 429);
+  }
+
   let payload: Record<string, unknown>;
   try {
     payload = await request.json();
@@ -82,8 +145,19 @@ const handleContact = async (request: Request, env: Env) => {
     return json({ error: "Invalid request body." }, 400);
   }
 
-  // Honeypot: a hidden field real users never fill. Pretend success for bots.
-  if (typeof payload.company === "string" && payload.company.trim() !== "") {
+  // Anti-spam, both silently "successful" so a bot learns nothing:
+  //  - honeypot: a hidden field only automated fillers touch;
+  //  - timing: a genuine submit can't happen within MIN_FILL_MS of mount. A
+  //    missing/na elapsed is NOT treated as a bot, so a client hiccup can never
+  //    silently drop a real person — the honeypot + origin guards still stand.
+  if (
+    typeof payload.url_extra === "string" &&
+    payload.url_extra.trim() !== ""
+  ) {
+    return json({ ok: true });
+  }
+  const elapsed = Number(payload.elapsedMs);
+  if (Number.isFinite(elapsed) && elapsed < MIN_FILL_MS) {
     return json({ ok: true });
   }
 
@@ -116,7 +190,7 @@ export default {
 
     if (url.pathname === "/api/contact") {
       return request.method === "POST"
-        ? handleContact(request, env)
+        ? handleContact(request, env, url.origin)
         : json({ error: "Method not allowed." }, 405);
     }
 
