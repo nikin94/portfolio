@@ -243,6 +243,7 @@
       "send": "Send message",
       "sending": "Sending…",
       "sent": "Message sent",
+      "sentStatus": "Message sent — thanks, I'll be in touch soon.",
       "error": "Something went wrong. Please try again, or email me directly.",
       "errors": {
         "nameRequired": "Please enter your name.",

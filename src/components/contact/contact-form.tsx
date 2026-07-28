@@ -76,6 +76,16 @@ export const ContactForm = () => {
     const found = validate(values);
     if (Object.keys(found).length) {
       setErrors(found);
+      // Send focus to the first field with an error (in visual order) so the
+      // screen reader announces it and its message, instead of leaving focus
+      // on the submit button with nothing spoken. Fields carry stable ids
+      // (`contact-<field>`), so a DOM lookup avoids threading refs through.
+      const firstInvalid = (["name", "email", "message"] as Field[]).find(
+        (f) => found[f],
+      );
+      if (firstInvalid) {
+        document.getElementById(`contact-${firstInvalid}`)?.focus();
+      }
       return;
     }
 
@@ -215,6 +225,14 @@ export const ContactForm = () => {
           </p>
         )}
       </div>
+
+      {/* Success announcement for assistive tech. The button's flip to
+          "Message sent" happens on a disabled element, which many screen
+          readers don't announce — this always-present live region is populated
+          on success so the confirmation is actually spoken. */}
+      <p role="status" aria-live="polite" className="sr-only">
+        {done ? t("Contact.form.sentStatus") : ""}
+      </p>
     </form>
   );
 };
