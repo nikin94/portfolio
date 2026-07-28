@@ -62,7 +62,7 @@
     "projects": {
       "pyra": "Solana-based fintech app — a full React Native rebuild I owned as the first external engineer, from onboarding and KYC to cards, payments and virtual accounts.",
       "iovaro": "Cross-platform invoicing app — built from the ground up as sole mobile engineer, with Stripe payments, RevenueCat subscriptions, PDF documents and Firebase.",
-      "pocket-caddie": "AI-powered golf analytics app — I built the mobile experience around swing capture, video uploads, AI analysis and progress tracking.",
+      "pocket-caddie-ai": "AI-powered golf analytics app — I built the mobile experience around swing capture, video uploads, AI analysis and progress tracking.",
       "alex-motors": "A cinematic one-page site for a real auto-repair workshop — designed and built solo in three languages, from the neon-sign concept to a Cloudflare edge backend."
     },
     "pyra": {
@@ -125,7 +125,7 @@
         "subscription": "Subscription — upgrade your plan"
       }
     },
-    "pocket-caddie": {
+    "pocket-caddie-ai": {
       "eyebrow": "React Native · AI golf analytics",
       "summary": "An AI-powered golf analytics app: players record their swings, upload the videos for analysis by backend AI models, and track their progress over time. I built the mobile experience end to end as a contractor at Applica.",
       "metrics": {
@@ -188,7 +188,7 @@
   },
   "About": {
     "eyebrow": "About me",
-    "title": "A bit about me",
+    "title": "Who I am & how I got here",
     "bio": "I'm a Senior React Native developer focused on cross-platform mobile delivery, performance and product scaling — most recently across FinTech and HealthTech. I care about apps that feel fast and truly native, and I lean on AI-assisted tooling to ship production-quality work quickly.",
     "timeline": {
       "label": "Career",
