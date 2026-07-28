@@ -7,7 +7,7 @@ export const siteConfig = {
   /** Full name shown as the header wordmark. */
   author: "Serhiy Nikiforov",
   description:
-    "Senior React Native developer in Dublin, Ireland with 7+ years shipping production iOS & Android apps — most recently scaling a FinTech product from $50K to $4.8M+ in volume. TypeScript, Expo, performance and native feel. Open to work.",
+    "Senior React Native developer in Dublin, Ireland with 6+ years shipping production iOS & Android apps — most recently scaling a FinTech product from $50K to $4.8M+ in volume. Expo, performance and native feel. Open to work.",
   url: "https://nikin.dev",
   /** Social-share preview image (1200×630), served from `/public`. Referenced
    *  as an absolute URL (crawlers need it) built from `url` + this path. */
