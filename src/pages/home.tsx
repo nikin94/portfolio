@@ -27,16 +27,6 @@ const Home = () => {
           {t("Home.subtitle")}
         </p>
         <SocialLinks />
-        {/* Availability badge — kept at the very bottom, below the primary
-            links; the emerald dot signals "actively open" without crowding the
-            top of the hero. */}
-        <span className="border-border bg-foreground/5 text-muted mt-8 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium">
-          <span className="relative flex size-2">
-            <span className="absolute inline-flex size-full rounded-full bg-emerald-400/60" />
-            <span className="relative inline-flex size-2 rounded-full bg-emerald-400" />
-          </span>
-          {t("Home.badge")}
-        </span>
       </div>
       <div className="hero-rise-phone flex shrink-0 justify-center lg:justify-end">
         <PhoneShowcase />

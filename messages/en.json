@@ -7,10 +7,9 @@
     "label": "Primary"
   },
   "Home": {
-    "badge": "Open to work",
-    "eyebrow": "Senior React Native Developer · Dublin, Ireland",
+    "eyebrow": "Senior React Native Developer · Dublin, Ireland · Open to work",
     "title": "I build high-performance mobile apps and ship them.",
-    "subtitle": "Senior engineer with 6+ years shipping production iOS & Android apps in React Native — most recently scaling a FinTech product to $4.8M+ in volume. Obsessed with performance and native feel.",
+    "subtitle": "Senior engineer with 6+ years shipping production iOS & Android apps in React Native — most recently scaling a FinTech product to $4.8M+ in volume. Obsessed with the polish and motion that make apps feel truly native.",
     "cubeLabel": "Interactive Rubik's cube — drag to rotate",
     "showcase": {
       "label": "App feature demos",
