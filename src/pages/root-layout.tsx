@@ -55,7 +55,12 @@ const RootLayout = () => {
             {/* Availability tag next to the wordmark — an emerald dot signals
                 "actively open" on every page, at a glance. */}
             <span className="border-border bg-foreground/5 text-muted inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium">
-              <span className="size-1.5 rounded-full bg-emerald-400" />
+              {/* A solid dot with a soft pulsing halo — the ping is gated behind
+                  `motion-safe`, so reduced-motion users just see the static dot. */}
+              <span className="relative flex size-1.5">
+                <span className="absolute inline-flex size-full rounded-full bg-emerald-400/70 motion-safe:animate-ping" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
+              </span>
               {t("Nav.openToWork")}
             </span>
           </div>
