@@ -68,7 +68,7 @@ export const milestones: Milestone[] = [
   {
     id: "graduation",
     company: "Vernadsky Taurida National University",
-    period: "Graduated",
+    period: "2016",
     kind: "education",
   },
 ];

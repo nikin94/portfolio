@@ -11,7 +11,7 @@ export const siteConfig = {
   url: "https://nikin.dev",
   /** Social-share preview image (1200×630), served from `/public`. Referenced
    *  as an absolute URL (crawlers need it) built from `url` + this path. */
-  ogImage: "/og.png",
+  ogImage: "/og.jpg",
   /** Direct contact address — the mailto target and the Contact-tab email link. */
   email: "nikin1994@gmail.com",
   /**
