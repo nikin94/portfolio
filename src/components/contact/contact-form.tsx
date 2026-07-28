@@ -105,7 +105,7 @@ export const ContactForm = () => {
         />
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2">
         <FormField
           field="name"
           type="text"
@@ -124,7 +124,7 @@ export const ContactForm = () => {
         />
       </div>
 
-      <div className="mt-5">
+      <div className="mt-3">
         <FieldLabel field="message" />
         <textarea
           id="contact-message"
@@ -141,7 +141,7 @@ export const ContactForm = () => {
         <FieldError id="contact-message-error" message={errors.message} />
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-4">
+      <div className="mt-4 flex flex-wrap items-center gap-4">
         <motion.button
           type="submit"
           // Non-interactive while sending and once sent — no cursor or hover
