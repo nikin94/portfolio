@@ -7,9 +7,11 @@
     "label": "Primary"
   },
   "Home": {
-    "eyebrow": "Senior React Native Developer",
-    "title": "I build fast, native-feeling mobile apps — and ship them.",
-    "subtitle": "7+ years across FinTech and HealthTech. Most recently I rebuilt the Pyra app as its first external engineer, helping scale it from $50K to $4.8M+ in volume while cutting cold-start by ~60%. iOS, Android, and modern web.",
+    "badge": "Open to work",
+    "eyebrow": "Senior React Native Developer · Dublin, Ireland",
+    "title": "I build fast, native mobile apps and ship them.",
+    "subtitle": "Senior engineer with 7+ years shipping production iOS & Android apps in React Native + TypeScript — most recently scaling a FinTech product to $4.8M+ in volume. Obsessed with performance and native feel.",
+    "availability": "Right to live and work in Ireland · Open to full-time or contract, hybrid or remote",
     "cubeLabel": "Interactive Rubik's cube — drag to rotate",
     "showcase": {
       "label": "App feature demos",
@@ -231,7 +233,7 @@
   "Contact": {
     "eyebrow": "Get in touch",
     "title": "Let's build something",
-    "subtitle": "Open to React Native and frontend roles and collaborations — send a note and I'll get back to you.",
+    "subtitle": "Open to Senior React Native roles — full-time or contract, in Dublin or remote. Send a note and I'll get back to you.",
     "directLabel": "Or reach me directly",
     "form": {
       "name": "Name",
