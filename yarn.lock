@@ -258,6 +258,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cloudflare/workers-types@npm:^5.20260728.1":
+  version: 5.20260728.1
+  resolution: "@cloudflare/workers-types@npm:5.20260728.1"
+  checksum: 10c0/8640a77e15532c62187a7470f843db04f2213c843caf142bddc452bd24ccdd63331dbf35cb54e7efebf1b549e6c219ae7e7b0d94977b27b4c178c2fb418ae745
+  languageName: node
+  linkType: hard
+
 "@csstools/color-helpers@npm:^5.1.0":
   version: 5.1.0
   resolution: "@csstools/color-helpers@npm:5.1.0"
@@ -3615,6 +3622,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "portfolio@workspace:."
   dependencies:
+    "@cloudflare/workers-types": "npm:^5.20260728.1"
     "@eslint/js": "npm:^10.0.1"
     "@number-flow/react": "npm:^0.6.2"
     "@react-three/drei": "npm:^10.7.7"

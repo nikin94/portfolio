@@ -246,10 +246,12 @@
       "error": "Something went wrong. Please try again, or email me directly.",
       "errors": {
         "nameRequired": "Please enter your name.",
+        "nameLong": "That name is a little too long.",
         "emailRequired": "Please enter your email.",
         "emailInvalid": "Please enter a valid email address.",
         "messageRequired": "Please enter a message.",
-        "messageShort": "A little short — add a few more details."
+        "messageShort": "A little short — add a few more details.",
+        "messageLong": "That message is a little too long."
       }
     }
   },

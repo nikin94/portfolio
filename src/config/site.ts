@@ -15,11 +15,12 @@ export const siteConfig = {
   /** Direct contact address — the mailto target and the Contact-tab email link. */
   email: "nikin1994@gmail.com",
   /**
-   * Optional form-handling endpoint (e.g. Formspree / Web3Forms). When set, the
-   * contact form POSTs to it inline; when empty it falls back to composing a
-   * `mailto:` — so the form works today on a static host with no backend.
+   * Contact-form submit endpoint. Same-origin `POST /api/contact`, handled by
+   * the Cloudflare Worker (`worker/index.ts`), which validates and sends the
+   * message through Email Routing. Empty would make the form fall back to a
+   * `mailto:` compose (useful with no backend).
    */
-  contactEndpoint: "",
+  contactEndpoint: "/api/contact",
   /**
    * External profile links surfaced on the Home tab. Served from `/public`
    * (the CV) or an external profile.
