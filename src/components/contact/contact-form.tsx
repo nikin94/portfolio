@@ -1,7 +1,6 @@
 import { Check, Loader2, Send } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 
 import { submitContact } from "@/lib/contact";
 import { validateContact, type ContactValues } from "@/lib/contact-schema";
@@ -265,21 +264,6 @@ export const ContactForm = () => {
       <p role="status" aria-live="polite" className="sr-only">
         {done ? t("Contact.form.sentStatus") : ""}
       </p>
-
-      {/* Turnstile disclosure. The invisible widget shows no badge, so this line
-          carries the required attribution and links to the privacy policy (which
-          references Cloudflare's Turnstile Privacy Addendum). */}
-      {turnstileActive && (
-        <p className="text-muted/70 mt-4 text-xs">
-          {t("Contact.form.turnstileNote")}{" "}
-          <Link
-            to="/privacy"
-            className="hover:text-foreground underline underline-offset-2 transition-colors"
-          >
-            {t("Footer.privacy")}
-          </Link>
-        </p>
-      )}
     </form>
   );
 };

@@ -246,7 +246,6 @@
       "sentStatus": "Message sent — thanks, I'll be in touch soon.",
       "error": "Something went wrong. Please try again, or email me directly.",
       "verifyRequired": "Please complete the verification below.",
-      "turnstileNote": "This form is protected by Cloudflare Turnstile.",
       "errors": {
         "nameRequired": "Please enter your name.",
         "nameLong": "That name is a little too long.",
