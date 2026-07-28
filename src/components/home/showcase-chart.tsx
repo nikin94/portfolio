@@ -34,17 +34,20 @@ const UNIQUE_Y = [
   168, 146, 122, 140, 98, 118, 150, 74, 98, 60, 86, 46, 72, 112, 88, 134, 102,
   152, 126, 158,
 ];
-/** Money ($k, 46–50) and growth (%, 142–150) per reading; index 7 (the one at
- *  rest on the right edge) matches the intro's count-up targets for a seamless
- *  hand-off. */
-const VALUES = [
-  47.1, 47.6, 46.8, 48.0, 47.4, 48.6, 47.9, 48.2, 49.1, 48.4, 49.6, 48.9, 47.8,
-  49.3, 48.1, 46.9, 47.5, 48.8, 49.4, 47.2,
-];
-const GROWTHS = [
-  144, 145, 143, 147, 144, 148, 145, 146, 149, 147, 150, 148, 143, 149, 146,
-  142, 144, 147, 150, 145,
-];
+/** Money ($k, 46–50) and growth (%, 142–150) are derived from each reading's
+ *  line height, so the headline figures track the curve: a higher point (smaller
+ *  y) reads higher revenue and growth, a lower point reads lower. Deterministic
+ *  (no randomness) so the server and client render identically. Index 7 (the
+ *  reading at rest on the right edge) sets the intro's count-up targets for a
+ *  seamless hand-off. */
+const Y_MIN = Math.min(...UNIQUE_Y);
+const Y_MAX = Math.max(...UNIQUE_Y);
+/** Normalised line height: 1 at the top of the band, 0 at the bottom. */
+const height01 = (y: number) => (Y_MAX - y) / (Y_MAX - Y_MIN);
+const VALUES = UNIQUE_Y.map(
+  (y) => Math.round((46 + height01(y) * 4) * 10) / 10,
+);
+const GROWTHS = UNIQUE_Y.map((y) => Math.round(142 + height01(y) * 8));
 const INTRO_VALUE = VALUES[EDGE_INDEX];
 const INTRO_GROWTH = GROWTHS[EDGE_INDEX];
 
@@ -216,8 +219,8 @@ const ChartSlide = ({
   const live = done && !reduced;
 
   return (
-    <div aria-hidden className="flex h-full flex-col gap-6 pt-14">
-      <div className="px-1">
+    <div aria-hidden className="flex h-full flex-col gap-6 pt-20">
+      <div className="px-4">
         <p className="text-[10px] font-medium tracking-widest text-white/40 uppercase">
           Revenue
         </p>
