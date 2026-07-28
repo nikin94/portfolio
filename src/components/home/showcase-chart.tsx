@@ -224,7 +224,13 @@ const ChartSlide = ({
         <p className="text-[10px] font-medium tracking-widest text-white/40 uppercase">
           Revenue
         </p>
-        <p className="mt-1 text-2xl font-semibold text-white tabular-nums">
+        {/* Fixed line heights (h-8 = the text-2xl line box, h-4 = the text-xs
+            one), so the text → NumberFlow swap at `done` can't change the
+            header's height. NumberFlow renders as an inline-block a couple px
+            taller than the plain text it replaces; without a pinned box that
+            reflowed the top-anchored flex column, dropping the chart a few
+            pixels the instant the scroll began. */}
+        <p className="mt-1 flex h-8 items-center text-2xl font-semibold text-white tabular-nums">
           {done ? (
             <NumberFlow
               value={value}
@@ -238,7 +244,7 @@ const ChartSlide = ({
             </>
           )}
         </p>
-        <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-emerald-400 tabular-nums">
+        <p className="mt-1.5 flex h-4 items-center gap-1 text-xs font-medium text-emerald-400 tabular-nums">
           <TrendingUp className="size-3.5" />
           {done ? (
             <NumberFlow value={growth} prefix="+" suffix="%" trend={1} />
