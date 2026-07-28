@@ -152,8 +152,16 @@ const handleContact = async (
     return json({ error: "Forbidden." }, 403);
   }
 
+  // Require a declared body size within the cap. A browser `fetch` with a JSON
+  // string body always sets Content-Length; a missing / unparseable header (a
+  // chunked upload with no length) would otherwise read as 0, slip past this
+  // guard, and let `request.json()` buffer an unbounded body — so reject it up
+  // front rather than trusting the size check to the per-field slices below.
   const declaredLen = Number(request.headers.get("Content-Length"));
-  if (Number.isFinite(declaredLen) && declaredLen > MAX_BODY_BYTES) {
+  if (!Number.isFinite(declaredLen) || declaredLen <= 0) {
+    return json({ error: "Length required." }, 411);
+  }
+  if (declaredLen > MAX_BODY_BYTES) {
     return json({ error: "Payload too large." }, 413);
   }
 
