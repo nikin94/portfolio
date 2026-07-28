@@ -8,7 +8,10 @@ export const siteConfig = {
   author: "Serhiy Nikiforov",
   description:
     "Portfolio of a React Native developer building fast, polished cross-platform mobile apps — with modern web experiences on the side.",
-  url: "https://example.com",
+  url: "https://nikin.dev",
+  /** Social-share preview image (1200×630), served from `/public`. Referenced
+   *  as an absolute URL (crawlers need it) built from `url` + this path. */
+  ogImage: "/og.png",
   /** Direct contact address — the mailto target and the Contact-tab email link. */
   email: "nikin1994@gmail.com",
   /**
