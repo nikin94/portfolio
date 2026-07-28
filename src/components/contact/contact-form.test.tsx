@@ -33,6 +33,15 @@ describe("ContactForm", () => {
     expect(mockSubmit.mock.calls.length).toBe(before);
   });
 
+  it("moves focus to the first invalid field on submit", () => {
+    render(<ContactForm />);
+    fill(/Name/, "Ada");
+    // Email + message left empty — email is the first invalid field.
+    send();
+
+    expect(screen.getByLabelText(/Email/)).toHaveFocus();
+  });
+
   it("flags an invalid email", () => {
     render(<ContactForm />);
     fill(/Name/, "Ada");
