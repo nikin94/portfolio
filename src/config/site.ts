@@ -3,11 +3,11 @@
  * production domain is wired up.
  */
 export const siteConfig = {
-  name: "Serhiy — React Native Developer",
+  name: "Serhiy Nikiforov — Senior React Native Developer · Dublin",
   /** Full name shown as the header wordmark. */
   author: "Serhiy Nikiforov",
   description:
-    "Portfolio of a React Native developer building fast, polished cross-platform mobile apps — with modern web experiences on the side.",
+    "Senior React Native developer in Dublin, Ireland with 6+ years shipping production iOS & Android apps — most recently scaling a FinTech product from $50K to $4.8M+ in volume. Expo, performance and native feel. Open to work.",
   url: "https://nikin.dev",
   /** Social-share preview image (1200×630), served from `/public`. Referenced
    *  as an absolute URL (crawlers need it) built from `url` + this path. */

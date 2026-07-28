@@ -6,6 +6,7 @@ import { EasterEggs } from "@/components/easter-eggs/easter-eggs";
 import { MainNav } from "@/components/main-nav";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { siteConfig } from "@/config/site";
+import { t } from "@/i18n/strings";
 import { AppProviders } from "@/providers";
 
 /**
@@ -47,9 +48,22 @@ const RootLayout = () => {
 
       <div className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-6">
         <header className="flex items-center justify-between gap-4 py-6">
-          <span className="text-sm font-semibold tracking-widest uppercase">
-            {siteConfig.author}
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-semibold tracking-widest uppercase">
+              {siteConfig.author}
+            </span>
+            {/* Availability tag next to the wordmark — an emerald dot signals
+                "actively open" on every page, at a glance. */}
+            <span className="border-border bg-foreground/5 text-muted inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium">
+              {/* A solid dot with a soft pulsing halo — the ping is gated behind
+                  `motion-safe`, so reduced-motion users just see the static dot. */}
+              <span className="relative flex size-1.5">
+                <span className="absolute inline-flex size-full rounded-full bg-emerald-400/70 motion-safe:animate-ping" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
+              </span>
+              {t("Nav.openToWork")}
+            </span>
+          </div>
           <MainNav />
         </header>
         <main className="flex flex-1 flex-col pb-16">

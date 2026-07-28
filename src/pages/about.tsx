@@ -22,6 +22,9 @@ const About = () => {
           <p className="text-muted mt-6 text-lg text-pretty">
             {t("About.bio")}
           </p>
+          <p className="text-muted/80 mt-4 text-sm text-pretty">
+            {t("About.availability")}
+          </p>
         </Reveal>
 
         <CareerTimeline />
