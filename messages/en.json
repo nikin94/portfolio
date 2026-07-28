@@ -7,9 +7,9 @@
     "label": "Primary"
   },
   "Home": {
-    "eyebrow": "React Native Developer",
-    "title": "Building fast, polished cross-platform mobile apps",
-    "subtitle": "iOS and Android apps built with React Native — crafted with an obsession for performance, native feel and motion. Plus modern web experiences on the side.",
+    "eyebrow": "Senior React Native Developer",
+    "title": "I build fast, native-feeling mobile apps — and ship them.",
+    "subtitle": "7+ years across FinTech and HealthTech. Most recently I rebuilt the Pyra app as its first external engineer, helping scale it from $50K to $4.8M+ in volume while cutting cold-start by ~60%. iOS, Android, and modern web.",
     "cubeLabel": "Interactive Rubik's cube — drag to rotate",
     "showcase": {
       "label": "App feature demos",
@@ -48,7 +48,7 @@
   "Work": {
     "eyebrow": "Selected work",
     "title": "React Native apps & web projects",
-    "subtitle": "React Native apps front and centre, with a few web builds alongside. Full case studies with screenshots are on the way.",
+    "subtitle": "React Native apps front and centre, with a few web builds alongside. Deep-dive case studies with screenshots for each.",
     "filterLabel": "Filter projects by platform",
     "back": "Back to work",
     "viewCaseStudy": "View case study",
