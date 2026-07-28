@@ -56,11 +56,14 @@ describe("ContactForm", () => {
     send();
 
     await waitFor(() =>
-      expect(mockSubmit).toHaveBeenLastCalledWith({
-        name: "Ada Lovelace",
-        email: "ada@example.com",
-        message: "I'd love to talk about a React Native role.",
-      }),
+      expect(mockSubmit).toHaveBeenLastCalledWith(
+        {
+          name: "Ada Lovelace",
+          email: "ada@example.com",
+          message: "I'd love to talk about a React Native role.",
+        },
+        "",
+      ),
     );
     expect(
       await screen.findByRole("button", { name: /Message sent/ }),

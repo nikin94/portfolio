@@ -2,12 +2,23 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "portfolio",
   "compatibility_date": "2025-06-01",
-  // Static-assets-only Worker: no server script, just the prerendered `dist/`.
-  // `npx wrangler deploy` (the dashboard's deploy command) reads this.
+  // A Worker fronts the prerendered `dist/` assets. `run_worker_first` routes
+  // only `/api/*` through the Worker script; every other request is served
+  // straight from static assets (with the SPA 404 fallback). `npx wrangler
+  // deploy` (the dashboard's deploy command) reads this.
+  "main": "worker/index.ts",
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
     // Unknown URLs serve the app shell (index.html); the router's catch-all
     // route then redirects them home — a soft "404 → home".
     "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"],
   },
+  // Cloudflare Email Routing binding — the contact form's `POST /api/contact`
+  // sends through this. `destination_address` must be a verified address in the
+  // zone's Email Routing settings.
+  "send_email": [
+    { "name": "SEND_EMAIL", "destination_address": "nikin1994@gmail.com" },
+  ],
 }

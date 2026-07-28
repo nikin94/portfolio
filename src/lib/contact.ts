@@ -1,10 +1,8 @@
 import { siteConfig } from "@/config/site";
 
-export interface ContactValues {
-  name: string;
-  email: string;
-  message: string;
-}
+import type { ContactValues } from "./contact-schema";
+
+export type { ContactValues } from "./contact-schema";
 
 /** How the message was delivered, so the UI can word its confirmation. */
 export type ContactResult = "sent" | "mailto";
@@ -12,15 +10,15 @@ export type ContactResult = "sent" | "mailto";
 /**
  * Delivers a contact message.
  *
- * With a form endpoint configured (`siteConfig.contactEndpoint`) it POSTs the
- * message inline and resolves `"sent"`. With none — the default on this static,
- * backend-less site — it composes a `mailto:` to the owner and resolves
- * `"mailto"`, so the form is useful today and upgrades to inline submit the
- * moment an endpoint is set. Rejects on a non-OK response so the form can show
- * an error.
+ * With an endpoint configured (`siteConfig.contactEndpoint` → `/api/contact`,
+ * the Cloudflare Worker) it POSTs the message inline and resolves `"sent"`;
+ * `honeypot` carries the hidden anti-spam field verbatim. With none it composes
+ * a `mailto:` and resolves `"mailto"`, so the form still works on a backend-less
+ * host. Rejects on a non-OK response so the form can show an error.
  */
 export const submitContact = async (
   values: ContactValues,
+  honeypot = "",
 ): Promise<ContactResult> => {
   const endpoint = siteConfig.contactEndpoint;
 
@@ -31,7 +29,7 @@ export const submitContact = async (
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify(values),
+      body: JSON.stringify({ ...values, company: honeypot }),
     });
     if (!res.ok) throw new Error(`Contact endpoint returned ${res.status}`);
     return "sent";

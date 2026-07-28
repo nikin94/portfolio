@@ -1,8 +1,9 @@
 import { Check, Loader2, Send } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
-import { submitContact, type ContactValues } from "@/lib/contact";
+import { submitContact } from "@/lib/contact";
+import { validateContact, type ContactValues } from "@/lib/contact-schema";
 import { t } from "@/i18n/strings";
 import { cn } from "@/lib/utils";
 
@@ -12,20 +13,14 @@ type Status = "idle" | "sending" | "sent" | "mailto" | "error";
 
 const EMPTY: ContactValues = { name: "", email: "", message: "" };
 
-// Deliberately loose — real validation is the server's job; this only catches
-// obvious typos before submitting.
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MIN_MESSAGE = 10;
-
+// Validate against the shared contract (`contact-schema`) — the exact rules the
+// Worker enforces — then map each error code to its localized copy for display.
 const validate = (v: ContactValues): Errors => {
+  const codes = validateContact(v);
   const e: Errors = {};
-  if (!v.name.trim()) e.name = t("Contact.form.errors.nameRequired");
-  if (!v.email.trim()) e.email = t("Contact.form.errors.emailRequired");
-  else if (!EMAIL_RE.test(v.email.trim()))
-    e.email = t("Contact.form.errors.emailInvalid");
-  if (!v.message.trim()) e.message = t("Contact.form.errors.messageRequired");
-  else if (v.message.trim().length < MIN_MESSAGE)
-    e.message = t("Contact.form.errors.messageShort");
+  for (const field of Object.keys(codes) as Field[]) {
+    e[field] = t(`Contact.form.errors.${codes[field]}`);
+  }
   return e;
 };
 
@@ -50,6 +45,9 @@ export const ContactForm = () => {
   const [values, setValues] = useState<ContactValues>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<Status>("idle");
+  // Honeypot: a hidden field only bots fill. Never rendered visibly; passed
+  // through to the Worker, which silently drops the submission when it's set.
+  const honeypot = useRef("");
 
   const sending = status === "sending";
   const done = status === "sent" || status === "mailto";
@@ -76,7 +74,7 @@ export const ContactForm = () => {
     setStatus("sending");
     void (async () => {
       try {
-        setStatus(await submitContact(values));
+        setStatus(await submitContact(values, honeypot.current));
         // Delivered — reset the form; the button now reads "Message sent".
         setValues(EMPTY);
       } catch {
@@ -91,6 +89,22 @@ export const ContactForm = () => {
 
   return (
     <form onSubmit={onSubmit} noValidate className="mt-10 max-w-xl">
+      {/* Honeypot — off-screen, hidden from assistive tech and tab order. Real
+          users never see or fill it; bots that auto-fill get silently dropped. */}
+      <div
+        aria-hidden
+        className="absolute left-[-9999px] h-0 w-0 overflow-hidden"
+      >
+        <label htmlFor="contact-company">Company</label>
+        <input
+          id="contact-company"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          onChange={(e) => (honeypot.current = e.target.value)}
+        />
+      </div>
+
       <div className="grid gap-5 sm:grid-cols-2">
         <FormField
           field="name"
