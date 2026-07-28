@@ -52,15 +52,7 @@ const TimelineNode = ({
 
       {/* Content. */}
       <div className={cn("min-w-0", isLast ? "pb-1" : "pb-9")}>
-        <p
-          className={cn(
-            "text-muted text-xs font-medium tracking-widest uppercase",
-            // `tabular-nums` aligns the digit spans of the year ranges; the
-            // education node's period is a word ("Graduated"), not a numeric
-            // interval, so it shouldn't sit in that monospaced numeric slot.
-            !isEducation && "tabular-nums",
-          )}
-        >
+        <p className="text-muted text-xs font-medium tracking-widest uppercase tabular-nums">
           {period}
         </p>
         <h3 className="mt-1.5 font-semibold tracking-tight">
