@@ -26,7 +26,7 @@ const Contact = () => {
 
         <ContactForm />
 
-        <h2 className="text-muted mt-12 text-xs font-medium tracking-widest uppercase">
+        <h2 className="text-muted mt-8 text-xs font-medium tracking-widest uppercase">
           {t("Contact.directLabel")}
         </h2>
         <nav className="mt-3 flex flex-wrap gap-3">
