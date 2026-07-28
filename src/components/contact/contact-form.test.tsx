@@ -62,7 +62,7 @@ describe("ContactForm", () => {
           email: "ada@example.com",
           message: "I'd love to talk about a React Native role.",
         },
-        "",
+        expect.objectContaining({ honeypot: "" }),
       ),
     );
     expect(

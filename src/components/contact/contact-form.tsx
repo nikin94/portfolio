@@ -1,6 +1,6 @@
 import { Check, Loader2, Send } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { submitContact } from "@/lib/contact";
 import { validateContact, type ContactValues } from "@/lib/contact-schema";
@@ -48,6 +48,14 @@ export const ContactForm = () => {
   // Honeypot: a hidden field only bots fill. Never rendered visibly; passed
   // through to the Worker, which silently drops the submission when it's set.
   const honeypot = useRef("");
+  // When the form mounted — the Worker rejects submits that arrive implausibly
+  // fast (an auto-submit), so real users need to have spent time on it. Stamped
+  // in an effect (not during render) to keep the render pure; if it never runs,
+  // elapsed stays large and no real submission is ever dropped.
+  const mountedAt = useRef(0);
+  useEffect(() => {
+    mountedAt.current = Date.now();
+  }, []);
 
   const sending = status === "sending";
   const done = status === "sent" || status === "mailto";
@@ -74,7 +82,12 @@ export const ContactForm = () => {
     setStatus("sending");
     void (async () => {
       try {
-        setStatus(await submitContact(values, honeypot.current));
+        setStatus(
+          await submitContact(values, {
+            honeypot: honeypot.current,
+            elapsedMs: Date.now() - mountedAt.current,
+          }),
+        );
         // Delivered — reset the form; the button now reads "Message sent".
         setValues(EMPTY);
       } catch {
@@ -90,17 +103,23 @@ export const ContactForm = () => {
   return (
     <form onSubmit={onSubmit} noValidate className="mt-7 max-w-xl">
       {/* Honeypot — off-screen, hidden from assistive tech and tab order. Real
-          users never see or fill it; bots that auto-fill get silently dropped. */}
+          users never see or fill it; bots that auto-fill get silently dropped.
+          The name (`url_extra`) and the password-manager opt-outs keep browser
+          autofill away, so a real person's org name never lands here by
+          accident (which would silently drop their message). */}
       <div
         aria-hidden
         className="absolute left-[-9999px] h-0 w-0 overflow-hidden"
       >
-        <label htmlFor="contact-company">Company</label>
+        <label htmlFor="contact-url-extra">Leave this field empty</label>
         <input
-          id="contact-company"
+          id="contact-url-extra"
+          name="url_extra"
           type="text"
           tabIndex={-1}
           autoComplete="off"
+          data-lpignore="true"
+          data-1p-ignore
           onChange={(e) => (honeypot.current = e.target.value)}
         />
       </div>
