@@ -28,7 +28,7 @@ export const siteConfig = {
    * works on the existing same-origin + rate-limit + honeypot layers. The paired
    * secret lives as the Worker's `TURNSTILE_SECRET` secret, never in this file.
    */
-  turnstileSiteKey: "",
+  turnstileSiteKey: "0x4AAAAAAEABP4evYzhiseOz",
   /**
    * External profile links surfaced on the Home tab. Served from `/public`
    * (the CV) or an external profile.
