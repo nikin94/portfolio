@@ -22,6 +22,14 @@ export const siteConfig = {
    */
   contactEndpoint: "/api/contact",
   /**
+   * Cloudflare Turnstile site key (public — safe to commit). When set, the
+   * contact form renders the Turnstile widget and the Worker verifies the token
+   * before sending. Empty (the default) leaves the widget off, so the form still
+   * works on the existing same-origin + rate-limit + honeypot layers. The paired
+   * secret lives as the Worker's `TURNSTILE_SECRET` secret, never in this file.
+   */
+  turnstileSiteKey: "",
+  /**
    * External profile links surfaced on the Home tab. Served from `/public`
    * (the CV) or an external profile.
    */

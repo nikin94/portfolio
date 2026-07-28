@@ -4,8 +4,11 @@ import { useEffect, useRef, useState } from "react";
 
 import { submitContact } from "@/lib/contact";
 import { validateContact, type ContactValues } from "@/lib/contact-schema";
+import { siteConfig } from "@/config/site";
 import { t } from "@/i18n/strings";
 import { cn } from "@/lib/utils";
+
+import { Turnstile } from "./turnstile";
 
 type Field = keyof ContactValues;
 type Errors = Partial<Record<Field, string>>;
@@ -57,6 +60,13 @@ export const ContactForm = () => {
     mountedAt.current = Date.now();
   }, []);
 
+  // Turnstile is active only when a site key is configured. While active, the
+  // widget yields a one-shot token the Worker verifies; submission is gated on
+  // having one. `verifyPrompt` asks the user to complete it if they submit early.
+  const turnstileActive = !!siteConfig.turnstileSiteKey;
+  const [token, setToken] = useState<string | null>(null);
+  const [verifyPrompt, setVerifyPrompt] = useState(false);
+
   const sending = status === "sending";
   const done = status === "sent" || status === "mailto";
 
@@ -89,6 +99,12 @@ export const ContactForm = () => {
       return;
     }
 
+    // Turnstile on but not solved yet — prompt for it instead of submitting.
+    if (turnstileActive && !token) {
+      setVerifyPrompt(true);
+      return;
+    }
+
     setStatus("sending");
     void (async () => {
       try {
@@ -96,6 +112,7 @@ export const ContactForm = () => {
           await submitContact(values, {
             honeypot: honeypot.current,
             elapsedMs: Date.now() - mountedAt.current,
+            turnstileToken: token ?? undefined,
           }),
         );
         // Delivered — reset the form; the button now reads "Message sent".
@@ -106,9 +123,14 @@ export const ContactForm = () => {
     })();
   };
 
-  // The button itself confirms success ("Message sent"); only a failure needs a
-  // spelled-out message.
-  const statusMessage = status === "error" ? t("Contact.form.error") : null;
+  // The button itself confirms success ("Message sent"); a failure or an
+  // outstanding verification each need a spelled-out message.
+  const statusMessage =
+    status === "error"
+      ? t("Contact.form.error")
+      : verifyPrompt
+        ? t("Contact.form.verifyRequired")
+        : null;
 
   return (
     <form onSubmit={onSubmit} noValidate className="mt-7 max-w-xl">
@@ -169,6 +191,15 @@ export const ContactForm = () => {
         />
         <FieldError id="contact-message-error" message={errors.message} />
       </div>
+
+      {/* Cloudflare Turnstile — renders only when a site key is configured;
+          otherwise a no-op. Solving it clears any outstanding verify prompt. */}
+      <Turnstile
+        onToken={(tok) => {
+          setToken(tok);
+          if (tok) setVerifyPrompt(false);
+        }}
+      />
 
       <div className="mt-2 flex flex-wrap items-center gap-4">
         <motion.button
