@@ -107,5 +107,10 @@ export const Turnstile = ({
   }, []);
 
   if (!siteConfig.turnstileSiteKey) return null;
-  return <div ref={ref} className="mt-4" />;
+  // No margin: in invisible mode Cloudflare injects a zero-height element, so a
+  // fixed margin would leave a dead gap for the majority of visitors who never
+  // see a challenge. The container sits flush; on the rare escalation to a
+  // visible challenge it renders just above the submit row (which carries its
+  // own top margin), which reads fine.
+  return <div ref={ref} />;
 };

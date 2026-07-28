@@ -5,6 +5,7 @@ import About from "./pages/about";
 import CaseStudy from "./pages/case-study";
 import Contact from "./pages/contact";
 import Home from "./pages/home";
+import Privacy from "./pages/privacy";
 import RootLayout from "./pages/root-layout";
 import Work from "./pages/work";
 import { caseStudySlugs } from "./config/projects";
@@ -39,6 +40,7 @@ export const routes: RouteRecord[] = [
       },
       { path: "about", element: <About /> },
       { path: "contact", element: <Contact /> },
+      { path: "privacy", element: <Privacy /> },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },

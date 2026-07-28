@@ -1,9 +1,14 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 
 import { submitContact } from "@/lib/contact";
 
 import { ContactForm } from "./contact-form";
+
+// The form links to the privacy policy (the Turnstile disclosure), so it needs
+// a router context to render.
+const renderForm = () => render(<ContactForm />, { wrapper: MemoryRouter });
 
 // Isolate the navigation/fetch side effect — the form's job is validation and
 // state; delivery is the module's. (No beforeEach reset: each test sets its own
@@ -35,7 +40,7 @@ const send = () =>
 
 describe("ContactForm", () => {
   it("blocks submit and shows errors when fields are empty", () => {
-    render(<ContactForm />);
+    renderForm();
     const before = mockSubmit.mock.calls.length;
     send();
 
@@ -46,7 +51,7 @@ describe("ContactForm", () => {
   });
 
   it("moves focus to the first invalid field on submit", () => {
-    render(<ContactForm />);
+    renderForm();
     fill(/Name/, "Ada");
     // Email + message left empty — email is the first invalid field.
     send();
@@ -55,7 +60,7 @@ describe("ContactForm", () => {
   });
 
   it("flags an invalid email", () => {
-    render(<ContactForm />);
+    renderForm();
     fill(/Name/, "Ada");
     fill(/Email/, "not-an-email");
     fill(/Message/, "A message long enough to pass.");
@@ -70,7 +75,7 @@ describe("ContactForm", () => {
 
   it("submits valid values and confirms a sent message", async () => {
     mockSubmit.mockResolvedValue("sent");
-    render(<ContactForm />);
+    renderForm();
     fill(/Name/, "Ada Lovelace");
     fill(/Email/, "ada@example.com");
     fill(/Message/, "I'd love to talk about a React Native role.");
@@ -95,7 +100,7 @@ describe("ContactForm", () => {
     mockSubmit.mockImplementation(async () => {
       throw new Error("boom");
     });
-    render(<ContactForm />);
+    renderForm();
     fill(/Name/, "Ada");
     fill(/Email/, "ada@example.com");
     fill(/Message/, "A message long enough to pass.");

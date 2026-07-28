@@ -246,6 +246,7 @@
       "sentStatus": "Message sent — thanks, I'll be in touch soon.",
       "error": "Something went wrong. Please try again, or email me directly.",
       "verifyRequired": "Please complete the verification below.",
+      "turnstileNote": "This form is protected by Cloudflare Turnstile.",
       "errors": {
         "nameRequired": "Please enter your name.",
         "nameLong": "That name is a little too long.",
@@ -256,6 +257,33 @@
         "messageLong": "That message is a little too long."
       }
     }
+  },
+  "Privacy": {
+    "eyebrow": "Privacy",
+    "title": "Privacy policy",
+    "updated": "Last updated July 2026",
+    "intro": "This site is a personal portfolio. It sets no cookies, runs no analytics or third-party trackers, and builds no profile of the people who visit it. The only place it collects anything is the contact form — and only what you type there.",
+    "form": {
+      "title": "The contact form",
+      "body": "When you send a message, the name, email and message you enter are delivered straight to my inbox as an email so I can reply. They aren't stored in a database, sold, or shared with anyone else, and I use them only to respond to you. Ask me any time and I'll delete your message."
+    },
+    "spam": {
+      "title": "Spam protection",
+      "body": "To stop the form being abused, submissions are checked by Cloudflare Turnstile — a privacy-preserving alternative to CAPTCHA. To tell humans from bots, Cloudflare processes limited technical data (such as your IP address); it doesn't use it to track you across sites. The details are in Cloudflare's",
+      "addendumLink": "Turnstile Privacy Addendum"
+    },
+    "hosting": {
+      "title": "Hosting",
+      "body": "The site is served from Cloudflare's global edge network. To deliver and protect it, Cloudflare processes standard request metadata such as your IP address and browser type. Nothing is retained by me."
+    },
+    "contact": {
+      "title": "Questions",
+      "body": "Anything you'd like to ask about this — or want your message removed — just email me:"
+    }
+  },
+  "Footer": {
+    "privacy": "Privacy",
+    "rights": "Serhiy Nikiforov"
   },
   "Common": {}
 }

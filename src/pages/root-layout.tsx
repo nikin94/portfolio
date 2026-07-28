@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 
 import { AnimatedOutlet } from "@/components/animated-outlet";
@@ -6,6 +6,7 @@ import { EasterEggs } from "@/components/easter-eggs/easter-eggs";
 import { MainNav } from "@/components/main-nav";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { siteConfig } from "@/config/site";
+import { t } from "@/i18n/strings";
 import { AppProviders } from "@/providers";
 
 /**
@@ -55,6 +56,15 @@ const RootLayout = () => {
         <main className="flex flex-1 flex-col pb-16">
           <AnimatedOutlet />
         </main>
+        <footer className="text-muted border-border/60 flex items-center justify-between gap-4 border-t py-6 text-xs">
+          <span>© {siteConfig.author}</span>
+          <Link
+            to="/privacy"
+            className="hover:text-foreground font-medium transition-colors"
+          >
+            {t("Footer.privacy")}
+          </Link>
+        </footer>
       </div>
       <EasterEggs />
     </AppProviders>
