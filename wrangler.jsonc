@@ -21,6 +21,12 @@
   "send_email": [
     { "name": "SEND_EMAIL", "destination_address": "nikin1994@gmail.com" },
   ],
+  // Turnstile secret is NOT declared here — it's a Worker secret. Set it once
+  // with `npx wrangler secret put TURNSTILE_SECRET` (or the dashboard: Worker →
+  // Settings → Variables → Secret). Until then Turnstile stays off and the
+  // endpoint relies on its other guards. The public site key lives in
+  // `siteConfig.turnstileSiteKey`.
+  //
   // Per-IP rate limit for the contact endpoint — configured entirely here, so
   // no dashboard/KV setup is needed. `period` is limited to 10 or 60s by the
   // platform; 5 requests / 60s is plenty for a real sender and throttles a

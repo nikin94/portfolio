@@ -13,6 +13,18 @@ vi.mock("@/lib/contact", () => ({
   submitContact: vi.fn(),
 }));
 
+// With a site key configured, the form gates submit on a Turnstile token. Stub
+// the widget so it yields a token on mount, standing in for a solved challenge.
+vi.mock("./turnstile", async () => {
+  const { useEffect } = await import("react");
+  return {
+    Turnstile: ({ onToken }: { onToken: (t: string) => void }) => {
+      useEffect(() => onToken("test-token"), [onToken]);
+      return null;
+    },
+  };
+});
+
 const mockSubmit = vi.mocked(submitContact);
 
 const fill = (label: RegExp, value: string) =>

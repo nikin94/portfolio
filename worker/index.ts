@@ -15,9 +15,9 @@ import {
  *
  * `POST /api/contact` is the contact form's backend: it validates against the
  * same shared contract as the browser (`src/lib/contact-schema.ts`), rejects
- * abuse (same-origin only, per-IP rate limit, honeypot + submit-timing), then
- * hand-builds an RFC 5322 message and sends it through Cloudflare Email Routing
- * — no third-party form service.
+ * abuse (same-origin only, per-IP rate limit, optional Turnstile verification,
+ * honeypot + submit-timing), then hand-builds an RFC 5322 message and sends it
+ * through Cloudflare Email Routing — no third-party form service.
  */
 
 /** Minimal shape of the Workers Rate Limiting binding (`unsafe` ratelimit),
@@ -36,6 +36,10 @@ interface Env {
    *  wrangler.jsonc). Optional so a missing binding degrades to "no limit"
    *  rather than a 500. */
   CONTACT_RATE_LIMITER?: RateLimiter;
+  /** Cloudflare Turnstile secret (a Worker secret, not in wrangler.jsonc). When
+   *  set, the endpoint verifies the widget token before sending; when unset,
+   *  Turnstile is simply off and the other guards still apply. */
+  TURNSTILE_SECRET?: string;
 }
 
 /** From-address on the Email-Routing-enabled zone; To must be a verified
@@ -116,6 +120,29 @@ const isSameOrigin = (request: Request, self: string) => {
   return false;
 };
 
+/** Verify a Turnstile token against Cloudflare's siteverify API. Returns true
+ *  only on a confirmed human; any error / missing token is a rejection. */
+const verifyTurnstile = async (
+  token: string,
+  secret: string,
+  ip: string | null,
+) => {
+  const body = new FormData();
+  body.append("secret", secret);
+  body.append("response", token);
+  if (ip) body.append("remoteip", ip);
+  try {
+    const res = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      { method: "POST", body },
+    );
+    const data = (await res.json()) as { success?: boolean };
+    return data.success === true;
+  } catch {
+    return false;
+  }
+};
+
 const handleContact = async (
   request: Request,
   env: Env,
@@ -143,6 +170,19 @@ const handleContact = async (
     payload = await request.json();
   } catch {
     return json({ error: "Invalid request body." }, 400);
+  }
+
+  // Turnstile: only enforced when the secret is configured, so the endpoint
+  // degrades gracefully to its other guards until Turnstile is wired up. A
+  // missing / invalid token is a hard 403 (unlike the silent honeypot, this is
+  // a real challenge the browser widget already passed).
+  if (env.TURNSTILE_SECRET) {
+    const token =
+      typeof payload.turnstileToken === "string" ? payload.turnstileToken : "";
+    const ip = request.headers.get("CF-Connecting-IP");
+    if (!token || !(await verifyTurnstile(token, env.TURNSTILE_SECRET, ip))) {
+      return json({ error: "Verification failed." }, 403);
+    }
   }
 
   // Anti-spam, both silently "successful" so a bot learns nothing:

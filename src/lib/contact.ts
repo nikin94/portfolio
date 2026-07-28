@@ -12,6 +12,8 @@ export type ContactResult = "sent" | "mailto";
 export interface ContactMeta {
   honeypot?: string;
   elapsedMs?: number;
+  /** Cloudflare Turnstile token, verified server-side when Turnstile is on. */
+  turnstileToken?: string;
 }
 
 /**
@@ -42,6 +44,7 @@ export const submitContact = async (
         ...values,
         url_extra: meta.honeypot ?? "",
         elapsedMs: meta.elapsedMs,
+        turnstileToken: meta.turnstileToken,
       }),
     });
     if (!res.ok) throw new Error(`Contact endpoint returned ${res.status}`);
