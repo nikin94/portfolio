@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { t } from "@/i18n/strings";
 
 import { CareerTimeline } from "@/components/about/career-timeline";
@@ -30,6 +31,15 @@ const About = () => {
         <CareerTimeline />
 
         <Interests />
+
+        {/* Quiet privacy link — deliberately understated (tiny, faint, well
+            below the tags) so it's discoverable without competing for attention. */}
+        <Link
+          to="/privacy"
+          className="text-muted/40 hover:text-muted mt-20 inline-block text-xs transition-colors"
+        >
+          {t("About.privacyLink")}
+        </Link>
       </div>
     </section>
   );
